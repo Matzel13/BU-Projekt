@@ -7,7 +7,7 @@
 char mask = 0x01;
 int adressSize = 3;
 
-volatile char message, adress;
+volatile char adress;
 volatile unsigned long timeStamp;
 volatile unsigned long delayTime;
 
@@ -51,32 +51,57 @@ if(digitalRead(COMM) == HIGH){
     }
     DELAY(delayTime);
   }
-  Serial.print(", ");
-  Serial.println(adress);
+  Serial.println();
   
-
-  // when adress = myAdress then listen to the data
-  
-  // store data:
-  message = 0x00;
-  int byteCount = 1;
-  for(int i = 0; i < ((8 * byteCount)-1); i++){
+  // COF
+  char byteCount = 0x00;
+  for(int i = 0; i < 3; i++){
     if(digitalRead(COMM) == HIGH){
-      message = message | (mask << i);
+      byteCount = byteCount | (mask << i);
       digitalWrite(LED, HIGH);
-      Serial.println("1");
+      Serial.print("1");
     }
     else{
       digitalWrite(LED, LOW);
-      Serial.println("0");
+      Serial.print("0");
     }
     DELAY(delayTime);
   }
   Serial.print("Received: ");
-  Serial.println(message, HEX);
+  Serial.println(byteCount, HEX);  
+
+
+  // when adress = myAdress then listen to the data
+  
+  // store data:
+  char message[] = {0,0,0,0,0,0,0,0};
+  for(int j = 0; j < byteCount; j++){
+    for(int i = 0; i < 8; i++){
+      if(digitalRead(COMM) == HIGH){
+        message[j] = message[j] | (mask << i);
+        digitalWrite(LED, HIGH);
+        Serial.print("1");
+      }
+      else{
+        digitalWrite(LED, LOW);
+        Serial.print("0");
+      }
+      DELAY(delayTime);
+    }
+    Serial.print(" ");
+  }
+  Serial.println();
+  Serial.print("Received: ");
+  for(int i = 0; i < 8; i++){
+    Serial.print(message[i], HEX);
+    Serial.print(" ");
+  }
+  Serial.println();
 
   // EOF
-
+  for(int i = 0; i < 5; i++){
+    DELAY(delayTime);
+  }
 }
 }
 
