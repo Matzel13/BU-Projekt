@@ -2,10 +2,10 @@
 #define COMM    16
 #define TASTER  4
 
-#define DELAY delayMicroseconds(1000)
+#define DELAY delayMicroseconds(1500)  // time between bits
 //#define message 'P' // 0x50
 
-volatile char message = 'K';
+volatile char message = 'b';
 
 void sendMessage(char message){
   Serial.print("Sending:");
