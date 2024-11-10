@@ -103,26 +103,12 @@ void keypad(){
     digitalWrite(ROWS[row], HIGH);
     for(int col = 0; col < 2; col++){
       if(digitalRead(COLS[col]) == HIGH){
-        Serial.print("Row: ");
-        Serial.print(row);
-        Serial.print(" Col: ");
-        Serial.println(col);
         input = input ^ (0x01 << col);
-        input = input << 2;
       }
+      input = input << 2;
     }
     digitalWrite(ROWS[row], LOW);
   }
-  Serial.println(input, HEX);
-  for(int i = 0; i < 16; i++){
-    if(((input >> i) & 0x01) == (0x01)){
-      Serial.print("1");
-    }
-    else{
-      Serial.print("0");
-    }
-  }
-  Serial.println("");
 }
 
 void setup() {
