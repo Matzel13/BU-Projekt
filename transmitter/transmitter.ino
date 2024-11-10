@@ -1,5 +1,6 @@
 
-#define COMM    16
+#define COMM_DP  16
+
 #define ROW1  2
 #define ROW2  3
 #define COL1  4
@@ -122,9 +123,6 @@ void setup() {
 
   pinMode(COL1, INPUT_PULLDOWN);
   pinMode(COL2, INPUT_PULLDOWN);
-  
-  //attachInterrupt(digitalPinToInterrupt(TASTER1), taster, RISING);
-  //attachInterrupt(digitalPinToInterrupt(TASTER2), taster, RISING);
 
   Serial.begin(115200);
 }
