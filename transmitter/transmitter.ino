@@ -1,6 +1,12 @@
 
 #define COMM    16
-#define TASTER  4
+#define ROW1  2
+#define ROW2  3
+#define COL1  4
+#define COL2  5
+
+int ROWS[2] {ROW1, ROW2};
+int COLS[2] {COL1, COL2};
 
 #define DELAY delayMicroseconds(1000)  // time between bits
 //#define message 'P' // 0x50
@@ -9,17 +15,16 @@ int adressSize = 3;
 
 char adress = 0x06;
 
-// volatile char message[] = {'K', 'h', 'n', 0, 0, 0, 0};
-volatile int sizeOfMessage = 3;
+//volatile char message[] = {0, 0, 0, 0, 0, 0, 0, 0};
+volatile int sizeOfMessage = 2;
+volatile char pressedButton = NULL;
+volatile unsigned input = 0x0000;
 
-void sendMessage(){
-  char message[] = {'H', 'k', 'K', 0, 0, 0, 0};
+void sendMessage(unsigned message){
+  //char message[] = {'H', 'k', 'K', 0, 0, 0, 0};
   adress = 0x05;
-  Serial.print("Sending:");
-  for(int i = 0; i < 8; i++){
-    Serial.print(message[i], HEX);
-    Serial.print(" ");
-  }
+  Serial.print("Sending: ");
+  Serial.print(input, HEX);
   Serial.println();
 
   // SOF:
@@ -64,7 +69,7 @@ void sendMessage(){
   // DATA:
   for(int j = 0; j < sizeOfMessage; j++){
     for(int i = 0; i < 8; i++){
-      if((message[j] & 0x01) == 0x01){ 
+      if((message & 0x01) == 0x01){ 
         digitalWrite(COMM, HIGH);
         Serial.print("1");
       }
@@ -73,7 +78,7 @@ void sendMessage(){
         Serial.print("0");
       }
       DELAY;
-      message[j] = message[j] >> 1;
+      message = message >> 1;
     }
     Serial.print(" ");
   }
@@ -91,17 +96,47 @@ void sendMessage(){
   Serial.println();
 }
 
-// ISR:
-void taster(){
-  //sendMessage();
+// read the input keys:
+void keypad(){
+  input = 0x0000;
+  for(int row = 0; row < 2; row++){
+    digitalWrite(ROWS[row], HIGH);
+    for(int col = 0; col < 2; col++){
+      if(digitalRead(COLS[col]) == HIGH){
+        Serial.print("Row: ");
+        Serial.print(row);
+        Serial.print(" Col: ");
+        Serial.println(col);
+        input = input ^ (0x01 << col);
+        input = input << 2;
+      }
+    }
+    digitalWrite(ROWS[row], LOW);
+  }
+  Serial.println(input, HEX);
+  for(int i = 0; i < 16; i++){
+    if(((input >> i) & 0x01) == (0x01)){
+      Serial.print("1");
+    }
+    else{
+      Serial.print("0");
+    }
+  }
+  Serial.println("");
 }
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(COMM, OUTPUT);
 
-  pinMode(TASTER, INPUT);
-  //attachInterrupt(digitalPinToInterrupt(TASTER), taster, RISING);
+  pinMode(ROW1, OUTPUT);
+  pinMode(ROW2, OUTPUT);
+
+  pinMode(COL1, INPUT_PULLDOWN);
+  pinMode(COL2, INPUT_PULLDOWN);
+  
+  //attachInterrupt(digitalPinToInterrupt(TASTER1), taster, RISING);
+  //attachInterrupt(digitalPinToInterrupt(TASTER2), taster, RISING);
 
   Serial.begin(115200);
 }
@@ -109,8 +144,12 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-sendMessage();
-delay(10000);
+  // constantly check for pressed buttons:
+  keypad();
+  if(input != 0x0000){
+    sendMessage(input);
+  }
+  delay(1000); // delay 1 ms
 }
 
 

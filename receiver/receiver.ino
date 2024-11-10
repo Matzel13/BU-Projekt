@@ -22,13 +22,7 @@ Serial.begin(115200);
 }
 
 void readMessage(){
-  
-}
-
-void loop() {
-
-
-// SOF
+  // SOF
 if(digitalRead(COMM) == HIGH){
   
   // synchronisation via SOF: 
@@ -110,6 +104,10 @@ if(digitalRead(COMM) == HIGH){
     DELAY(delayTime);
   }
 }
+}
+
+void loop() {
+  readMessage();
 }
 
 
