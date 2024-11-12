@@ -70,16 +70,7 @@ void readMessage() {
     if (adress == 0x01) {
 
       // store data:
-      char message[] = {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      };
+      char message[] = {0,0,0,0,0,0,0,0};
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
           if (digitalRead(COMM) == HIGH) {
@@ -106,6 +97,9 @@ void readMessage() {
       for (int i = 0; i < 5; i++) {
         DELAY(delayTime);
       }
+    }
+    else{
+      DELAY((bytecount+5) * delaytime)
     }
   }
 }
