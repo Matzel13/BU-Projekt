@@ -37,13 +37,14 @@ void readMessage() {
 
     // Adress 
     Serial.print("Adresse: ");
+    adress = 0x00;
     for (int i = 0; i < (adressSize + 1); i++) {
       if (digitalRead(COMM) == HIGH) {
         adress = adress | (mask << i);
-        digitalWrite(LED, HIGH);
+        //digitalWrite(LED, HIGH);
         Serial.print("1");
       } else {
-        digitalWrite(LED, LOW);
+        //digitalWrite(LED, LOW);
         Serial.print("0");
       }
       DELAY(delayTime);
@@ -55,10 +56,10 @@ void readMessage() {
     for (int i = 0; i < 3; i++) {
       if (digitalRead(COMM) == HIGH) {
         byteCount = byteCount | (mask << i);
-        digitalWrite(LED, HIGH);
+        //digitalWrite(LED, HIGH);
         Serial.print("1");
       } else {
-        digitalWrite(LED, LOW);
+        //digitalWrite(LED, LOW);
         Serial.print("0");
       }
       DELAY(delayTime);
@@ -67,6 +68,10 @@ void readMessage() {
     Serial.println(byteCount, HEX);
 
     // when adress = myAdress then listen to the data
+    Serial.print("Adress in HEX: ");
+    Serial.println(adress, HEX);
+    Serial.println();
+
     if (adress == 0x01) {
 
       // store data:
@@ -99,7 +104,7 @@ void readMessage() {
       }
     }
     else{
-      DELAY((bytecount+5) * delaytime)
+      DELAY((byteCount+5) * delayTime);
     }
   }
 }

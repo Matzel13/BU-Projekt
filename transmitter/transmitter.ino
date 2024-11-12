@@ -19,7 +19,7 @@ int COLS[2] {
 
 int adressSize = 3;
 
-char adress = 0x06;
+//char adress = 0x00;
 
 //volatile char message[] = {0, 0, 0, 0, 0, 0, 0, 0};
 volatile int sizeOfMessage = 2;
@@ -107,13 +107,14 @@ void keypad() {
     for (int col = 0; col < 2; col++) {
       if (digitalRead(COLS[col]) == HIGH) {
         input = input ^ (0x0001 << col);
-        Serial.println(col);
       }
       input = input << 2;
     }
+    delay(5);
     digitalWrite(ROWS[row], LOW);
   }
   input = input >> 2;
+        Serial.println(input, HEX);
 }
 
 void setup() {
@@ -135,11 +136,17 @@ void loop() {
   // constantly check for pressed buttons:
   keypad();
   if (input != 0x0000) {
-    if ((input == 0x0020) || (input == 0x0002)) {
+    if ((input == 0x0004)) {
+      sendMessage(input, 0x01);
+    }
+    if ((input == 0x0040)) {
       sendMessage(input, 0x02);
     }
-    if ((input == 0x0040) || (input == 0x0004)) {
-      sendMessage(input, 0x01);
+    if ((input == 0x0020)) {
+      sendMessage(input, 0x03);
+    }
+    if ((input == 0x0002)) {
+      sendMessage(input, 0x04);
     }
   }
   delay(100); // delay 1 ms
