@@ -21,9 +21,9 @@ volatile int sizeOfMessage = 2;
 volatile char pressedButton = NULL;
 volatile unsigned input = 0x0000;
 
-void sendMessage(unsigned message){
+void sendMessage(unsigned message, char adress){
   //char message[] = {'H', 'k', 'K', 0, 0, 0, 0};
-  adress = 0x05;
+  //adress = 0x05;
   Serial.print("Sending: ");
   Serial.print(input, HEX);
   Serial.println();
@@ -133,7 +133,12 @@ void loop() {
   // constantly check for pressed buttons:
   keypad();
   if(input != 0x0000){
-    sendMessage(input);
+    if((input == 0x0020) ||(input == 0x0002)){
+      sendMessage(input, 0x02);
+    }
+    if((input == 0x0040) ||(input == 0x0004)){
+      sendMessage(input, 0x01);
+    }
   }
   delay(100); // delay 1 ms
 }

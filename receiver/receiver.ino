@@ -7,7 +7,7 @@
 char mask = 0x01;
 int adressSize = 3;
 
-volatile char adress;
+volatile char adress = 0x00;
 volatile unsigned long timeStamp;
 volatile unsigned long delayTime;
 
@@ -73,7 +73,8 @@ if(digitalRead(COMM) == HIGH){
 
 
   // when adress = myAdress then listen to the data
-  
+  if(adress == 0x01){
+
   // store data:
   char message[] = {0,0,0,0,0,0,0,0};
   for(int j = 0; j < byteCount; j++){
@@ -102,6 +103,7 @@ if(digitalRead(COMM) == HIGH){
   // EOF
   for(int i = 0; i < 5; i++){
     DELAY(delayTime);
+  }
   }
 }
 }
