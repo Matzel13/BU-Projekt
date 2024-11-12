@@ -1,5 +1,5 @@
 
-#define COMM_DP  16
+#define COMM  16
 
 #define ROW1  2
 #define ROW2  3
@@ -135,7 +135,7 @@ void loop() {
   if(input != 0x0000){
     sendMessage(input);
   }
-  delay(1000); // delay 1 ms
+  delay(100); // delay 1 ms
 }
 
 

@@ -1,5 +1,6 @@
 
-#define COMM_DP 16
+#define COMM 16
+#define LED 17
 
 #define DELAY(x) delayMicroseconds(x)
 
@@ -12,7 +13,7 @@ volatile unsigned long delayTime;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM_DP, INPUT);
+  pinMode(COMM, INPUT);
 
   pinMode(LED, OUTPUT);
 
