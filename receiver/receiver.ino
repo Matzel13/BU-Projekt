@@ -72,7 +72,7 @@ void readMessage() {
     Serial.println(adress, HEX);
     Serial.println();
 
-    if (adress == 0x01) {
+    if (adress == 0x04) {
 
       // store data:
       char message[] = {0,0,0,0,0,0,0,0};
