@@ -21,15 +21,22 @@ int COLS[2] {
 
 //#define message 'P' // 0x50
 
-
-
 volatile char adress = 0x00;
 volatile unsigned long timeStamp;
 volatile unsigned long delayTime;
 
 int adressSize = 3;
 char mask = 0x01;
-char messageRead[] = {0,0,0,0,0,0,0,0};
+char messageRead[] = {
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+};
 int messageToCheck = 0x100;
 char myAdress = 0x02;
 
@@ -128,21 +135,7 @@ void keypad() {
     digitalWrite(ROWS[row], LOW);
   }
   input = input >> 2;
-       // Serial.println(input, HEX);
-}
-
-void setup() {
-  // put your setup code here, to run once:
-  pinMode(COMM_RX, OUTPUT);
-  pinMode(COMM_TX, OUTPUT);
-
-  pinMode(ROW1, OUTPUT);
-  pinMode(ROW2, OUTPUT);
-
-  pinMode(COL1, INPUT_PULLDOWN);
-  pinMode(COL2, INPUT_PULLDOWN);
-
-  Serial.begin(115200);
+  // Serial.println(input, HEX);
 }
 
 void readMessage() {
@@ -199,9 +192,9 @@ void readMessage() {
 
     if (adress == 0x02) {
 
-    for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
         messageRead[i] = 0;
-    }
+      }
 
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
@@ -229,27 +222,40 @@ void readMessage() {
       for (int i = 0; i < 5; i++) {
         DELAYX(delayTime);
       }
-    }
-    else{
-      DELAYX((byteCount+5) * delayTime);
+    } else {
+      DELAYX((byteCount + 5) * delayTime);
     }
   }
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(COMM_RX, OUTPUT);
+  pinMode(COMM_TX, OUTPUT);
+
+  pinMode(ROW1, OUTPUT);
+  pinMode(ROW2, OUTPUT);
+
+  pinMode(COL1, INPUT_PULLDOWN);
+  pinMode(COL2, INPUT_PULLDOWN);
+
+  Serial.begin(115200);
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
   readMessage();
 
-      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
-        if (messageRead[i] == messageToCheck) {
-            keypad();
-        }
+  for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+    if (messageRead[i] == messageToCheck) {
+      keypad();
     }
-  
+  }
+
   if (input != 0x0000 && (adress == myAdress)) {
     if (((input & 0x0100) == 0x0100)) {
       sendMessage(input, 0x01);
     }
   }
   delay(100); // delay 1 ms
-}
 }
