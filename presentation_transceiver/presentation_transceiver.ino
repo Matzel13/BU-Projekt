@@ -16,7 +16,7 @@ int COLS[2] {
   COL2
 };
 
-#define DELAY delayMicroseconds(1000) // time between bits
+#define DELAY delayMicroseconds(10000) // time between bits
 #define DELAYX(x) delayMicroseconds(x) // time between bits
 
 //#define message 'P' // 0x50
@@ -142,7 +142,7 @@ void readMessage() {
     Serial.print("Delaytime: ");
     Serial.println(delayTime);
 
-    DELAYX(delayTime * 2);
+    DELAYX(delayTime);
 
     // Adress 
     Serial.print("Adresse: ");
@@ -173,7 +173,8 @@ void readMessage() {
       }
       DELAYX(delayTime);
     }
-    Serial.print("Received: ");
+    Serial.println();
+    Serial.print("Received COF: ");
     Serial.println(byteCount, HEX);
 
     // when adress = myAdress then listen to the data
@@ -202,7 +203,7 @@ void readMessage() {
       }
       Serial.println();
       Serial.print("Received: ");
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < sizeOfMessage; i++) {
         Serial.print(messageRead[i], HEX);
         Serial.print(" ");
       }
@@ -239,6 +240,5 @@ void loop() {
       keypad();
       sendMessage(input, 0x01);
     }
-  }
-  delay(100); // delay 1 ms
+  // delay(100); // delay 1 ms
 }

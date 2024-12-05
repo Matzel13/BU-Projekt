@@ -2,7 +2,7 @@
 #define COMM_RX 18
 #define LED 17
 
-#define DELAY delayMicroseconds(1000)
+#define DELAY delayMicroseconds(10000)
 #define DELAYX(x) delayMicroseconds(x)
 
 #define callInput 0x100
@@ -195,7 +195,7 @@ void readMessage() {
 }
 
 void loop() {
-  DELAYX(100000);
+  DELAYX(1000000);
   // get input from user:
   sendMessage(callInput, 0x02);
   readMessage();
