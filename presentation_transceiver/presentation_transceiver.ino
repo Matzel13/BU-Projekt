@@ -1,4 +1,5 @@
 #define COMM 16
+#define LED 17
 
 #define ROW1 2
 #define ROW2 3
@@ -14,13 +15,21 @@ int COLS[2] {
   COL2
 };
 
-char address
-
 #define DELAY delayMicroseconds(1000) // time between bits
+#define DELAYX(x) delayMicroseconds(x) // time between bits
+
 //#define message 'P' // 0x50
 
-int adressSize = 3;
 
+
+volatile char adress = 0x00;
+volatile unsigned long timeStamp;
+volatile unsigned long delayTime;
+
+int adressSize = 3;
+char mask = 0x01;
+char messageRead[] = {0,0,0,0,0,0,0,0};
+int messageToCheck = 0x100;
 char myAdress = 0x02;
 
 //volatile char message[] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -136,13 +145,109 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  readMessage();
 
-  // constantly check for pressed buttons:
-  keypad();
+      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+        if (messageRead[i] == messageToCheck) {
+            keypad();
+        }
+    }
+  
   if (input != 0x0000 && (adress == myAdress)) {
     if (((input & 0x0100) == 0x0100)) {
       sendMessage(input, 0x01);
     }
   }
   delay(100); // delay 1 ms
+}
+
+void readMessage() {
+  // SOF
+  if (digitalRead(COMM) == HIGH) {
+
+    // synchronisation via SOF: 
+
+    timeStamp = micros(); // set tiemStamp to calculate transmittionSpeed
+    while (digitalRead(COMM) == HIGH); // wait till starting Bit has passed
+
+    delayTime = micros() - timeStamp; // calculate delay time
+    Serial.print("Delaytime: ");
+    Serial.println(delayTime);
+
+    DELAYX(delayTime * 2);
+
+    // Adress 
+    Serial.print("Adresse: ");
+    adress = 0x00;
+    for (int i = 0; i < (adressSize + 1); i++) {
+      if (digitalRead(COMM) == HIGH) {
+        adress = adress | (mask << i);
+        //digitalWrite(LED, HIGH);
+        Serial.print("1");
+      } else {
+        //digitalWrite(LED, LOW);
+        Serial.print("0");
+      }
+      DELAYX(delayTime);
+    }
+    Serial.println();
+
+    // COF
+    char byteCount = 0x00;
+    for (int i = 0; i < 3; i++) {
+      if (digitalRead(COMM) == HIGH) {
+        byteCount = byteCount | (mask << i);
+        //digitalWrite(LED, HIGH);
+        Serial.print("1");
+      } else {
+        //digitalWrite(LED, LOW);
+        Serial.print("0");
+      }
+      DELAYX(delayTime);
+    }
+    Serial.print("Received: ");
+    Serial.println(byteCount, HEX);
+
+    // when adress = myAdress then listen to the data
+    Serial.print("Adress in HEX: ");
+    Serial.println(adress, HEX);
+    Serial.println();
+
+    if (adress == 0x02) {
+
+    for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+        messageRead[i] = 0;
+    }
+
+      for (int j = 0; j < byteCount; j++) {
+        for (int i = 0; i < 8; i++) {
+          if (digitalRead(COMM) == HIGH) {
+            messageRead[j] = messageRead[j] | (mask << i);
+            digitalWrite(LED, HIGH);
+            Serial.print("1");
+          } else {
+            digitalWrite(LED, LOW);
+            Serial.print("0");
+          }
+          DELAYX(delayTime);
+        }
+        Serial.print(" ");
+      }
+      Serial.println();
+      Serial.print("Received: ");
+      for (int i = 0; i < 8; i++) {
+        Serial.print(messageRead[i], HEX);
+        Serial.print(" ");
+      }
+      Serial.println();
+
+      // EOF
+      for (int i = 0; i < 5; i++) {
+        DELAYX(delayTime);
+      }
+    }
+    else{
+      DELAYX((byteCount+5) * delayTime);
+    }
+  }
 }
