@@ -214,12 +214,6 @@ void readMessage() {
     } else {
       DELAYX((byteCount + 5) * delayTime);
     }
-    // ACN
-    digitalWrite(COMM_TX, HIGH);
-    DELAY;
-    DELAY;
-    DELAY;
-    digitalWrite(COMM_TX, LOW);
 
     Serial.print("Received Message: ");
     for(int i = 0; i < 3; i++){
@@ -231,7 +225,7 @@ void readMessage() {
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM_RX, INPUT);
+  pinMode(COMM_RX, INPUT_PULLDOWN);
   pinMode(COMM_TX, OUTPUT);
 
   pinMode(ROW1, OUTPUT);

@@ -22,7 +22,7 @@ volatile int sizeOfMessage = 3;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM_RX, INPUT);
+  pinMode(COMM_RX, INPUT_PULLDOWN);
   pinMode(COMM_TX, OUTPUT);
 
   pinMode(LED, OUTPUT);
@@ -218,7 +218,8 @@ void loop() {
   sendMessage(callInput, 0x02);
   // wait for response... timer if no response comes after x ms
  // while(digitalRead(COMM_RX) == HIGH);
-  //readMessage();
+ // readMessage();
+  
   
   bool signalReceived = waitForSignalWithTimeout(COMM_RX, 100); // (PIN, timeout)
   if (signalReceived) {
@@ -231,7 +232,7 @@ void loop() {
   // Send received input to PC:
   for(int i = 0; i < sizeOfMessage; i++){
     if(messageRead[i] != 0x00) Serial2.println(messageRead[i]);
-  } 
+  } //*/
 }
 
 void blink() {
