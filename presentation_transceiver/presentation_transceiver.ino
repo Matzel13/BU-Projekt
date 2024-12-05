@@ -37,8 +37,6 @@ volatile char pressedButton = NULL;
 volatile unsigned input = 0x0000;
 
 void sendMessage(unsigned message, char adress) {
-    Serial.println("sendMessage");
-
   //char message[] = {'H', 'k', 'K', 0, 0, 0, 0};
   //adress = 0x05;
   Serial.print("Sending: ");
@@ -132,8 +130,6 @@ void keypad() {
 }
 
 void readMessage() {
-      Serial.println("readMessage");
-
   // SOF
   if (digitalRead(COMM_RX) == HIGH) {
 
@@ -189,8 +185,6 @@ void readMessage() {
       for (int i = 0; i < sizeOfMessage; ++i) {
         messageRead[i] = 0;
       }
-      Serial.println("adress: %d", adress);
-
 
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
