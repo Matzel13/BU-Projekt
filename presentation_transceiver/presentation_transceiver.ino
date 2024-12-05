@@ -1,4 +1,5 @@
-#define COMM 16
+#define COMM_RX 15
+#define COMM_TX 16
 #define LED 17
 
 #define ROW1 2
@@ -45,19 +46,19 @@ void sendMessage(unsigned message, char adress) {
   Serial.println();
 
   // SOF:
-  digitalWrite(COMM, HIGH);
+  digitalWrite(COMM_TX, HIGH);
   DELAY;
-  digitalWrite(COMM, LOW);
+  digitalWrite(COMM_TX, LOW);
   DELAY;
 
   // Adress:
   Serial.print("Adresse: ");
   for (int i = 0; i < (adressSize + 1); i++) {
     if ((adress & 0x01) == 0x01) {
-      digitalWrite(COMM, HIGH);
+      digitalWrite(COMM_TX, HIGH);
       Serial.print("1");
     } else {
-      digitalWrite(COMM, LOW);
+      digitalWrite(COMM_TX, LOW);
       Serial.print("0");
     }
     DELAY;
@@ -70,10 +71,10 @@ void sendMessage(unsigned message, char adress) {
   char byteCount = ((char) sizeOfMessage);
   for (int i = 0; i < 3; i++) {
     if ((byteCount & 0x01) == 0x01) {
-      digitalWrite(COMM, HIGH);
+      digitalWrite(COMM_TX, HIGH);
       Serial.print("1");
     } else {
-      digitalWrite(COMM, LOW);
+      digitalWrite(COMM_TX, LOW);
       Serial.print("0");
     }
     DELAY;
@@ -85,10 +86,10 @@ void sendMessage(unsigned message, char adress) {
   for (int j = 0; j < sizeOfMessage; j++) {
     for (int i = 0; i < 8; i++) {
       if ((message & 0x01) == 0x01) {
-        digitalWrite(COMM, HIGH);
+        digitalWrite(COMM_TX, HIGH);
         Serial.print("1");
       } else {
-        digitalWrite(COMM, LOW);
+        digitalWrite(COMM_TX, LOW);
         Serial.print("0");
       }
       DELAY;
@@ -99,10 +100,10 @@ void sendMessage(unsigned message, char adress) {
   Serial.println();
 
   // EOF
-  digitalWrite(COMM, HIGH);
+  digitalWrite(COMM_TX, HIGH);
   Serial.print("1");
   DELAY;
-  digitalWrite(COMM, LOW);
+  digitalWrite(COMM_TX, LOW);
   for (int i = 0; i < 5; i++) {
     Serial.print("0");
     DELAY;
@@ -132,7 +133,8 @@ void keypad() {
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM, OUTPUT);
+  pinMode(COMM_RX, OUTPUT);
+  pinMode(COMM_TX, OUTPUT);
 
   pinMode(ROW1, OUTPUT);
   pinMode(ROW2, OUTPUT);
@@ -143,32 +145,14 @@ void setup() {
   Serial.begin(115200);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  readMessage();
-
-      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
-        if (messageRead[i] == messageToCheck) {
-            keypad();
-        }
-    }
-  
-  if (input != 0x0000 && (adress == myAdress)) {
-    if (((input & 0x0100) == 0x0100)) {
-      sendMessage(input, 0x01);
-    }
-  }
-  delay(100); // delay 1 ms
-}
-
 void readMessage() {
   // SOF
-  if (digitalRead(COMM) == HIGH) {
+  if (digitalRead(COMM_RX) == HIGH) {
 
     // synchronisation via SOF: 
 
     timeStamp = micros(); // set tiemStamp to calculate transmittionSpeed
-    while (digitalRead(COMM) == HIGH); // wait till starting Bit has passed
+    while (digitalRead(COMM_RX) == HIGH); // wait till starting Bit has passed
 
     delayTime = micros() - timeStamp; // calculate delay time
     Serial.print("Delaytime: ");
@@ -180,7 +164,7 @@ void readMessage() {
     Serial.print("Adresse: ");
     adress = 0x00;
     for (int i = 0; i < (adressSize + 1); i++) {
-      if (digitalRead(COMM) == HIGH) {
+      if (digitalRead(COMM_RX) == HIGH) {
         adress = adress | (mask << i);
         //digitalWrite(LED, HIGH);
         Serial.print("1");
@@ -195,7 +179,7 @@ void readMessage() {
     // COF
     char byteCount = 0x00;
     for (int i = 0; i < 3; i++) {
-      if (digitalRead(COMM) == HIGH) {
+      if (digitalRead(COMM_RX) == HIGH) {
         byteCount = byteCount | (mask << i);
         //digitalWrite(LED, HIGH);
         Serial.print("1");
@@ -221,7 +205,7 @@ void readMessage() {
 
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
-          if (digitalRead(COMM) == HIGH) {
+          if (digitalRead(COMM_RX) == HIGH) {
             messageRead[j] = messageRead[j] | (mask << i);
             digitalWrite(LED, HIGH);
             Serial.print("1");
@@ -250,4 +234,22 @@ void readMessage() {
       DELAYX((byteCount+5) * delayTime);
     }
   }
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  readMessage();
+
+      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+        if (messageRead[i] == messageToCheck) {
+            keypad();
+        }
+    }
+  
+  if (input != 0x0000 && (adress == myAdress)) {
+    if (((input & 0x0100) == 0x0100)) {
+      sendMessage(input, 0x01);
+    }
+  }
+  delay(100); // delay 1 ms
+}
 }
