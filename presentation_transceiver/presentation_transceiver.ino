@@ -27,7 +27,7 @@ volatile unsigned long delayTime;
 
 int adressSize = 3;
 char mask = 0x01;
-char messageRead[] = {0,0,0,0,0,0,0,0};
+char messageRead[] = {0,0,0};
 int messageToCheck = 0x100;
 char myAdress = 0x02;
 
@@ -181,7 +181,7 @@ void readMessage() {
     Serial.println(adress, HEX);
     Serial.println();
 
-    if (adress == 0x02) {
+    if (adress == myAdress) {
       for (int i = 0; i < sizeOfMessage; ++i) {
         messageRead[i] = 0;
       }
@@ -235,15 +235,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   readMessage();
-
-  for (int i = 0; i < sizeOfMessage; ++i) {
-    if (messageRead[i] == messageToCheck) {
+    if (messageRead[0] == messageToCheck) {
       keypad();
-    }
-  }
-
-  if (input != 0x0000 && (adress == myAdress)) {
-    if (((input & 0x0100) == 0x0100)) {
       sendMessage(input, 0x01);
     }
   }
