@@ -103,6 +103,9 @@ void sendMessage(unsigned message, char adress) {
 }
 
 void readMessage() {
+  for (int i = 0; i < sizeOfMessage; ++i) {
+    messageRead[i] = 0;
+  }
   //char message[] = {0,0,0,0,0,0,0,0};
   // SOF
   while(digitalRead(COMM_RX) == LOW);
@@ -175,7 +178,7 @@ void readMessage() {
       }
       Serial.println();
       Serial.print("Received: ");
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < sizeOfMessage; i++) {
         Serial.print(messageRead[i], HEX);
         Serial.print(" ");
       }
@@ -229,6 +232,8 @@ void loop() {
     Serial.println("Timeout occurred!");
   }
 
+  Serial2.println(messageRead[0]);
+  /**
   // Send received input to PC:
   for(int i = 0; i < sizeOfMessage; i++){
     if(messageRead[i] != 0x00) Serial2.println(messageRead[i]);
