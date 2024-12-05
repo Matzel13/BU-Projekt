@@ -5,7 +5,7 @@
 #define DELAY delayMicroseconds(10000)
 #define DELAYX(x) delayMicroseconds(x)
 
-#define callInput 0x100
+#define callInput 0x64
 
 char mask = 0x01;
 int adressSize = 3;
@@ -117,7 +117,6 @@ void readMessage() {
     Serial.println(delayTime);
 
     DELAYX(delayTime);
-    DELAYX(delayTime);
 
     // Adress 
     Serial.print("Adresse: ");
@@ -148,7 +147,8 @@ void readMessage() {
       }
       DELAYX(delayTime);
     }
-    Serial.print("Received: ");
+    Serial.println();
+    Serial.print("Received COF: ");
     Serial.println(byteCount, HEX);
 
     // when adress = myAdress then listen to the data
@@ -191,14 +191,41 @@ void readMessage() {
         DELAYX(delayTime);
       }
     }
+    Serial.print("Received Message: ");
+    for(int i = 0; i < 3; i++){
+      Serial.print(messageRead[i], HEX);
+      Serial.print("");
+    }
+    Serial.println();
   }
+}
+
+bool waitForSignalWithTimeout(int pin, int timeoutMs) {
+  unsigned long startTime = millis(); // Record the start time
+
+  // Loop until signal is detected or timeout is reached
+  while (digitalRead(pin) == LOW) { // Assuming LOW means no signal
+
+    if (millis() - startTime >= timeoutMs) {
+      return false; // Timeout occurred
+    }
+  }
+  return true; // Signal received
 }
 
 void loop() {
   DELAYX(1000000);
   // get input from user:
   sendMessage(callInput, 0x02);
-  readMessage();
+  // wait for response... timer if no response comes after x ms
+
+  bool signalReceived = waitForSignalWithTimeout(COMM_RX, 100); // (PIN, timeout)
+  if (signalReceived) {
+    Serial.println("Signal received!");
+    readMessage();
+  } else {
+    Serial.println("Timeout occurred!");
+  }
 
   // Send received input to PC:
   for(int i = 0; i < sizeOfMessage; i++){

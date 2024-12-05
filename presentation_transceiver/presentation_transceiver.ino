@@ -28,7 +28,7 @@ volatile unsigned long delayTime;
 int adressSize = 3;
 char mask = 0x01;
 char messageRead[] = {0,0,0};
-int messageToCheck = 0x100;
+int messageToCheck = 0x64;
 char myAdress = 0x02;
 
 //volatile char message[] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -130,6 +130,9 @@ void keypad() {
 }
 
 void readMessage() {
+  for (int i = 0; i < sizeOfMessage; ++i) {
+    messageRead[i] = 0;
+  }
   // SOF
   if (digitalRead(COMM_RX) == HIGH) {
 
@@ -183,10 +186,6 @@ void readMessage() {
     Serial.println();
 
     if (adress == myAdress) {
-      for (int i = 0; i < sizeOfMessage; ++i) {
-        messageRead[i] = 0;
-      }
-
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
           if (digitalRead(COMM_RX) == HIGH) {
@@ -216,6 +215,12 @@ void readMessage() {
     } else {
       DELAYX((byteCount + 5) * delayTime);
     }
+    Serial.print("Received Message: ");
+    for(int i = 0; i < 3; i++){
+      Serial.print(messageRead[i], HEX);
+      Serial.print("");
+    }
+    Serial.println();
   }
 }
 
@@ -236,9 +241,9 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   readMessage();
-    if (messageRead[0] == messageToCheck) {
-      keypad();
-      sendMessage(input, 0x01);
-    }
+  if (messageRead[0] == messageToCheck) {
+    keypad();
+    sendMessage(input, 0x01);
+  }
   // delay(100); // delay 1 ms
 }
