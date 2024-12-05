@@ -134,8 +134,7 @@ void readMessage() {
     messageRead[i] = 0;
   }
   // SOF
-  if (digitalRead(COMM_RX) == HIGH) {
-
+  while(digitalRead(COMM_RX) == LOW);
     // synchronisation via SOF: 
 
     timeStamp = micros(); // set tiemStamp to calculate transmittionSpeed
@@ -215,18 +214,24 @@ void readMessage() {
     } else {
       DELAYX((byteCount + 5) * delayTime);
     }
+    // ACN
+    digitalWrite(COMM_TX, HIGH);
+    DELAY;
+    DELAY;
+    DELAY;
+    digitalWrite(COMM_TX, LOW);
+
     Serial.print("Received Message: ");
     for(int i = 0; i < 3; i++){
       Serial.print(messageRead[i], HEX);
       Serial.print("");
     }
     Serial.println();
-  }
 }
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM_RX, INPUT_PULLDOWN);
+  pinMode(COMM_RX, INPUT);
   pinMode(COMM_TX, OUTPUT);
 
   pinMode(ROW1, OUTPUT);
@@ -235,7 +240,7 @@ void setup() {
   pinMode(COL1, INPUT_PULLDOWN);
   pinMode(COL2, INPUT_PULLDOWN);
 
-  Serial.begin(115200);
+  Serial.begin(74880);
 }
 
 void loop() {

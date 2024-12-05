@@ -105,7 +105,7 @@ void sendMessage(unsigned message, char adress) {
 void readMessage() {
   //char message[] = {0,0,0,0,0,0,0,0};
   // SOF
-  if (digitalRead(COMM_RX) == HIGH) {
+  while(digitalRead(COMM_RX) == LOW);
 
     // synchronisation via SOF: 
 
@@ -197,7 +197,6 @@ void readMessage() {
       Serial.print("");
     }
     Serial.println();
-  }
 }
 
 bool waitForSignalWithTimeout(int pin, int timeoutMs) {
@@ -218,7 +217,9 @@ void loop() {
   // get input from user:
   sendMessage(callInput, 0x02);
   // wait for response... timer if no response comes after x ms
-
+ // while(digitalRead(COMM_RX) == HIGH);
+  //readMessage();
+  
   bool signalReceived = waitForSignalWithTimeout(COMM_RX, 100); // (PIN, timeout)
   if (signalReceived) {
     Serial.println("Signal received!");
@@ -230,7 +231,7 @@ void loop() {
   // Send received input to PC:
   for(int i = 0; i < sizeOfMessage; i++){
     if(messageRead[i] != 0x00) Serial2.println(messageRead[i]);
-  }
+  } 
 }
 
 void blink() {
