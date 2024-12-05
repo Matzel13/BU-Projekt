@@ -27,16 +27,7 @@ volatile unsigned long delayTime;
 
 int adressSize = 3;
 char mask = 0x01;
-char messageRead[] = {
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0
-};
+char messageRead[] = {0,0,0,0,0,0,0,0};
 int messageToCheck = 0x100;
 char myAdress = 0x02;
 
@@ -46,6 +37,8 @@ volatile char pressedButton = NULL;
 volatile unsigned input = 0x0000;
 
 void sendMessage(unsigned message, char adress) {
+    Serial.println("sendMessage");
+
   //char message[] = {'H', 'k', 'K', 0, 0, 0, 0};
   //adress = 0x05;
   Serial.print("Sending: ");
@@ -139,6 +132,8 @@ void keypad() {
 }
 
 void readMessage() {
+      Serial.println("readMessage");
+
   // SOF
   if (digitalRead(COMM_RX) == HIGH) {
 
@@ -191,10 +186,11 @@ void readMessage() {
     Serial.println();
 
     if (adress == 0x02) {
-
-      for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+      for (int i = 0; i < sizeOfMessage; ++i) {
         messageRead[i] = 0;
       }
+      Serial.println("adress: %d", adress);
+
 
       for (int j = 0; j < byteCount; j++) {
         for (int i = 0; i < 8; i++) {
@@ -230,7 +226,7 @@ void readMessage() {
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(COMM_RX, OUTPUT);
+  pinMode(COMM_RX, INPUT_PULLDOWN);
   pinMode(COMM_TX, OUTPUT);
 
   pinMode(ROW1, OUTPUT);
@@ -246,7 +242,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   readMessage();
 
-  for (int i = 0; i < sizeof(messageRead) / sizeof(messageRead[0]); ++i) {
+  for (int i = 0; i < sizeOfMessage; ++i) {
     if (messageRead[i] == messageToCheck) {
       keypad();
     }
