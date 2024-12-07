@@ -3,19 +3,21 @@
 #define COMM_IN 12                          //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
 #define COMM_OUT 14                         //Kommunikations Pin (MISO) ATMEGA 16 | ATTINY 6
 #define DELAY(x) delayMicroseconds(x)
-#define DEBUG true                         //debug konsolen output
+#define DEBUG false                         //debug konsolen output
 #define DEBUG1 false
 #define SENDDELAY 1000
 #define NOADRESS 0xff
+#define SENDER false
 
-
+volatile char dummy = 0;
 volatile unsigned long timeStamp;           //Zeit Merker
 volatile unsigned long delayTime;           //berechnete Taktzeit
 volatile char global_adress = 0x00;         //eingelesene Adresse
 volatile char global_COF = 0x00;            //Größe der Nachricht
 volatile char global_message[8];            //eingelesene Daten
 char mask = 0x01;                           //0000 0001 Binärmaske
-int global_adressSize = 3;                  //Adressengröße in Bits (maximal 2^adressSize Teilnehmer)
+int global_adressSize = 4;                  //Adressengröße in Bits (maximal 2^adressSize Teilnehmer)
+int global_COFSize = 4;
 
 //Speichern der Adressen in die Liste mit der zugehörigen Funktion
 std::list<char> InputKeypad;
@@ -47,83 +49,89 @@ void setup() {
 }
 //___________________________________________________________________________________________
 
-void sync() {
+bool sync() {
   if (DEBUG) Serial.println("sync");
+  unsigned long lok_delayTime;
   timeStamp = micros();
   while (digitalRead(COMM_IN) == HIGH);
-  delayTime = micros() - timeStamp;
-  if (delayTime > 500) Serial.println(delayTime);
-  DELAY(delayTime * 2);
+  lok_delayTime = micros() - timeStamp;
+  if (lok_delayTime > SENDDELAY*2.5){
+    delayTime = lok_delayTime/3;
+    Serial.println(delayTime); // Ich kann diese Zeile nicht löschen?? Warum?!
+    DELAY(delayTime);
+    return true;
+  }
+  else return false;
 }
 
 char readAdress() {
-  char lok_adress;
   if (DEBUG) Serial.println("readAdress");
-  for (int i = 0; i < (global_adressSize + 1); i++) {
-    if (digitalRead(COMM_IN) == HIGH) {
-      //global_adress = global_adress | (mask << 1);
-      lok_adress = lok_adress | (mask << 1);
+  char adress =0x00;
+  for (int i = 0; i < global_adressSize; i++){
+    if (digitalRead(COMM_IN) == HIGH)
+    {
+      adress = adress + pow(2,i);
     }
+    DELAY(delayTime);
   }
-  DELAY(delayTime);
-  return lok_adress;
+  return adress;
 }
 
 char readCOF(){
   if (DEBUG) Serial.println("readCOF");
-  char byteCount = 0x00;
-  for (int i = 0; i < 3; i++) {
-    if (digitalRead(COMM_IN) == HIGH) {
-      byteCount = byteCount | (mask << 1);
+  char COF =0x00;
+  for (int i = 0; i < global_COFSize; i++){
+    if (digitalRead(COMM_IN) == HIGH)
+    {
+      COF = COF + pow(2,i);
     }
+    DELAY(delayTime);
   }
-  return byteCount;
-
-  DELAY(delayTime);
-    
+  return COF;   
 }
 
 void readData(char dataSize) {
   if (DEBUG) Serial.println("readData");
-  for (int n = 0; n < dataSize; n++) {
-    for (int i = 0; i < 3;i++){
-      if (digitalRead(COMM_IN) == HIGH) {
-        global_message[n] = global_message[n] | (mask << 1);
+  for (int n = 0; n < dataSize; n++){
+    char message = 0x00;
+    for (int i = 0; i < 8; i++){
+      if (digitalRead(COMM_IN) == HIGH)
+      {
+        message = message + pow(2,i);
       }
+      DELAY(delayTime);
     }
-  }
-  DELAY(delayTime);
+    global_message[dataSize-(n+1)] = message;
+  }  
 }
 
-char readMessage(){
-  if(digitalRead(COMM_IN) == HIGH){
-      if (DEBUG) Serial.println("readMessage");
-      sync();
-      char locAdress = readAdress();
-      global_COF = readCOF();
-      readData(global_COF);
-      //EOF
+void readMessage(){
+  if (sync()) {
+      readAdress();
       
-      DELAY(delayTime*5);
-      return locAdress;
-  }
-  else{ 
-    DELAY(delayTime*(global_COF+5));
-    return NULL;
-  }
+      char size = readCOF();
+      
+      readData(size);
+      for (int i = 0; i < size; i++)
+      {
+        Serial.print(global_message[i],HEX);
+      }
+      Serial.println();  
+    }
+  
 }
 //___________________________________________________________________________________________
 void sendSOF(){
   if (DEBUG) Serial.println("sendSOF");
-  digitalWrite(COMM_OUT, HIGH);
-  DELAY(SENDDELAY);
-  digitalWrite(COMM_OUT, LOW);
+  digitalWrite(COMM_OUT, HIGH); //111
+  DELAY(SENDDELAY*3);
+  digitalWrite(COMM_OUT, LOW);  //0
   DELAY(SENDDELAY);
 }
 
-void sendAdress(char adress) {
+void sendAdress(char adress) {//0100
   if (DEBUG) Serial.println("sendAdress");
-  for (int i = 0; i < (global_adressSize + 1); i++) {
+  for (int i = 0; i < (global_adressSize); i++) {
     if ((adress & 0x01) == 0x01) {
       digitalWrite(COMM_OUT, HIGH);
       if (DEBUG) Serial.print("1");
@@ -137,11 +145,10 @@ void sendAdress(char adress) {
   if (DEBUG) Serial.println();
 }
 
-void sendCOF(char dataSize){
+void sendCOF(char dataSize){//0001
   if (DEBUG) Serial.println("sendCOF");
-  char byteCount = (dataSize);
   for (int i = 0; i < 4; i++) {
-    if ((byteCount & 0x01) == 0x01) {
+    if ((dataSize & 0x01) == 0x01) {
       digitalWrite(COMM_OUT, HIGH);
       if (DEBUG) Serial.print("1");
     } else {
@@ -149,7 +156,7 @@ void sendCOF(char dataSize){
       if (DEBUG) Serial.print("0");
     }
     DELAY(SENDDELAY);
-    byteCount = byteCount >> 1;
+    dataSize = dataSize >> 1;
   }
   if (DEBUG) Serial.println();
 }
@@ -332,9 +339,16 @@ void loop() {
   //  sync();
   //  DELAY(delayTime*20);
   //}
-  
-  sendMessage(0x02,1,0x0f);
-
+  if(SENDER){
+    
+    sendMessage(dummy,4,0xAFDAFD88);
+    dummy += 1;
+    if (dummy>=8) dummy = 1;
+  }
+  else{
+    readMessage();
+  }
+    
 
 
   // put your main code here, to run repeatedly:
@@ -350,5 +364,5 @@ void loop() {
   if (DEBUG1) printList(InputModule3);
 
 
-  delay(10000);
+  //delay(1000);
 }

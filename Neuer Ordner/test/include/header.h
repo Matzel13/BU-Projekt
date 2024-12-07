@@ -2,7 +2,8 @@
 #include <iostream>
 #include <list>
 //recieve
-void sync() ;
+
+bool sync();
 
 char readAdress() ;
 
@@ -10,7 +11,8 @@ char readCOF();
 
 void readData(char dataSize) ;
 
-char readMessage();
+void readMessage();
+
 
 //transmit
 
