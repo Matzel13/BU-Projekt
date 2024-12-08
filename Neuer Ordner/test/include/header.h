@@ -11,7 +11,7 @@ char readCOF();
 
 void readData(char dataSize) ;
 
-void readMessage();
+bool readMessage();
 
 
 //transmit
@@ -30,8 +30,6 @@ void sendMessage();
 void setup() ;
 
 void printAdr(std::list<char>& Function, int stelle);
-
-int whichFunction(char adresse) ;
 
 int whichFunction(char adresse, volatile char* data);
 
