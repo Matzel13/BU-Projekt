@@ -5,11 +5,12 @@
 #define DELAY(x) delayMicroseconds(x)
 #define DEBUG false                         //debug konsolen output
 #define DEBUG1 false
-#define SENDDELAY 1000
+#define SENDDELAY 1000                       //bis runter auf 200!
 #define NOADRESS 0x00
+
+// Zum testen!
 #define SENDER false
 
-int dummy = 0;
 volatile int counter = 0;
 volatile unsigned long timeStamp;           //Zeit Merker
 volatile unsigned long delayTime;           //berechnete Taktzeit
@@ -19,8 +20,9 @@ volatile char global_message[8];            //eingelesene Daten
 volatile char mask = 0x01;                           //0000 0001 Binärmaske
 volatile int global_adressSize = 4;                  //Adressengröße in Bits (maximal 2^adressSize Teilnehmer)
 volatile int global_COFSize = 4;
-volatile char myAdress =0x00;
-volatile char free_adress;
+volatile char myAdress = 0x00;
+volatile char controllerAdress = 0x01;
+//volatile char free_adress;
 
 //Speichern der Adressen in die Liste mit der zugehörigen Funktion
 std::list<char> InputKeypad;
@@ -216,10 +218,11 @@ char newAdress(){
     if (DEBUG) Serial.println(freeAdress,HEX);  //
     unusedAdresses.pop_back();                  //entferne diese aus 'unused Adresses'
     Adresses.push_back(freeAdress);             //füge Sie zur pollingliste hinzu
+    num_adresses++;
     return freeAdress;                          
   }
 
-  else return 0x00;
+  else return 0x00;                             // keine Adressen mehr frei!
 }
 // put function definitions here:
 int whichFunction(char adresse,char data) {
@@ -302,7 +305,7 @@ void printList(const std::list<char>& lst) {
     std::cout << std::endl;
 }
 
-bool await_adress(char adress){
+bool await_response(char adress){
   for (int i = 0; i < 10000; i++)// vllt noch kleiner!
   {
     if (readMessage()){
@@ -316,10 +319,9 @@ bool await_adress(char adress){
 void timeout(char adress,bool no_response){
   if (adress == NOADRESS && !no_response) {             // neuer Teilnehmer!
     Serial.println("Neuer Teilnehmer");
-    DELAY(15 * SENDDELAY);
-    //await_adress(NOADRESS);
-    sendMessage(NOADRESS,1,0x04);                       // freie Adresse senden
-    free_adress = newAdress();                          //neue freie Adresse reservieren
+    DELAY(15 * SENDDELAY);                               
+    sendMessage(NOADRESS,1,newAdress());                // freie Adresse senden
+    
   }
   else if (adress == NOADRESS && no_response){
     Serial.println("kein Neuer Teilnehmer");
@@ -353,10 +355,8 @@ void polling(){
   iterator_Adresses = Adresses.begin();
   std::advance(iterator_Adresses,counter);            //setzen des iterators auf die abzufragende Adresse
   Adress = *iterator_Adresses;
-  sendMessage(Adress,1,0xFF);                         //request für abzufragende Adresse
-  
-  //DELAY(SENDDELAY*4);                         
-  if (await_adress(NOADRESS)){                        //warten auf Rückmeldung
+  sendMessage(Adress,1,0xFF);                         //request für abzufragende Adresse                     
+  if (await_response(Adress)){                        //warten auf Rückmeldung
     timeout(Adress,false);                            //Rücksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
     whichFunction(Adress,global_message[0]);          //bearbeiten der Daten    
   }
@@ -385,9 +385,7 @@ void setup() {
     unusedAdresses.push_back(i);
     if (DEBUG) Serial.println(unusedAdresses.back(),HEX);
   }
-  Adresses.push_back(NOADRESS);
-  free_adress = newAdress();
-  
+  Adresses.push_back(NOADRESS);  
 }
 //___________________________________________________________________________________________
 
@@ -406,18 +404,20 @@ void loop() {
       //Serial.println("eingelesense Adresse");
       //Serial.println(global_adress,HEX);
       if (myAdress == NOADRESS && global_adress == NOADRESS){       //noch keine Adresse zugewiesen!
-        DELAY(delayTime*5);
+        Serial.println("anfrage nach Adresse");
+        Serial.println(myAdress,HEX);
+        DELAY(delayTime*10);
         sendMessage(NOADRESS,1,NOADRESS);                           //Bitte um Adresse
-        if (await_adress(NOADRESS)){
+        if (await_response(NOADRESS)){
           myAdress = global_message[0];                             //Speichern der neuen Adresse
           Serial.println("Meine Adresse:");
           Serial.println(myAdress,HEX);
         } 
       }
-      else if(myAdress != NOADRESS)
+      else if(myAdress != NOADRESS && global_adress == myAdress)
       {
-        DELAY(delayTime*5);
-        sendMessage(myAdress,1,0xaa);
+        DELAY(delayTime*10);
+        sendMessage(controllerAdress,1,0xaa);
       //Serial.println(myAdress,HEX); 
       }
     }
@@ -429,7 +429,4 @@ void loop() {
   if (DEBUG1) printList(unusedAdresses);
   if (DEBUG1)Serial.println("Adresses:");
   if (DEBUG1) printList(InputModule3);
-
-
-  //delay(1000);
 }
