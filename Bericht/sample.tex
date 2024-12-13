@@ -103,14 +103,12 @@
 
 \onehalfspacing
 
-\newpage
-\singlespacing
-
-\tableofcontents
-\newpage
+%% add abstract pages
+%% note: this is one command on multiple lines
 %% enable if these lists should be shown on their own page
 %%\listoftables
 %%\listoffigures
+\tableofcontents
 \lstlistoflistings
 
 %% main
@@ -121,13 +119,10 @@
 %% include chapter file (chapter1.tex)
 %%\include{chapter1}
 
-%%%%
-%% add some text to generate a sample document
-\chapter{Sample Chapter}
 
-\lipsum
+%%%%%%%%%%%%%%%%%%HIER DIE INCLUDES REIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{Kapitel/Einleitung}
 
-See also \cite{sample_bib}.
 %%%%
 
 %% appendix if used
@@ -141,20 +136,6 @@ See also \cite{sample_bib}.
 \typeout{===== Section: literature}
 %% read the documentation for customizing the style
 \bibliographystyle{dinat}
-\bibliography{sample}
-
+%\bibliography{sample}
 \typeout{===== Section: nomenclature}
-%% uncomment if a TOC entry is needed
-%%\addcontentsline{toc}{chapter}{Glossar}
-\renewcommand{\nomname}{Glossar}
-\clearpage
-\markboth{\nomname}{\nomname} %% see nomencl doc, page 9, section 4.1
-\printnomenclature
-
-%% index
-\typeout{===== Section: index}
-\printindex
-
-\HAWasurency
-
 \end{document}
