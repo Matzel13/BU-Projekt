@@ -1,0 +1,46 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
+  <diagram name="Seite-1" id="kNHRYQ168Q9t5pK1Ov0J">
+    <mxGraphModel dx="377" dy="309" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-3" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-4" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-6" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="280" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-7" value="SOF" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="140" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-8" value="Adresse" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-9" value="COF" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-10" value="Daten" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-11" value="CRC" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="540" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="fJWF1NYVpV7iTqhSSM8m-12" value="EOF" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="315" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
