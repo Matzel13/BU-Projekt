@@ -1,12 +1,12 @@
 \chapter{Modulares Eingabesystem}
 \section{Vision}
-Das Eingabesystem verfolgt die Vision eines flexiblen und erweiterbaren Steuerungssystems, das sich an die individuellen Bedürfnisse der Benutzer anpasst. Im Zentrum dieser Vision steht ein Hauptmodul, das als Mikrocontroller-Einheit dient und über eine USB-Schnittstelle mit einem Computer verbunden wird. Dieses Hauptmodul koordiniert die Kommunikation und Funktionalität der angeschlossenen Module.
+Das Eingabesystem verfolgt die Vision eines flexiblen und erweiterbaren Systems, das sich an die individuellen Bedürfnisse der Benutzer anpasst. Im Zentrum steht ein Hauptmodul, das als Mikrocontroller-Einheit dient und über eine USB-Schnittstelle mit einem Computer verbunden wird. Dieses Hauptmodul koordiniert die Kommunikation und Funktionalität der verbundenen Module.
 \\
 \\
-Die Module des Systems, wie das Tastatur-Modul mit einer 4x4-Tastenmatrix oder das Audio-Modul mit Potentiometern und Fadern, sind frei kombinierbar und können je nach Anwendungsfall hinzugefügt oder entfernt werden. Dies ermöglicht eine maßgeschneiderte Konfiguration für unterschiedliche Aufgaben wie Textverarbeitung, Bildbearbeitung, Audiobearbeitung oder Gaming.
+Die Module, wie das Tastatur-Modul mit einer 4x4-Tastenmatrix oder das Audio-Modul mit Potentiometern und Fadern, sind frei kombinierbar und können je nach Anwendungsfall hinzugefügt oder entfernt werden. Dies ermöglicht eine Konfiguration für unterschiedliche Aufgaben wie Textverarbeitung, Bildbearbeitung, Audiobearbeitung oder Gaming.
 \\
 \\
-Die folgende Abbildung gewährt einen Überblick über das Eingabesystem:
+Die folgende Abbildung gewährt einen Überblick des Eingabesystems:
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.75\textwidth]{Bilder/bu_vision.png}}
@@ -15,11 +15,11 @@ Die folgende Abbildung gewährt einen Überblick über das Eingabesystem:
 \end{figure}
 \noindent Die gestrichelten Linien stellen eine bereits hergestellte Verbindung zwischen den Modulen dar, wobei die \glqq Plus\grqq{} Symbole einen weiteren möglichen Modulanschluss darstellen. Die Module werden untereinander durch die Verwendung von Pogo-Pin-Steckern verbunden.
 \subsection{Steckverbindung}
-Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, jedes Modul an jede Seite eines anderen anstecken zu können, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch kann durch kluge Positionierung jede Seite eines Moduls mit jeder Seite eines anderen verbunden werden.
+Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, jedes Modul an jede Seite eines anderen anstecken zu können, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch kann durch kluge Positionierung jede Seite eines Moduls mit jeder Seite eines anderen verbunden werden. Um eine feste Verbindung zu gewährleisten,  werden Neodym-Magnete ins Gehäuse verbaut. Somit werden die Module nicht durch ein Versehen und Verrutschen voneinander getrennt.
 \begin{figure}[H]
     \centering    
-    \fbox{\includegraphics[width=.75\textwidth]{Bilder/bu_pogoverbindung.png}}
+    \fbox{\includegraphics[width=.85\textwidth]{Bilder/bu_pogoverbindung.png}}
     \caption{Pogo verbindung}
     \label{pogo_verbindung}
 \end{figure}
- \noindent Abbildung \ref{pogo_verbindung} zeigt, dass die Steckverbindungen eine beliebige Anordnung der Module zulassen.
+ \noindent Abbildung \ref{pogo_verbindung} zeigt, dass die Steckverbindungen eine nahezu beliebige Anordnung der Module zulassen. Es gibt Kombinationen von Seiten wie z.B. Oberseite und Oberseite, die aufgrund der physikalischen Eigenschaften der Magnete nicht verbunden werden können. Nichtsdestotrotz würde diese Kombination wenig Sinn ergeben, da dadurch beide Oberseiten in verschiedene Richtungen zeigen würden.  Die \glqq N\grqq{} und \glqq S\grqq{} Symbole stellen die im Gehäuse verbauten Magneten (Nord- und Südpol) zum Zusammenhalt der Module dar.
