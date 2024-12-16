@@ -1,31 +1,34 @@
-\section{Herangehensweise an das Projekt}
+\section{Herangehensweise an das Projekt und Prototyp}
+Wir haben uns für ein agiles Projektmanagement entschieden. Im Rahmen des Agilen entwickeln, haben wir uns auf wöchentliche Sprints geeinigt, in denen die Gruppenmitglieder den Fortschritt der jeweiligen Aufgabe vorstellen können und sodass wir die Möglichkeit haben bei Problemen eine gemeinsame Lösung zu finden. Dadurch lassen sich unsere Ziele dynamisch anpassen und wir können schnell auf Probleme oder Engpässe reagieren.\\
 
+\noindent Zu Beginn haben wir uns ein Endziel gesetzt, welches in Abschnitt \ref{sec:vision} beschrieben wurde, auf welches hingearbeitet wird. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino-Nano herstellen.\\
 
-Wir haben uns für ein Agiles Projektmanagement entschieden. Im Rahmen des Agilen entwickeln haben wir uns auf wöchentliche Sprints geeinigt. Dadurch lassen sich unsere Ziele dynamisch anpassen und schnell auf Probleme/Engpässe reagieren.\\
+\noindent In den darauf folgenden zwei Sprints konnte ein erster simpler Prototyp des Busses entwickelt werden. Hierbei handelte es sich um einen Eindraht Bus und zu dem Zeitpunkt erlaubte unsere Software nur unidirektionale Kommunikation zwischen einem Sender und mehreren Empfängern.\\
 
-\noindent Zu Beginn haben wir uns ein Endziel gesetzt auf das wir hinarbeiten wollen. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino Nano realisieren. \\
-
-\noindent In den folgenden zwei Sprints konnte ein erster Prototyp unseres Bus entwickelt werden. Hierbei handelte es sich um einen Eindraht Bus und unsere Software erlaubte nur Unidirektionale Kommunikation zwischen einem Sender und mehreren Empfängern.
+\noindent Im weiteren Verlauf wurden Tasten und weitere Teilnehmer auf den Prototypen verbaut. Die Tasten sind da gewesen, um verschiedene Busteilnehmer zu simulieren. Jeder Taste wurde ein Mikrocontroller (ATtiny oder ATmega) zugewiesen, um die Adressierung der verschiedenen Module zu entwickeln und validieren. Das gewünschte Verhalten ist, sodass nur der durch eine identische Adresse angesprochene Mikrocontroller eine LED zum Leuchten bringt.
 
 \subsection{Erfolge}
 \subsubsection{Synchronisation}
-Um das Problem der Synchronization zu beheben haben wir uns eine Funktion geschrieben, welche bei einem HIGH-Value auf dem Bus einen Timestamp setzt und wenn der Bus auf LOW fällt eine Geschwindigkeit ausrechnet. Damit stellen wir sicher, dass die übertragenen Bits beinahe immer richtig gelesen werden.
-
-\subsection{Herausforderungen}
-\subsubsection{ATtiny}
-Die Microkontroller die wir verwenden wollten, ATtiny/ATmega, können nicht einfach über USB geflashed werden. Daher haben wir für zwei Sprints damit auseinandergesetzt eine ISP-Programmer zu realisieren. Da dies auch nach zwei Sprints keine Ergebnis erbracht hat haben wir uns stattdessen einen ISP-Programmer gekauft.
-
-\subsubsection{Differenzielle Datenübertragung}
-Der erste Ansatz eine differenzielle Datenübertragung zu erzielen war dies über die Software zu lösen. Jedoch sind wir nach kurzer Diskussion zu dem Entschluss gekommen, dass dies nicht sonderlich förderlich ist und hauptsächlich der Geschwindigkeit unseres Busses schadet.
-Bei der Erweiterung unseres Eindraht Prototypen auf einen Zweidraht Bus mit differenzieller Datenübertragung stießen wir auf das Problem, dass wir unsere Busleitungen kurzschließen. Dies sollte sich durch die galvanische Trennung der Teilnehmer vom Bus, ähnlich wie beim CAN und USB Bus, lösen.
-Um weiterhin mit den uns zur Verfügung gestellten Produkten zu arbeiten haben wir erstmal einen Optokoppler aus der HAW getestet. Scheinbar haben wir dabei einen defekten erwischt, da sich die Schaltzeiten des Optokoppler im ms Bereich bewegt haben. Dieswäre viel zu langsam für unsere Datenübertragung, daher haben wir uns dann vier Mögliche alternativ Bausteine, zwei Optokoppler und ein Operationsverstärker und ein digitalen Isolator, bestellt. \\
+Um das Hauptmodul auf den Datenbus zu synchronisieren, schrieben wir eine Funktion, welche bei einem HIGH-Value auf dem Bus einen Zeitstempel setzt und sobald der Bus auf LOW fällt, die Übertragungsgeschwindigkeit ausrechnet. Damit wird sichergestellt, dass die übertragenen Bits mit hoher Wahrscheinlichkeit richtig ausgelesen werden.
 
 \subsubsection{Parallele Entwicklung}
-Wir haben so viel wie Möglich parallel gearbeitet, entweder in Teams oder einzeln. Bei der Entwicklung der PCB und der Lösung des Problems der differenziellen Datenübertragung haben wir uns für das Bauteil SN65LVDT2D entschieden. Aufgrund der hohen Lieferzeit haben wir uns entschieden dieses direkt mit der PCB zu bestellen. Dadurch lässt sich dieses Bauteil nicht mehr vorher testen.
 
-\subsubsection{Ungetestetes Bauteil}
-Wie im vorherigen Absatz erwähnt haben wir uns für ein Bauteil entschieden welches wir nicht im Vorfeld testen konnten. Daher haben wir uns noch Alternativen überlegt falls das Bauteil nicht funktionieren sollte. %Hier je nachdem was im Abschnitt Schaltplan beschrieben wurde nochmal darauf eingehen, dass wir mithilfe von Jumpern mehrere Mögklichkeiten haben den Bus anzubinden
+\subsection{Gemeisterte Herausforderungen}
+\subsubsection{ATtiny und ATmega}
+Die Mikrocontroller, die wir verwenden wollten, ATtiny/ATmega, können nicht einfach über USB geflasht werden. Daher haben wir für zwei Sprints damit auseinandergesetzt, eine ISP-Programmer selber zu bauen. Es gibt zahlreiche Anleitungen und Foren über selbstgebaute Flasher, daher rechneten wir damit, dass dies ein schneller und simpler Schritt sein wird, jedoch hat es nach zwei Sprints  noch zu keinem Ergebnis geführt. Die Vermutung der Gruppe liegt darin, dass die verwendeten Mikrocontroller zum Flashen mangelhaft waren und daher entschieden wir uns stattdessen einen dafür vorgesehenen ISP-Programmer zu kaufen. Der ISP-Programmer lief einwandfrei und wir hatten ab diesem Zeitpunkt die Möglichkeit, die Mikrocontroller ohne Benutzeroberfläche zu programmieren.
+
+\subsubsection{Differenzielle Datenübertragung}
+Der erste Ansatz um eine differenzielle Datenübertragung zu erzielen war dies über die Software zu lösen. Jedoch sind wir nach kurzer Diskussion zu dem Entschluss gekommen, dass dies nicht sonderlich förderlich ist und hauptsächlich der Geschwindigkeit unseres Busses schadet.
+Bei der Erweiterung unseres Eindraht Prototypen auf einen Zweidraht Bus mit differenzieller Datenübertragung stießen wir auf das Problem, dass wir unsere Busleitungen kurzschließen. Dies sollte sich durch die galvanische Trennung der Teilnehmer vom Bus, ähnlich wie beim CAN und USB Bus, lösen.
+Um weiterhin mit den uns zur Verfügung gestellten Produkten zu arbeiten, haben wir erstmal einen Optokoppler aus der HAW getestet. Scheinbar haben wir dabei einen defekten erwischt, da sich die Schaltzeiten des Optokoppler im ms Bereich bewegt haben. Dies wäre viel zu langsam für unsere Datenübertragung, daher haben wir uns dann vier mögliche alternativ Bausteine, zwei Optokoppler und ein Operationsverstärker und einen digitalen Isolator, bestellt.
+\\
+
+\subsubsection{Galvanische Entkopplung des Busses}
+
+\subsubsection{Ungetestetes Bauteil und weitere Risiken}
+Wie im vorherigen Absatz erwähnt, haben wir uns für ein Bauteil entschieden, welches wir nicht im Vorfeld testen konnten. Daher haben wir uns weitere Alternativen im PCB-Design überlegt, falls das Bauteil nicht funktionieren sollte. Bei der Entwicklung der PCB und der Lösung des Problems der differenziellen Datenübertragung haben wir uns für das Bauteil SN65LVDT2D entschieden. Aufgrund der hohen Lieferzeit haben wir uns entschieden, dieses direkt auf die PCB vor gelötet zu bestellen. Dadurch lässt sich dieses Bauteil nicht mehr vorher testen. 
+%Hier je nachdem was im Abschnitt Schaltplan beschrieben wurde nochmal darauf eingehen, dass wir mithilfe von Jumpern mehrere Mögklichkeiten haben den Bus anzubinden
 
 \subsubsection{Krankheit und andere Hochschulveranstaltungen}
-Da wir noch andere Module haben, manche auch mit eigenen Projekten, ist das Zeitmanagement nicht immer perfekt aufgegangen und zweimal mussten wir unseren Sprint um eine Woche verlängern da andere Projekte/Module erstmal Vorrang hatten.
+Da wir noch andere Module haben, manche auch mit eigenen Projekten, ist das Zeitmanagement nicht immer perfekt aufgegangen und zweimal mussten wir unseren Sprint um eine Woche verlängern, da andere Projekte oder Module erstmal Vorrang hatten. Andersrum wurden auch andere Fächer für Bussysteme und Sensorik verschoben. Das ist aber ein Problem, mit dem man als Student rechnen muss und Lösungen bereitstellen muss. Für solche Fälle bietet das agile Projektmanagement einen guten Kompromiss. Zudem waren wir auch aufgrund von Krankheiten nicht an jedem Termin vollständig, oder mussten bereits fertige Pläne umstrukturieren, womit jedoch gerechnet werden muss.
 

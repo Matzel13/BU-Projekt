@@ -1,5 +1,5 @@
 \chapter{Modulares Eingabesystem}
-\section{Vision}
+\section{Projektbeschreibung}\label{sec:vision}
 Das Eingabesystem verfolgt die Vision eines flexiblen und erweiterbaren Systems, das sich an die individuellen Bedürfnisse der Benutzer anpasst. Im Zentrum steht ein Hauptmodul, das als Mikrocontroller-Einheit dient und über eine USB-Schnittstelle mit einem Computer verbunden wird. Dieses Hauptmodul koordiniert die Kommunikation und Funktionalität der verbundenen Module.
 \\
 \\
@@ -11,7 +11,7 @@ In Abbildung xxx ist ein Überblick des Eingabesystems zu sehen:
     \centering    
     \fbox{\includegraphics[width=.75\textwidth]{Bilder/bu_vision.png}}
     \caption{Vereinfachte Darstellung des Eingabesystems}
-    \label{A3TPHP}
+    \label{vision}
 \end{figure}
 \noindent Die gestrichelten Linien stellen eine bereits hergestellte Verbindung zwischen den Modulen dar, wobei die \glqq Plus\grqq{} Symbole einen weiteren möglichen Modulanschluss darstellen. Die Module werden untereinander durch die Verwendung von Pogo-Pin-Steckern verbunden. %würde ich hier noch nicht erwähnen, erst später in der spezifikation
 \subsection{Steckverbindung}
@@ -19,7 +19,18 @@ Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbi
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.85\textwidth]{Bilder/bu_pogoverbindung.png}}
-    \caption{Pogo verbindung}
+    \caption{Verbindung der Module durch Pogo-Stecker und Magnete}
     \label{pogo_verbindung}
 \end{figure}
  \noindent Abbildung \ref{pogo_verbindung} zeigt, dass die Steckverbindungen eine nahezu beliebige Anordnung der Module zulassen. Durch die Anordnung der Magneten lassen sich nicht alle Module in jeder Beliebigen Anordnung verbinden wie z.B. Oberseite und Oberseite, die aufgrund der physikalischen Eigenschaften der Magnete nicht verbunden werden können. Die \glqq N\grqq{} und \glqq S\grqq{} Symbole stellen die im Gehäuse verbauten Magneten (Nord- und Südpol) zum Zusammenhalt der Module dar.
+\subsection{Topologie}
+Der Aufbau des Eingabesystems entspricht einer Stern-Topologie. Das verdeutlicht die Abbildung \ref{vision}, denn das Hauptmodul (Mikrocontroller) ist eine zentrale Steuereinheit, an die alle anderen Module angeschlossen sind. Die Tastatur-Module und das Audio-Modul sind jeweils an das Hauptmodul angebunden. Die Verbindungen laufen sternförmig von dem Hauptmodul zu den einzelnen Modulen. Die Vorteile einer Stern-Topologie in diesem Projekt sind:
+\begin{itemize}
+    \item \textbf{Skalierbarkeit:} Weitere Module können einfach an die Zentrale angeschlossen werden.
+    \item \textbf{Einfache Fehlersuche:} Da jedes Modul eine direkte Verbindung zur Zentrale hat, ist der Ausfall eines Moduls leichter zu diagnostizieren.
+    \item \textbf{Zentrale Kontrolle:} Alle Daten laufen durch das Hauptmodul.
+\end{itemize}
+Wobei nur ein Nachteil festgestellt werden kann:
+\begin{itemize}
+    \item \textbf{Abhängigkeit:} Fällt das Hauptmodul aus, funktioniert das gesamte System nicht mehr.
+\end{itemize}
