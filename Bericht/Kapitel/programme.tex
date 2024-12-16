@@ -1,10 +1,19 @@
+\section{Programme}
+Für die Module gibt es ein Programcode, wo mithilfe von #define definiert wird um welche Art von Modul es sich handelt. Je nach Modultyp werden nur gewisse Funktionen genutzt:
+% hier tabelle einfügen
+
+
+Wir haben uns für diese Herangehensweise entschieden, da bei der Programmierung größere Mengen von Microkontrollern falsche Software geflashed werden könnte wenn es mehrere sehr ähnlich aussehende Programme gibt. Zusätzlich ist die Entwicklung neuer Funktionen deutlich einfacher, da eine für alle Module notwendige Änderung nicht in mehrere Quelldateien angepasst werden muss.
+
+
+\subsection{Hauptmodul}
+
+
+\subsection{Tastaturmodul}
+\subsection{Übersetzerprogramm}
+Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten wird ein Python Script geschrieben, welches diese einließt und auswertet. Mit unserem aktuellen Prototypen lassen sich so die vier Tasten beliebig "belegen" und zum Beispiel eine Powerpoint Präsentation steuern.
+
+
 \lstinputlisting[language=c++, caption={main.cpp}, label={main.cpp}]{Kapitel/Programme/main.cpp}
-
-
-
-
-\section{Hauptmodul}
-\section{Tastaturmodul}
-\section{Übersetzerprogramm}
-\subsection{}
+\lstinputlisting[language=python, caption={pyscript}, label={pyscript}]{Kapitel/Programme/uart.py}
 
