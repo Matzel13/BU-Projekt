@@ -1,21 +1,21 @@
 \section{Herangehensweise an das Projekt und Prototyp}
 Wir haben uns für ein agiles Projektmanagement entschieden. Im Rahmen des Agilen entwickeln, haben wir uns auf wöchentliche Sprints geeinigt, in denen die Gruppenmitglieder den Fortschritt der jeweiligen Aufgabe vorstellen können und sodass wir die Möglichkeit haben bei Problemen eine gemeinsame Lösung zu finden. Dadurch lassen sich unsere Ziele dynamisch anpassen und wir können schnell auf Probleme oder Engpässe reagieren.\\
 
-\noindent Zu Beginn haben wir uns ein Endziel gesetzt, welches in Abschnitt \ref{sec:vision} beschrieben wurde, auf welches hingearbeitet wird. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino-Nano herstellen.\\
+Zu Beginn haben wir uns ein Endziel gesetzt, welches in Abschnitt \ref{sec:vision} beschrieben wurde, auf welches hingearbeitet wird. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino-Nano herstellen.\\
 
-\noindent In den darauf folgenden zwei Sprints konnte ein erster simpler Prototyp des Busses entwickelt werden. Hierbei handelte es sich um einen Eindraht Bus und zu dem Zeitpunkt erlaubte unsere Software nur unidirektionale Kommunikation zwischen einem Sender und mehreren Empfängern.\\
+In den darauf folgenden zwei Sprints konnte ein erster simpler Prototyp des Busses entwickelt werden. Hierbei handelte es sich um einen Eindraht Bus und zu dem Zeitpunkt erlaubte unsere Software nur unidirektionale Kommunikation zwischen einem Sender und mehreren Empfängern.\\
 
-\noindent Im weiteren Verlauf wurden Tasten und weitere Teilnehmer auf den Prototypen verbaut. Die Tasten sind da gewesen, um verschiedene Busteilnehmer zu simulieren. Jeder Taste wurde ein Mikrocontroller (ATtiny oder ATmega) zugewiesen, um die Adressierung der verschiedenen Module zu entwickeln und validieren. Das gewünschte Verhalten ist, sodass nur der durch eine identische Adresse angesprochene Mikrocontroller eine LED zum Leuchten bringt.
+Im weiteren Verlauf wurden Tasten und weitere Teilnehmer auf den Prototypen verbaut. Die Tasten sind da gewesen, um verschiedene Busteilnehmer zu simulieren. Jeder Taste wurde ein Mikrocontroller (ATtiny oder ATmega) zugewiesen, um die Adressierung der verschiedenen Module zu entwickeln und validieren. Das gewünschte Verhalten ist, sodass nur der durch eine identische Adresse angesprochene Mikrocontroller eine LED zum Leuchten bringt.
 
 \subsection{Erfolge}
 \subsubsection{Synchronisation}
-Um das Hauptmodul auf den Datenbus zu synchronisieren, schrieben wir eine Funktion, welche bei einem HIGH-Value auf dem Bus einen Zeitstempel setzt und sobald der Bus auf LOW fällt, die Übertragungsgeschwindigkeit ausrechnet. Damit wird sichergestellt, dass die übertragenen Bits mit hoher Wahrscheinlichkeit richtig ausgelesen werden.
+Zur Synchronisation des Empfängers mit dem Sender haben wir eine Funktion geschrieben, welche bei einem HIGH-Value auf dem Bus einen Zeitstempel setzt und sobald der Bus auf LOW fällt, die Übertragungsgeschwindigkeit ausrechnet. Damit wird sichergestellt, dass die übertragenen Bits mit hoher Wahrscheinlichkeit richtig ausgelesen werden.
 
 \subsubsection{Parallele Entwicklung}
 
 \subsection{Gemeisterte Herausforderungen}
 \subsubsection{ATtiny und ATmega}
-Die Mikrocontroller, die wir verwenden wollten, ATtiny/ATmega, können nicht einfach über USB geflasht werden. Daher haben wir für zwei Sprints damit auseinandergesetzt, eine ISP-Programmer selber zu bauen. Es gibt zahlreiche Anleitungen und Foren über selbstgebaute Flasher, daher rechneten wir damit, dass dies ein schneller und simpler Schritt sein wird, jedoch hat es nach zwei Sprints  noch zu keinem Ergebnis geführt. Die Vermutung der Gruppe liegt darin, dass die verwendeten Mikrocontroller zum Flashen mangelhaft waren und daher entschieden wir uns stattdessen einen dafür vorgesehenen ISP-Programmer zu kaufen. Der ISP-Programmer lief einwandfrei und wir hatten ab diesem Zeitpunkt die Möglichkeit, die Mikrocontroller ohne Benutzeroberfläche zu programmieren.
+Die Mikrocontroller, die wir verwenden wollten, ATtiny/ATmega, können nicht einfach über USB geflasht werden. Daher haben wir für zwei Sprints damit auseinandergesetzt, eine ISP-Programmer selber zu bauen. Es gibt zahlreiche Anleitungen und Foren über selbstgebaute Flasher, jedoch ließen sich diese nicht innerhalb der Zeitspanne reproduzieren. Stattdessen haben wir uns einen fertiogen ISP-Programmer gekauft und die Mikrocontroller können verwendet werden.
 
 \subsubsection{Differenzielle Datenübertragung}
 Der erste Ansatz um eine differenzielle Datenübertragung zu erzielen war dies über die Software zu lösen. Jedoch sind wir nach kurzer Diskussion zu dem Entschluss gekommen, dass dies nicht sonderlich förderlich ist und hauptsächlich der Geschwindigkeit unseres Busses schadet.
