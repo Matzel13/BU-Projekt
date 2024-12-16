@@ -1,8 +1,29 @@
 \section{Herangehensweise an das Projekt}
 
-\subsection{}
 
 Wir haben uns für ein Agiles Projektmanagement entschieden. Im Rahmen des Agilen entwickeln haben wir uns auf wöchentliche Sprints geeinigt. Dadurch lassen sich unsere Ziele dynamisch anpassen und schnell auf Probleme/Engpässe reagieren.\\
-Zu Beginn haben wir uns ein Endziel gesetzt auf das wir hinarbeiten wollen. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino Nano realisieren.
+
+Zu Beginn haben wir uns ein Endziel gesetzt auf das wir hinarbeiten wollen. Innerhalb des ersten Sprints konnten wir erfolgreich eine simple Datenübertragung zwischen einem ESP32 und einem Arduino Nano realisieren. \\
+
+In den folgenden zwei Sprints konnte ein erster Prototyp unseres Bus entwickelt werden. Hierbei handelte es sich um einen Eindraht Bus und unsere Software erlaubte nur Unidirektionale Kommunikation zwischen einem Sender und mehreren Empfängern.
+
+\subsection{Erfolge}
+\subsubsection{Synchronisation}
+Um das Problem der Synchronization zu beheben haben wir uns eine Funktion geschrieben, welche bei einem HIGH-Value auf dem Bus einen Timestamp setzt und wenn der Bus auf LOW fällt eine Geschwindigkeit ausrechnet. Damit stellen wir sicher, dass die übertragenen Bits beinahe immer richtig gelesen werden.
 
 \subsection{Herausforderungen}
+\subsubsection{ATtiny}
+Die Microkontroller die wir verwenden wollten, ATtiny/ATmega, können nicht einfach über USB geflashed werden. Daher haben wir für zwei Sprints damit auseinandergesetzt eine ISP-Programmer zu realisieren. Da dies auch nach zwei Sprints keine Ergebnis erbracht hat haben wir uns stattdessen einen ISP-Programmer gekauft.
+
+\subsubsection{Differenzielle Datenübertragung}
+Der erste Ansatz eine differenzielle Datenübertragung zu erzielen war dies über die Software zu lösen. Jedoch sind wir nach kurzer Diskussion zu dem Entschluss gekommen, dass dies nicht sonderlich förderlich ist und hauptsächlich der Geschwindigkeit unseres Busses schadet.
+Bei der Erweiterung unseres Eindraht Prototypen auf einen Zweidraht Bus mit differenzieller Datenübertragung stießen wir auf das Problem, dass wir unsere Busleitungen kurzschließen. Dies sollte sich durch die galvanische Trennung der Teilnehmer vom Bus, ähnlich wie beim CAN und USB Bus, lösen.
+Um weiterhin mit den uns zur Verfügung gestellten Produkten zu arbeiten haben wir erstmal einen Optokoppler aus der HAW getestet. Scheinbar haben wir dabei einen defekten erwischt, da sich die Schaltzeiten des Optokoppler im ms Bereich bewegt haben. Dieswäre viel zu langsam für unsere Datenübertragung, daher haben wir uns dann vier Mögliche alternativ Bausteine, zwei Optokoppler und ein Operationsverstärker und ein digitalen Isolator, bestellt. \\
+
+\subsubsection{Parallele Entwicklung}
+Wir haben so viel wie Möglich parallel gearbeitet, entweder in Teams oder 
+
+
+\subsubsection{Krankheit und andere Hochschulveranstaltungen}
+Da wir noch andere Module haben, manche auch mit eigenen Projekten, ist das Zeitmanagement nicht immer perfekt aufgegangen und zweimal mussten wir unseren Sprint um eine Woche verlängern da andere Projekte/Module erstmal Vorrang hatten.
+
