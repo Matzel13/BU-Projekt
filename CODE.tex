@@ -51,6 +51,8 @@ Dateien/code/device.txt}
 In der Polling Liste wird eine bestimmte Adresse abgefragt um festzustellen, wenn ein neuer Teilnehmer an den Bus angeschlossen wurde. Wenn eine Rückmeldung auf diese Adresse festgestellt wird, dann enthält die nächste Nachricht die Adresse für den neuen Teilnehmer.
 In der Rückmeldung eines Moduls ist dessen Funktion hinterlegt. Diese Informationen werden in der Adressliste abgespeichert und das Gerät ab dem Zeitpunkt mit abgefragt.\\
 }
+
+\newpage
 \lstinputlisting[language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{Dateien/code/newAdress().txt}
 
 \textmd{Wenn ein Modul nicht mehr über den Bus kommuniziert wird nach ein paar Versuchen die Adresse wieder aus der Polling Liste herausgeworfen und den verfügbaren Adressen zugewiesen. Somit kann sichergestellt werden, dass alle angeschlossenen Geräte so schnell wie möglich vom Hauptmodul abgefragt werden und zudem auch wieder Adressen für neue Geräte freigemacht.
@@ -61,7 +63,7 @@ In der Rückmeldung eines Moduls ist dessen Funktion hinterlegt. Diese Informati
 \textmd{Wenn keine Antwort des Slavemoduls in der vorgegebenen Wartezeit empfangen wird, wird der Timeout-Counter iteriert. Sobald dieser seinen Maximalwert erreicht wird das Gerät nicht mehr abgefragt und dessen Adresse freigegeben.
 }
 
-
+\newpage
 \subsection{Abfrage neuer Daten}
 \textmd{Die Daten eines jeden Moduls werden einmal pro Durchlauf der Polling Liste abgefragt. Wenn neue Daten empfangen wurden werden diese abgespeichert und dem angeschlossenen Computer über die UART-Schnittstelle übermittelt.
 }
@@ -69,6 +71,7 @@ In der Rückmeldung eines Moduls ist dessen Funktion hinterlegt. Diese Informati
 \lstinputlisting[language = C++,frame=single,label=polling(),caption=polling]{
 Dateien/code/polling().txt}
 
+\newpage
 \subsection{Übermittlung der Daten an den angeschlossenen Computer}
 \textmd{Sobald neue Daten von einem Modul empfangen worden sind, werden diese an den Computer übermittelt. Diese Kommunikation erfolgt über eine UART Schnittstelle und den auf dem PCB verbauten UART zu USB Bridge IC. \\
 Zu den übermittelten Daten wird neben der jeweiligen Funktion auch die zugehörige Adresse übermittelt, sodass die Daten nicht nur Abhängig von der Funktion ausgewertet werden können, sondern auch mehrere gleiche Module voneinander unterschieden werden können.  
@@ -92,26 +95,21 @@ Dateien/code/USB().txt}
 \textmd{Wenn dem Modul noch keine Adresse zugewiesen wurde und der Hauptcontroller nach neuen Teilnehmern auf dem Bus fragt, dann meldet sich dieses Modul mit einer Nachricht, in der die Funktion des Moduls in den Daten übermittelt wird.\\
 Im Anschluss wird der Hauptcontroller die neue Adresse übermitteln. Diese wird von dem Modul gespeichert und es meldet sich dann nur noch auf diese Adresse.
 }
-\begin{figure}[H]
-    \centering    
-    \includegraphics[width=.75\textwidth]{}
-    \caption{Anforderung einer Adresse}
-    \label{getAdress()}
-\end{figure}
+\lstinputlisting[language = C++,frame=single,label=usb(),caption=Anfordern einer Adresse]{
+Dateien/code/getAdress().txt}
 
+\newpage
 \subsection{Auswertung der Modulfunktion}
 \textmd{Die Auswertung der Modulfunktion ist abhängig von der jeweiligen Funktion des Moduls und kann aufgrund dessen nicht übergreifend relativiert werden.\\
-Bei dem Tastaturmodul werden die Tasten ausgewertet, sobald der Hauptcontroller das Modul abfragt und im Anschluss übermittelt
+Bei dem Tastaturmodul werden die Tasten ausgewertet, sobald der Hauptcontroller das Modul abfragt und im Anschluss übermittelt. Hierzu wurde eine allgemeine Funktion kreiert, die für jedes Modul angepasst werden muss.
 }
-\begin{figure}[H]
-    \centering    
-    \includegraphics[width=.75\textwidth]{}
-    \caption{Auswertung}
-    \label{auswertung()}
-\end{figure}
+
+\lstinputlisting[language = C++,frame=single,label=myfunction(),caption=Individuelle Funktion]{
+Dateien/code/myFunction().txt}
 
 \subsection{Übermittlung der Daten an das Hauptmodul}
-\textmd{Sobald eine Anfrage des Hauptmoduls an die Adresse des Moduls empfangen wird, übermittelt dieses die Information der Modulfunktion. Im Falle der Tastatur währen dies die zurzeit gedrückten Tasten.}
+\textmd{Sobald eine Anfrage des Hauptmoduls an die Adresse des Moduls empfangen wird, übermittelt dieses die Information der Modulfunktion. Im Falle der Tastatur währen dies die zurzeit gedrückten Tasten.
+}
 
 
 
