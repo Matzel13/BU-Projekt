@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <iostream>
 #include <list>
+struct device
+    /* data */
+};
+
 
 //recieve funktionen---------------------------------------------------------------------
 
