@@ -56,7 +56,7 @@ In der Rückmeldung eines Moduls ist dessen Funktion hinterlegt. Diese Informati
 \textmd{Wenn ein Modul nicht mehr über den Bus kommuniziert wird nach ein paar Versuchen die Adresse wieder aus der Polling Liste herausgeworfen und den verfügbaren Adressen zugewiesen. Somit kann sichergestellt werden, dass alle angeschlossenen Geräte so schnell wie möglich vom Hauptmodul abgefragt werden und zudem auch wieder Adressen für neue Geräte freigemacht.
 }
 
-\lstinputlisting[language = C++,frame=single,label=timeout(),caption=Timeout Funktion]{Dateien/code/newAdress().txt}
+\lstinputlisting[language = C++,frame=single,label=timeout(),caption=Timeout Funktion]{Dateien/code/timeout().txt}
 
 \textmd{Wenn keine Antwort des Slavemoduls in der vorgegebenen Wartezeit empfangen wird, wird der Timeout-Counter iteriert. Sobald dieser seinen Maximalwert erreicht wird das Gerät nicht mehr abgefragt und dessen Adresse freigegeben.
 }
@@ -74,7 +74,7 @@ Dateien/code/polling().txt}
 Zu den übermittelten Daten wird neben der jeweiligen Funktion auch die zugehörige Adresse übermittelt, sodass die Daten nicht nur Abhängig von der Funktion ausgewertet werden können, sondern auch mehrere gleiche Module voneinander unterschieden werden können.  
 }
 \lstinputlisting[language = C++,frame=single,label=usb(),caption=Übertragung an den angeschlossenen Computer]{
-Dateien/code/readMessage().txt}
+Dateien/code/USB().txt}
 
 \section{Code der Slaves}
 \textmd{Im Folgendem wird der Programm-Ablauf eines Slaves genauer beschrieben. Die Aufgaben eines Slave-Moduls sind folgende:\\\\
