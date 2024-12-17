@@ -77,11 +77,12 @@ Aufgrund der Probleme bei der Realisierung wurde sich dazu entschieden auf dem P
 und über Jumper schalten zu können. 
 Es wird die folgenden Möglichkeiten geben:
 
-nur die Transmit/Receive ICs zu verwenden,
-die Transmit/Receive ICs mit zusätzlichen Optokopplern zu verwenden,
-die Optokoppler mit diskret aufgebautem Invertierern und
-das Umschalten auf eine Lochraster Platine für eventuelle Änderungen zu ermöglichen
-
+\begin{itemize}
+\item nur die Transmit/Receive ICs zu verwenden,
+\item die Transmit/Receive ICs mit zusätzlichen Optokopplern zu verwenden,
+\item die Optokoppler mit diskret aufgebautem Invertierern und
+\item das Umschalten auf eine Lochraster Platine für eventuelle Änderungen zu ermöglichen
+\end{itemize}
 
 
 
