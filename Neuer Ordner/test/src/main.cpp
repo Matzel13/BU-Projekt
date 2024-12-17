@@ -3,11 +3,11 @@
 #define COMM_IN 12                          //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
 #define COMM_OUT 14                         //Kommunikations Pin (MISO) ATMEGA 16 | ATTINY 6
 #define DELAY(x) delayMicroseconds(x)
-#define SENDDELAY 1000                       //geht bis runter auf 200!
+#define SENDDELAY 1000                      //geht bis runter auf 200!
 #define NOADRESS 0x00
 
 // Zum testen!
-#define SENDER true
+#define SENDER false
 #define DEBUG false                         //debug konsolen output
 #define DEBUG1 false
 #define DEBUG2 true
@@ -33,7 +33,6 @@ std::list<char> InputModule3;
 auto iterator_InputModule3 = InputModule3.begin();
 std::list<char> InputModule4;
 auto iterator_InputModule4 = InputModule4.begin();
-
 //Freie Adressen
 std::list<char> unusedAdresses;
 auto iterator_unusedAdresses = unusedAdresses.begin();
@@ -44,6 +43,9 @@ auto iterator_Adresses = Adresses.begin();
 
 volatile int polling_counter = 0;           //polling counter iteriert durch die liste der adressen  
 volatile int num_adresses = 0;              //anzahl der vergebenen Adressen (Adresse 0x00 für die Zuweisung neuer Geräte)
+
+std::list<device> devices;
+auto iterator_devices = devices.begin(); 
 
 //------------------------------------------------------------------------------------------------------
 
@@ -56,7 +58,7 @@ bool sync(){
   lok_delayTime = micros() - timeStamp;
   if (lok_delayTime > SENDDELAY*1.25 && lok_delayTime < SENDDELAY*1.75){
     delayTime = lok_delayTime/1.5;
-    Serial.println(delayTime); // Ich kann diese Zeile nicht löschen?? Warum?!
+    Serial.println(delayTime);                                            // Ich kann diese Zeile nicht löschen?? Warum?!
     DELAY(delayTime);
     return true;
   }
@@ -70,7 +72,7 @@ char readAdress() {
   for (int i = 0; i < global_adressSize; i++){
     if (digitalRead(COMM_IN) == HIGH)
     {
-      lok_adress = lok_adress + pow(2,i);
+      lok_adress |= (1 << i);
     }
     DELAY(delayTime);
   }
@@ -84,7 +86,7 @@ char readCOF(){
   for (int i = 0; i < global_COFSize; i++){
     if (digitalRead(COMM_IN) == HIGH)
     {
-      lok_COF = lok_COF + pow(2,i);
+      lok_COF |= (1 << i);
     }
     DELAY(delayTime);
   }
@@ -99,11 +101,10 @@ void readData(char dataSize) {
     for (int i = 0; i < 8; i++){
       if (digitalRead(COMM_IN) == HIGH)
       {
-        message = message + pow(2,i);
+        message |= (1 << i);
       }
       DELAY(delayTime);
     }
-    //global_message[dataSize-(n+1)] = message;
     global_message[n] = message;
 
   }  
@@ -113,15 +114,26 @@ bool readMessage(){
   if (sync()) {                   //neue Nachricht auf dem Bus 
       readAdress();
       readCOF();
-      readData(global_COF);       //geht auch global?
-      Serial.println("Meine Adresse:DATA");
-      Serial.println(myAdress,HEX); 
-      //Serial.println(); 
+      readData(global_COF);
       return true; 
   }
   else return false;
 }
 //___________________________________________________________________________________________
+bool busFree(){
+  if (DEBUG) Serial.println("busFree");
+  
+  for (int i = 0; i < 4; i++)
+  {
+    if ((digitalRead(COMM_IN) == LOW))    //Keine Kommunikation
+    {
+      DELAY(delayTime);
+    }
+    else return false;                    //Kommunikation!
+  }
+  return true;
+}
+
 void sendSOF(){
   if (DEBUG) Serial.println("sendSOF");
   digitalWrite(COMM_OUT, HIGH);
@@ -186,24 +198,30 @@ void sendEOF(){
   if (DEBUG) Serial.print("1");
   DELAY(SENDDELAY);
   digitalWrite(COMM_OUT, LOW);
-  for (int i = 0; i < 5; i++) {                   /// brauchen wir das???
-    if (DEBUG) Serial.print("0");                 /// brauchen wir das???
-    DELAY(SENDDELAY);                             /// brauchen wir das???
+  for (int i = 0; i < 5; i++) {                   
+    if (DEBUG) Serial.print("0");                 
+    DELAY(SENDDELAY);                             
   }
   if (DEBUG) Serial.println();
 }
 
 void sendMessage(char adress,char dataSize,unsigned data){
   if (DEBUG) Serial.println("sendMessage");
-  sendSOF();
-  sendAdress(adress);
-  sendCOF(dataSize);
-  sendData(data,dataSize);
-  sendEOF();
+  if (busFree())  {                        //Abfrage Bus frei
+    sendSOF();
+    sendAdress(adress);
+    sendCOF(dataSize);
+    sendData(data,dataSize);
+    sendEOF();
+  }
 }
 //___________________________________________________________________________________________
-void USB(){
-
+void USB(char adress,char function,char data){
+  Serial2.println("START");
+  Serial2.println(adress);
+  Serial2.println(function);
+  Serial2.println(data);
+  Serial2.println("ENDE");
 }
 
 
@@ -221,6 +239,11 @@ char newAdress(){
     if (DEBUG) Serial.println(freeAdress,HEX);  
     unusedAdresses.pop_back();                  //entferne diese aus 'unused Adresses'
     Adresses.push_back(freeAdress);             //füge Sie zur Pollingliste hinzu
+
+    //neuen Teilnehmer der device Liste hinzufügen
+    device teilnehmer = device(freeAdress,0,0,0);
+    devices.push_back(teilnehmer);
+    //
     num_adresses++;                             //Pollingschleife vergrößern
     return freeAdress;                          
   }
@@ -326,50 +349,58 @@ void timeout(char adress, bool no_response){
   if (DEBUG2) Serial.println("eingelesense Adresse");
   if (DEBUG2) Serial.println(global_adress,HEX);
   if (!no_response) Serial.println("Antwort!");
-  if (global_message[0] == NOADRESS && global_adress == controllerAdress && !no_response ) {     // neuer Teilnehmer!
+  if (global_message[0] == NOADRESS && global_adress == controllerAdress && !no_response ) {      // neuer Teilnehmer!
+    device geraet = *iterator_devices;
+    geraet.funktion = global_message[1];                                                          // speichern der Funktion
     if (DEBUG2) Serial.println("Neuer Teilnehmer");
     DELAY(15 * SENDDELAY);                               
-    sendMessage(NOADRESS,0,newAdress());                                                // freie Adresse senden an noadress 
+    sendMessage(NOADRESS,0,newAdress());                                                          // freie Adresse senden an noadress 
   }
   else if (no_response && adress == NOADRESS){
     if (DEBUG2) Serial.println("kein Neuer Teilnehmer");
-    return;                                             //kein neuer Teilnehmer
+    return;                                                                                       //kein neuer Teilnehmer
   } 
 
   if (no_response){
-    // wie oft? 
-    // wenn zu oft, dann aus den Listen kicken! 
+    device geraet = *iterator_devices;
+    geraet.timeout++;                                                                             //  inkrementieren des Timeout-counters
     if (DEBUG2) Serial.println("keine Antwort von:");
     if (DEBUG2) Serial.println(adress,HEX);
   }
 }
 
+void global_reset(){
+  for (int i = 0; i < 8; i++)
+  {
+    global_message[i] = 0;
+    global_COF = 0;
+    global_adress = 0;
+  }
+  
+}
+
 void polling(){
+  global_reset();
+  device geraet;
+  iterator_devices = devices.begin();
+  std::advance(iterator_Adresses,polling_counter);            //setzen des iterators auf die abzufragende Adresse
+  geraet = *iterator_devices;
+
   char Adress;
-  /* 
-  -request data from **adress**
-  -wait for response (tbd)
-    -if response
-      -do stuff
-      -(no response counter (timeout) = 0)
-    -else
-      -no response counter + 1
-  -request data from next **adress**
-  ...
-  ...
-  -if no response counter (timeout) > max(tbd)
-    -delete **adress**
-  */
   iterator_Adresses = Adresses.begin();
   std::advance(iterator_Adresses,polling_counter);            //setzen des iterators auf die abzufragende Adresse
   Adress = *iterator_Adresses;
-  sendMessage(Adress,0,0xFF);                                 //request für abzufragende Adresse                     
+
+
+  sendMessage(geraet.adress,0,0xFF);                                 //request für abzufragende Adresse                     
   if (await_response(controllerAdress)){                      //warten auf Rückmeldung
+    geraet.latest_data = global_message;
+
     timeout(Adress,false);                                    //Rücksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
     whichFunction(Adress,global_message[0]);                  //bearbeiten der Daten    
   }       
   else{                                                       //keine Antwort erhalten
-    timeout(Adress,true);                                     //Zählen der nicht vorhandnen Antworten (bei NOADRESS nicht!)
+    timeout(Adress,true);                                     //Zählen der nicht vorhandenen Antworten (bei NOADRESS nicht!)
   }
   if (polling_counter < num_adresses) polling_counter++;       //nächstes element der adressliste
   else polling_counter = 0;                                   //Zurücksetzen des counters
@@ -396,6 +427,8 @@ void setup() {
   }
   Adresses.push_front(NOADRESS);
   //num_adresses++;
+  
+
   if (SENDER) myAdress = controllerAdress;
 }
 //___________________________________________________________________________________________
@@ -404,8 +437,7 @@ void loop() {
   
   if(SENDER){
   polling();
-  //zurücksetzen aller eingelesenen Werte!
-  delay(1000);
+  //delay(1000);
   }
   else{
     //Serial.println("Meine Adresse:");
@@ -427,7 +459,7 @@ void loop() {
         Serial.println("anfrage nach Adresse");
         Serial.println(myAdress,HEX);
         DELAY(delayTime*10);
-        sendMessage(controllerAdress,0,NOADRESS);                           //Bitte um Adresse
+        sendMessage(controllerAdress,1,0x00AB);                             //Bitte um Adresse + 2. byte = Funktion
         if (await_response(NOADRESS)){
           myAdress = global_message[0];                                     //Speichern der neuen Adresse
           Serial.println("Meine Adresse:");
@@ -438,14 +470,7 @@ void loop() {
       {
         DELAY(delayTime*10);
         sendMessage(controllerAdress,1,0xAABB);
-      //Serial.println(myAdress,HEX); 
       }
     }
   }
-
-  if (DEBUG1) whichFunction(0xff,0xf2);
-  if (DEBUG1)Serial.println("unusedAdresses:");
-  if (DEBUG1) printList(unusedAdresses);
-  if (DEBUG1)Serial.println("Adresses:");
-  if (DEBUG1) printList(InputModule3);
 }
