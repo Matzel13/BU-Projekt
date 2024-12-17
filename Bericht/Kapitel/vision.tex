@@ -6,7 +6,7 @@ Das Eingabesystem verfolgt die Vision eines flexiblen und erweiterbaren Systems,
 Die Module, wie ein Tastatur-Modul mit einer 4x4-Tastenmatrix oder ein Audio-Modul mit Potentiometern und Fadern, sind frei kombinierbar und können je nach Anwendungsfall hinzugefügt oder entfernt werden. Dies ermöglicht eine Konfiguration für unterschiedliche Aufgaben wie Textverarbeitung, Bildbearbeitung, Audiobearbeitung oder Gaming.
 \\
 \\
-In Abbildung xxx ist ein Überblick des Eingabesystems zu sehen:
+In Abbildung \ref{vision} ist ein Überblick des Eingabesystems zu sehen:
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.75\textwidth]{Bilder/bu_vision.png}}
@@ -16,7 +16,7 @@ In Abbildung xxx ist ein Überblick des Eingabesystems zu sehen:
 \noindent Die gestrichelten Linien stellen eine bereits hergestellte Verbindung zwischen den Modulen dar, wobei die \glqq Plus\grqq{} Symbole einen weiteren möglichen Modulanschluss darstellen. Die Module sollen fest aneinander sitzen.
 
 \subsection{Verbindung}
-Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, jedes Modul an jede Seite eines anderen anstecken zu können, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch ist das System in jede Richtung erweiterbar. Um eine feste Verbindung zu gewährleisten,  werden Neodym-Magnete ins Gehäuse verbaut. Dies stellt sicher, dass die Pins sicher miteinander verbunden sind und Kontakt haben. 
+Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, an jede Seite eines Moduls ein weiteres anzustecken, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch ist das System in jede Richtung erweiterbar. Um eine feste Verbindung zu gewährleisten,  werden Neodym-Magnete ins Gehäuse verbaut. Dies stellt sicher, dass die Pins fest miteinander verbunden sind und Kontakt haben. 
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.85\textwidth]{Bilder/bu_pogoverbindung.png}}
@@ -27,24 +27,43 @@ Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbi
  
  
  \subsection{Topologien}
- Der Aufbau des Eingabesystems entspricht einer Vermaschten-Topologie. Das verdeutlicht die Abbildung \ref{vision}, denn mit jedem neuen Modul kann auch eine Verbindung zu einem schon vernetzen Modul entstehen. Die Vorteile dieser Topologie werden nicht benutzt, denn die Vermaschung kommt lediglich durch die notwendige Verbindung der Module untereinander zustande.\\
+ Der Hardware-Aufbau des Eingabesystems entspricht einer Vermaschten-Topologie. Das verdeutlicht die Abbildung \ref{vision}, denn mit jedem neuen Modul kann auch eine Verbindung zu einem schon vernetzen Modul entstehen. Die Vorteile dieser Topologie werden im Gesamtsystem nicht genutzt, denn die Vermaschung kommt lediglich durch die notwendige Verbindung der Module untereinander zustande.\\
+\begin{figure}[H]
+	\centering    
+	\includegraphics[width=.75\textwidth]{Bilder/vermaschte_topologie.png}
+	\caption{Vermaschte Topologie}
+	\label{vermaschte_topologie}
+\end{figure}
+ 
 
- Der Bus hingegen nutzt die Bus-Topologie, denn alle Teilnehmer sind über den zentralen Bus miteinander verbunden. Dies hat Vorteile:
+ Der Bus hingegen nutzt die Bus-Topologie, denn alle Teilnehmer sind über den Bus miteinander verbunden. Dies hat die Vorteile:
 \begin{itemize}
-    \item \textbf{Einfache Installation:} Weniger Kabel und einfacher Aufbau, da alle Geräte an einem gemeinsamen Kabel (Bus) angeschlossen sind.
-    \item\textbf{Einfache Installation:} Weniger Kabel und einfacher Aufbau, da alle Geräte an einem gemeinsamen Kabel (Bus) angeschlossen sind.
-    \item\textbf{Einfache Erweiterung:} Neue Geräte können leicht an den Bus angeschlossen werden. 
-    \item\textbf{Effizient für kleine Netzwerke:} Besonders geeignet für kleine Netzwerke mit wenigen Geräten. 
+    \item\textbf{Einfache Installation:} Weniger Kabel und einfacher Aufbau, da alle Geräte an einer gemeinsamen Leitung (Bus) angeschlossen sind.
+    \item\textbf{Einfache Erweiterung:} Neue Geräte können leicht angeschlossen werden. 
+    \item\textbf{Effizient für kleine Netzwerke:} Gut geeignet für kleine Netzwerke mit wenigen Geräten. 
 \end{itemize}
-Mit einem Nachteil der Störanfälligkeit. Da der Bus als zentrale Verbindung genutzt wird, können beispielsweise Schäden am Bus die Störanfälligkeit erhöhen und die Verbindung beeinträchtigen.\\
+Mit einem Nachteil der Störanfälligkeit. Da der Bus als zentrale Verbindung genutzt wird, können beispielsweise Schäden am Bus die Störanfälligkeit erhöhen und die Verbindung beeinträchtigen. Es gilt, diese Schwachstelle bestmöglich zu schützen.\\
+\begin{figure}[H]
+	\centering    
+	\includegraphics[width=1\textwidth]{Bilder/bustopologie.png}
+	\caption{Bustopologie}
+	\label{Bustopologie}
+\end{figure}
 
-Auf der Softwareebene ist das Konzept nach der Stern-Topologie aufgebaut, denn das Hauptmodul (Mikrocontroller) ist eine zentrale Steuereinheit, an die alle anderen Module angeschlossen sind. Die Tastatur-Module und das Audio-Modul sind jeweils direkt an den Bus angebunden. Die Verbindungen laufen sternförmig von dem Hauptmodul zu den einzelnen Modulen. Die Vorteile einer Stern-Topologie in diesem Projekt sind:
+
+Auf der Softwareebene ist das Konzept nach der Stern-Topologie aufgebaut, denn das Hauptmodul ist eine zentrale Steuereinheit, an die alle anderen Module angeschlossen sind. Die Tastatur-Module und das Audio-Modul sind jeweils direkt an den Bus angebunden. Die Verbindungen laufen sternförmig von dem Hauptmodul zu den einzelnen Modulen. Die Vorteile einer Stern-Topologie in diesem Projekt sind:
 \begin{itemize}
-    \item \textbf{Skalierbarkeit:} Weitere Module können einfach an die Zentrale angeschlossen werden.
-    \item \textbf{Einfache Fehlersuche:} Da jedes Modul eine direkte Verbindung zur Zentrale hat, ist der Ausfall eines Moduls leichter zu diagnostizieren.
-    \item \textbf{Zentrale Kontrolle:} Alle Daten laufen durch das Hauptmodul.
+    \item \textbf{Skalierbarkeit:} Weitere Module können einfach an das Hauptmodul angeschlossen werden.
+    \item \textbf{Einfache Fehlersuche:} Da jedes Modul eine direkte Verbindung zum Hauptmodul hat, ist der Ausfall eines Moduls leichter zu erkennen.
+    \item \textbf{Kontrolle:} Alle Daten laufen durch das Hauptmodul.
 \end{itemize}
 Wobei nur ein Nachteil festgestellt werden kann:
 \begin{itemize}
     \item \textbf{Abhängigkeit:} Fällt das Hauptmodul aus, funktioniert das gesamte System nicht mehr.
 \end{itemize}
+\begin{figure}[H]
+	\centering    
+	\includegraphics[width=.8\textwidth]{Bilder/sterntopologie.png}
+	\caption{Sterntopologie}
+	\label{Sterntopologie}
+\end{figure}

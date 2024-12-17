@@ -6,9 +6,9 @@ Der Bus ist nach folgendem Schema aufgebaut:
 \begin{itemize}
 	\item \textbf{Start of Frame (SOF):} 2 Bit zum Synchronisieren der Frequenzen; durch einen HIGH-Value wird der Beginn des SOF bekanntgegeben und durch das darauf folgende LOW-Value können die Teilnehmer sich auf die Übertragungsgeschwindigkeit synchronisieren.
 	\item \textbf{Sendeadresse:} 3 Bit zum Senden der Adresse; Die Adresse 0x00 ist für neue Teilnehmer reserviert, über diese Adresse findet die Adressvergabe statt. Die Adresse 0x01 ist fest an das Hauptmodul vergeben, alle Teilnehmer wissen das auf dieser Adresse das Hauptmodul liegt. Die Adressen 0x02 bis 0x07 stehen für Teilnehmer zur Verfügung. 3 Bit sind vollkommen ausreichend, da das System als Desktop Erweiterung geplant ist und mehr als 6 Module nicht vorgesehen ist. Sollten in Zukunft mehr Teilnehmer erforderlich sein, lässt sich das im Code leicht anpassen.
-	\item \textbf{Content of Frame (COF):} 3 Bit für Datenlänge in Byte; das COF enthält die Länge der übertragenden Daten in Byte. Dies dient dazu, dass die Länge der zu übertragenden Daten dynamisch sein kann (bis zu 8 Byte). Zusätzlich können Teilnehmer, welche nicht angesprochen werden, festlegen, wie lange der Bus belegt ist, bevor diese versuchen sollten zu senden.
-	\item \textbf{Daten}: 0-8 Byte
-	\item \textbf{?? (CRC):} X Bit
+	\item \textbf{Content of Frame (COF):} 3 Bit für Datenlänge in Byte; das COF enthält die Länge der übertragenden Daten in Byte. Dies dient dazu, dass die Länge der zu übertragenden Daten dynamisch sein kann (bis zu 7 Byte). Zusätzlich können Teilnehmer, welche nicht angesprochen werden, festlegen, wie lange der Bus belegt ist, bevor diese versuchen sollten zu senden.
+	\item \textbf{Daten}: 0-7 Byte
+	\item \textbf{Fehlererkennung:} X Bit; Geplante Funktion zur Erkennung von Bitfehler oder Störungen auf dem Bus. Eine fehlerhafte Nachricht soll ignoriert werden. 
 	\item \textbf{End of Frame (EOF):} 4 Bit Signalende; Vier aufeinanderfolgende LOW-Values geben das Ende der Nachricht an. Ein Teilnehmer, der Senden möchte, wartet bis er 4 aufeinanderfolgende LOW-Value empfangen hat, bevor dieser Sendet.
 \end{itemize}
 
@@ -20,5 +20,19 @@ Die folgende Abbildung stellt den Datenbus dar:
 	\label{Datenbus}
 \end{figure}
 
-\subsection{Bitstuffing}
-Um Sicherzustellen, dass innerhalb der Datenübertragung keineVierr Aufeinanderfolgenden LOW-Value gesendet werden wird das Prinzip des Bitstuffing eingesetzt. Mithilfe einer Laufvariable werden die zu sendenden Bits gezählt und vor dem vierten gleichen Bit wird ein invertiertes Bit gesendet.
+\subsection{Technische Eigenschaften}
+Zu dem jetzigen Zeitpunkt kann der selbst erstellte Bus Informationen mit einer Geschwindigkeit von $1\frac{\mathrm{kBit}}{\mathrm{s}}$ übertragen. Dabei kann eine maximale Teilnehmeranzahl (Eingabemodule) von sieben erreicht werden. Dies liegt hauptsächlich an den Adressierungsbits des Busses und könnte beliebig erweitert werden. Die Datensignale haben einen Pegel von 0\,\si{V} bis 3,3\,\si{V}
+
+\begin{figure}[H]
+    \centering    
+    \fbox{\includegraphics[width=0.8\textwidth]{Bilder/Datenaustausch.png}}
+    \caption{Kommunikation zwischen zwei ESP32 über unseren Datenbus.}
+    \label{zeitplan}
+\end{figure}
+
+\begin{figure}[H]
+    \centering    
+    \fbox{\includegraphics[width=0.8\textwidth]{Bilder/Beispiel_Datenübertragung.png}}
+    \caption{Beispiel Datenübertragung}
+    \label{beispielDatenübertragung}
+\end{figure}
