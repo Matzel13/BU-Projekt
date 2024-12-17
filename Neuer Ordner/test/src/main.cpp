@@ -1,8 +1,6 @@
 #include "header.h"
-
 // true -> Upload fuer Master | false -> Upload fur Slave
 #define SENDER true
-
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
@@ -26,7 +24,6 @@
 #define SENDDELAY 1000                      
 #define NOADRESS 0x00
 
-
 // Zum testen!
 #define DEBUG false                    
 #define DEBUG1 false
@@ -38,12 +35,15 @@ volatile char global_adress = 0x00;    //eingelesene Adresse
 volatile char global_COF = 0x00;       //Groesse der Nachricht
 volatile char global_message[8];       //eingelesene Daten
 volatile char mask = 0x01;             //0000 0001 Binaermaske
-volatile int global_adressSize = 3;    //Adressengroesse in Bits (maximal (2^adressSize)-2 Teilnehmer)
+//Adressengroesse in Bits (maximal (2^adressSize)-2 Teilnehmer)
+volatile int global_adressSize = 3;    
 volatile int global_COFSize = 3;       //Groesse des COF Pakets
-volatile char myAdress = STARTADRESS;  //Standardadresse eines neuen Busteilnehmers
-volatile char controllerAdress = 0x01; //Feste Adresse des Hauptcontrollers
+//Standardadresse eines neuen Busteilnehmers
+volatile char myAdress = STARTADRESS;  
+//Feste Adresse des Hauptcontrollers
+volatile char controllerAdress = 0x01; 
 
-//Listen des Hauptcontollers-----------------------------------------------------------------------------
+//Listen des Hauptcontollers------------------------------
 //Speichern der Adressen in die Liste mit der zugehoerigen Funktion
 
 //Spezifische Konfiguration fuer Master
@@ -63,28 +63,28 @@ volatile char controllerAdress = 0x01; //Feste Adresse des Hauptcontrollers
   //Adressen aller Teilnehmer
   std::list<char> Adresses;
   auto iterator_Adresses = Adresses.begin();
-
-  volatile int polling_counter = 0;           //polling counter iteriert durch die liste der adressen  
-  volatile int num_adresses = 0;              //anzahl der vergebenen Adressen (Adresse 0x00 fuer die Zuweisung neuer Geraete)
-
+  //polling counter iteriert durch die liste der adressen 
+  volatile int polling_counter = 0; 
+  //Anzahl der vergebenen Adressen
+  volatile int num_adresses = 0;              
   std::list<device> devices;
   auto iterator_devices = devices.begin(); 
 #endif
 
 
-//Funktionen aller Teilnehmer-------------------------------------------------------------------------------
+//Funktionen aller Teilnehmer-------------------------------
 
 //receive
-
 bool sync(){
   if (DEBUG) Serial.println("sync");
   unsigned long lok_delayTime;
   timeStamp = micros();
   while (digitalRead(COMM_IN) == HIGH);
   lok_delayTime = micros() - timeStamp;
-  if (lok_delayTime > SENDDELAY*1.25 && lok_delayTime < SENDDELAY*1.75){
+  if (lok_delayTime > SENDDELAY*1.25 &&
+      lok_delayTime < SENDDELAY*1.75){
     delayTime = lok_delayTime/1.5;
-    Serial.println(delayTime);                                            // Ich kann diese Zeile nicht loeschen?? Warum?!
+    Serial.println(delayTime);                                                       // Ich kann diese Zeile nicht loeschen?? Warum?!
     DELAY(delayTime);
     return true;
   }
@@ -146,7 +146,7 @@ bool readMessage(){
   }
   else return false;
 }
-//___________________________________________________________________________________________
+//------------------------------
 
 //send
 
@@ -248,7 +248,7 @@ void sendMessage(char adress,char dataSize,unsigned data){
     sendEOF();
   }
 }
-//___________________________________________________________________________________________
+//------------------------------
 
 //
 void global_reset(){
@@ -275,7 +275,7 @@ bool await_response(char adress){
 }
 
 
-//___________________________________________________________________________________________
+//------------------------------
 //Spezifische Funktionen fuer Slaves 
 #if SENDER == false
 void getAdress(){
@@ -337,18 +337,18 @@ if (unusedAdresses.empty() == false)
 // keine Adressen mehr frei!
 else return 0x00;                             
 }
-
 int whichFunction(char adresse,char data) {
   if (DEBUG) Serial.println("whichFunction");
-  if (std::find(InputKeypad.begin(), InputKeypad.end(), adresse) != InputKeypad.end())
+  if (std::find(InputKeypad.begin(), 
+      InputKeypad.end(), adresse) != InputKeypad.end())
   {
     return 1;
   }
-  else if (std::find(InputAudiopad.begin(), InputAudiopad.end(), adresse) != InputAudiopad.end())
+  else if (std::find(InputAudiopad.begin(), 
+          InputAudiopad.end(), adresse) != InputAudiopad.end())
   {
     return 2;
   }
-  else if (adresse == 0xff)
 }
 
 void functionKeypad(volatile char[]){
@@ -394,12 +394,12 @@ void printList(const std::list<char>& lst) {
 
 void timeout(char adress, bool no_response){
   if (DEBUG2) Serial.println("eingelesene Daten:");
-  if (DEBUG2) Serial.print(global_message[0],HEX);if (DEBUG2) Serial.println(global_message[1],HEX);
-  if (DEBUG2) Serial.println("eingelesense Adresse");
-  if (DEBUG2) Serial.println(global_adress,HEX);
+  if (DEBUG2) Serial.print(global_message[0],HEX);
+  if (DEBUG2) Serial.println(global_message[1],HEX);
   if (!no_response) Serial.println("Antwort!");
   // neuer Teilnehmer!
-  if (global_message[0] == NOADRESS && global_adress == controllerAdress && !no_response ) {      
+  if (global_message[0] == NOADRESS && global_adress ==
+      controllerAdress && !no_response ) {      
     device geraet = *iterator_devices;
     // speichern der Funktion
     geraet.funktion = global_message[1];                                                          
@@ -461,16 +461,16 @@ void polling(){
 
 #endif
 
-//SETUP_______________________________________________________________________________________
+//SETUP-----------------------------
 
 //Spezifisches Setup fuer Slaves 
 #if SENDER == false
 void setup() {
-//__DON'T CHANGE!!!__________________________________________________________________________
+//__DON'T CHANGE!!!------------------
   pinMode(COMM_IN, INPUT);
   pinMode(COMM_OUT, OUTPUT);
   if (DEBUG) Serial.println("COMM Pins are setup!");
-//___________________________________________________________________________________________
+//------------------------------
 }
 //Spezifisches Setup fuer Master
 #elif SENDER == true
@@ -489,11 +489,11 @@ void setup(){
   }
   Adresses.push_front(NOADRESS);
 
-  //__DON'T CHANGE!!!__________________________________________________________________________
+  //__DON'T CHANGE!!!-----------------------
   pinMode(COMM_IN, INPUT);
   pinMode(COMM_OUT, OUTPUT);
   if (DEBUG) Serial.println("COMM Pins are setup!");
-  //___________________________________________________________________________________________
+  //------------------------------
 }
 #endif
 
