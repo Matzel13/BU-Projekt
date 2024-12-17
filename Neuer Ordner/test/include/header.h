@@ -139,3 +139,5 @@ Handling des timeouts von teilnehmern
 void timeout(char adress, bool no_response);
 
 void global_reset();
+
+void myFunction();
