@@ -12,6 +12,121 @@ Wir haben uns für diese Herangehensweise entschieden, da bei der Programmierung
 \subsection{Tastaturmodul}
 \subsection{Übersetzerprogramm}
 Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten wird ein Python Script geschrieben, welches diese einließt und auswertet. Mit unserem aktuellen Prototypen lassen sich so die vier Tasten beliebig "belegen" und zum Beispiel eine Powerpoint Präsentation steuern.
+\\
+
+\section{Modulübergreifende Funktionen}
+\textmd{Die Funktionen zum Lesen und Senden von Nachrichten müssen auf allen Modulen implementiert werden.\\
+}
+\subsection{Senden einer Nachricht}
+\textmd{Um eine Nachricht auf den Bus zu schreiben, muss zunächst festgestellt werden, dass dieser gerade nicht beschrieben wird.\\
+	Nur wenn dies der Fall ist, kann die Nachricht gesendet werden. \\
+	Die Nachricht setzt sich aus den in Kapitel \ref{} beschriebenen Teilen zusammen. Jedes dieser Teile wurde als eigenen Funktion implementiert und schlussendlich in einer übergreifenden Funktion zusammengeführt.\\
+}
+
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=send(),caption=Senden einer Nachricht]{
+	Programme/main.cpp}
+
+
+
+\subsection{Empfangen einer Nachricht}
+\textmd{Solange ein Modul keine Nachricht versenden möchte hört dieses auf die Nachrichten auf dem Bus. Bei jedem Empfang eines Start of Frame wird die Busfrequenz berechnet und gespeichert. Wenn dann die Empfangene Adresse die eigene Adresse ist wird auf den Rest der Nachricht gehört und gespeichert, um diese zu verarbeiten.\\
+	Auch hier wurde jeder Teil der Nachricht als eigene Funktion implementiert und in einer übergreifenden Funktion zusammengeführt.
+}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{
+	Programme/main.cpp}
+
+
+
+
+
+\section{Code des Hauptmoduls}
+\textmd{Im Folgendem wird der Programm-Ablauf des Hauptmoduls näher beschrieben.\\ 
+	Das Hauptmodul übernimmt folgende Aufgaben:\\\\
+	1. Verwaltung der Adressvergabe an angeschlossene Module\\
+	2. Abfrage nach neuen Daten der einzelnen Module\\
+	3. Übermittlung dieser Daten über eine UART-Schnittstelle an den angeschlossenen Rechner\\\\ 
+}
+\begin{figure}[H]
+	\centering    
+	\includegraphics[width=.75\textwidth]{}
+	\caption{Programmablauf Hauptmodul}
+	\label{Programm_Hauptmodul}
+\end{figure}
+\textmd{
+}
+\subsection{Adressvergabe und Verwaltung}
+\textmd{Das Hauptmodul speichert alle vergebenen Adressen zusammen mit der Funktion und einigen weiteren Variablen des jeweiligen Moduls in einer Liste von stucts.\\
+	Diese Liste wird zum Polling der Teilnehmer genutzt, sodass nur angeschlossene Module abgefragt werden.\\}
+
+
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=decice,caption=Struct device]{
+	Programme/main.cpp}
+
+
+\textmd{Die jeweiligen Module haben keine festgelegte Adresse. Wenn diese also mit Spannung versorgt werden warten Sie auf die Adressvergabe des Hauptmoduls.\\
+	In der Polling Liste wird eine bestimmte Adresse abgefragt um festzustellen, wenn ein neuer Teilnehmer an den Bus angeschlossen wurde. Wenn eine Rückmeldung auf diese Adresse festgestellt wird, dann enthält die nächste Nachricht die Adresse für den neuen Teilnehmer.
+	In der Rückmeldung eines Moduls ist dessen Funktion hinterlegt. Diese Informationen werden in der Adressliste abgespeichert und das Gerät ab dem Zeitpunkt mit abgefragt.\\
+}
+
+\newpage
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{Programme/main.cpp}
+
+\textmd{Wenn ein Modul nicht mehr über den Bus kommuniziert wird nach ein paar Versuchen die Adresse wieder aus der Polling Liste herausgeworfen und den verfügbaren Adressen zugewiesen. Somit kann sichergestellt werden, dass alle angeschlossenen Geräte so schnell wie möglich vom Hauptmodul abgefragt werden und zudem auch wieder Adressen für neue Geräte freigemacht.
+}
+
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=timeout(),caption=Timeout Funktion]{Programme/main.cpp}
+
+\textmd{Wenn keine Antwort des Slavemoduls in der vorgegebenen Wartezeit empfangen wird, wird der Timeout-Counter iteriert. Sobald dieser seinen Maximalwert erreicht wird das Gerät nicht mehr abgefragt und dessen Adresse freigegeben.
+}
+
+\newpage
+\subsection{Abfrage neuer Daten}
+\textmd{Die Daten eines jeden Moduls werden einmal pro Durchlauf der Polling Liste abgefragt. Wenn neue Daten empfangen wurden werden diese abgespeichert und dem angeschlossenen Computer über die UART-Schnittstelle übermittelt.
+}
+
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=polling(),caption=polling]{
+	Programme/main.cpp}
+
+\newpage
+\subsection{Übermittlung der Daten an den angeschlossenen Computer}
+\textmd{Sobald neue Daten von einem Modul empfangen worden sind, werden diese an den Computer übermittelt. Diese Kommunikation erfolgt über eine UART Schnittstelle und den auf dem PCB verbauten UART zu USB Bridge IC. \\
+	Zu den übermittelten Daten wird neben der jeweiligen Funktion auch die zugehörige Adresse übermittelt, sodass die Daten nicht nur Abhängig von der Funktion ausgewertet werden können, sondern auch mehrere gleiche Module voneinander unterschieden werden können.  
+}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=usb(),caption=Übertragung an den angeschlossenen Computer]{
+	Programme/main.cpp}
+
+\section{Code der Slaves}
+\textmd{Im Folgendem wird der Programm-Ablauf eines Slaves genauer beschrieben. Die Aufgaben eines Slave-Moduls sind folgende:\\\\
+	1. Anfordeung einer Adresse bei Neustart\\
+	2. Auswerten der Modulfunktion\\
+	3. Übermitteln der Daten an das Hauptmodul bei Anfrage\\
+}
+\begin{figure}[H]
+	\centering    
+	\includegraphics[width=.75\textwidth]{}
+	\caption{Programmablauf eines Slave-Moduls}
+	\label{Programm_Slaves}
+\end{figure}
+\subsection{Anforderung einer Adresse}
+\textmd{Wenn dem Modul noch keine Adresse zugewiesen wurde und der Hauptcontroller nach neuen Teilnehmern auf dem Bus fragt, dann meldet sich dieses Modul mit einer Nachricht, in der die Funktion des Moduls in den Daten übermittelt wird.\\
+	Im Anschluss wird der Hauptcontroller die neue Adresse übermitteln. Diese wird von dem Modul gespeichert und es meldet sich dann nur noch auf diese Adresse.
+}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=usb(),caption=Anfordern einer Adresse]{
+	Programme/main.cpp}
+
+\newpage
+\subsection{Auswertung der Modulfunktion}
+\textmd{Die Auswertung der Modulfunktion ist abhängig von der jeweiligen Funktion des Moduls und kann aufgrund dessen nicht übergreifend relativiert werden.\\
+	Bei dem Tastaturmodul werden die Tasten ausgewertet, sobald der Hauptcontroller das Modul abfragt und im Anschluss übermittelt. Hierzu wurde eine allgemeine Funktion kreiert, die für jedes Modul angepasst werden muss.
+}
+
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=myfunction(),caption=Individuelle Funktion]{
+	Programme/main.cpp}
+
+\subsection{Übermittlung der Daten an das Hauptmodul}
+\textmd{Sobald eine Anfrage des Hauptmoduls an die Adresse des Moduls empfangen wird, übermittelt dieses die Information der Modulfunktion. Im Falle der Tastatur währen dies die zurzeit gedrückten Tasten.
+}
+
 
 
 \lstinputlisting[language=c++, caption={main.cpp}, label={main.cpp}]{Kapitel/Programme/main.cpp}
