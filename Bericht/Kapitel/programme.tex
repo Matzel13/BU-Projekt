@@ -1,5 +1,5 @@
 \section{Programme}
-Für die Module gibt es ein Programcode, wo mithilfe von #define definiert wird um welche Art von Modul es sich handelt. Je nach Modultyp werden nur gewisse Funktionen genutzt:
+Für die Module gibt es ein Programcode, wo mithilfe von \#define definiert wird um welche Art von Modul es sich handelt. Je nach Modultyp werden nur gewisse Funktionen genutzt:
 % hier tabelle einfügen
 
 
@@ -24,7 +24,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 }
 
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=send(),caption=Senden einer Nachricht]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 
 
@@ -33,7 +33,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 	Auch hier wurde jeder Teil der Nachricht als eigene Funktion implementiert und in einer übergreifenden Funktion zusammengeführt.
 }
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 
 
@@ -60,7 +60,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 
 
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=decice,caption=Struct device]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 
 \textmd{Die jeweiligen Module haben keine festgelegte Adresse. Wenn diese also mit Spannung versorgt werden warten Sie auf die Adressvergabe des Hauptmoduls.\\
@@ -69,12 +69,12 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 }
 
 \newpage
-\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{Programme/main.cpp}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=recieve(),caption=Empfangen einer Nachricht]{Kapitel/Programme/main.cpp}
 
 \textmd{Wenn ein Modul nicht mehr über den Bus kommuniziert wird nach ein paar Versuchen die Adresse wieder aus der Polling Liste herausgeworfen und den verfügbaren Adressen zugewiesen. Somit kann sichergestellt werden, dass alle angeschlossenen Geräte so schnell wie möglich vom Hauptmodul abgefragt werden und zudem auch wieder Adressen für neue Geräte freigemacht.
 }
 
-\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=timeout(),caption=Timeout Funktion]{Programme/main.cpp}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=timeout(),caption=Timeout Funktion]{Kapitel/Programme/main.cpp}
 
 \textmd{Wenn keine Antwort des Slavemoduls in der vorgegebenen Wartezeit empfangen wird, wird der Timeout-Counter iteriert. Sobald dieser seinen Maximalwert erreicht wird das Gerät nicht mehr abgefragt und dessen Adresse freigegeben.
 }
@@ -85,7 +85,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 }
 
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=polling(),caption=polling]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 \newpage
 \subsection{Übermittlung der Daten an den angeschlossenen Computer}
@@ -93,7 +93,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 	Zu den übermittelten Daten wird neben der jeweiligen Funktion auch die zugehörige Adresse übermittelt, sodass die Daten nicht nur Abhängig von der Funktion ausgewertet werden können, sondern auch mehrere gleiche Module voneinander unterschieden werden können.  
 }
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=usb(),caption=Übertragung an den angeschlossenen Computer]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 \section{Code der Slaves}
 \textmd{Im Folgendem wird der Programm-Ablauf eines Slaves genauer beschrieben. Die Aufgaben eines Slave-Moduls sind folgende:\\\\
@@ -112,7 +112,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 	Im Anschluss wird der Hauptcontroller die neue Adresse übermitteln. Diese wird von dem Modul gespeichert und es meldet sich dann nur noch auf diese Adresse.
 }
 \lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=usb(),caption=Anfordern einer Adresse]{
-	Programme/main.cpp}
+	Kapitel/Programme/main.cpp}
 
 \newpage
 \subsection{Auswertung der Modulfunktion}
@@ -120,8 +120,7 @@ Um die HEX-Werte aus der UART Verbindung vom Hauptmodul am Computer auszuwerten 
 	Bei dem Tastaturmodul werden die Tasten ausgewertet, sobald der Hauptcontroller das Modul abfragt und im Anschluss übermittelt. Hierzu wurde eine allgemeine Funktion kreiert, die für jedes Modul angepasst werden muss.
 }
 
-\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=myfunction(),caption=Individuelle Funktion]{
-	Programme/main.cpp}
+\lstinputlisting[firstline= 10, lastline=20,language = C++,frame=single,label=myfunction(),caption=Individuelle Funktion]{Kapitel/Programme/main.cpp}
 
 \subsection{Übermittlung der Daten an das Hauptmodul}
 \textmd{Sobald eine Anfrage des Hauptmoduls an die Adresse des Moduls empfangen wird, übermittelt dieses die Information der Modulfunktion. Im Falle der Tastatur währen dies die zurzeit gedrückten Tasten.
