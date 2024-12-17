@@ -19,7 +19,7 @@ struct device
 };
 
 
-//recieve funktionen---------------------------------------------------------------------
+//recieve funktionen----------------------------------------
 
 /*
 synchronisiert die Taktgeschwindigkeit
@@ -48,13 +48,14 @@ liest die Daten ein (global gespeichert)
 void readData(char dataSize);
 
 /*
-Kombiniert die vorangegangenen Funktionen um eine gesamte Nachricht einzulesen
+Kombiniert die vorangegangenen Funktionen um eine 
+gesamte Nachricht einzulesen
 @return fertig eingelesen
 */
 bool readMessage();
 
 
-//transmit funktionen--------------------------------------------------------------------
+//transmit funktionen------------------------------------
 
 
 /*
@@ -83,9 +84,6 @@ void sendData(char data) ;
 */
 void sendMessage();
 
-
-
-//----------------------------------------------------------------------------------------------------------------------------------------
 
 /*
 
