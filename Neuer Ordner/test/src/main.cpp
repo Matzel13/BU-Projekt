@@ -155,11 +155,13 @@ bool busFree(){
   
   for (int i = 0; i < 4; i++)
   {
-    if ((digitalRead(COMM_IN) == LOW))    //Keine Kommunikation
+    //Keine Kommunikation
+    if ((digitalRead(COMM_IN) == LOW))    
     {
       DELAY(delayTime);
     }
-    else return false;                    //Kommunikation!
+    //Kommunikation!
+    else return false;                    
   }
   return true;
 }

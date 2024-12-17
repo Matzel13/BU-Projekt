@@ -8,11 +8,14 @@ struct device
     volatile char* latest_data;
     unsigned int timeout;
 
-    device() : adress(0x00),funktion(0x00),latest_data(NULL),timeout(0){}
+    device() : adress(0x00),funktion(0x00),
+                latest_data(NULL),timeout(0){}
 
     public:
-        device(char Adresse,char Funktion,char* Daten,unsigned int Zaehler)
-        : adress(Adresse),funktion(funktion),latest_data(Daten),timeout(Zaehler){}
+        device(char Adresse,char Funktion,char* Daten,
+                unsigned int Zaehler)
+        : adress(Adresse),funktion(funktion),latest_data(Daten),
+            timeout(Zaehler){}
 };
 
 
