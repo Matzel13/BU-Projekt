@@ -17,11 +17,14 @@ volatile unsigned long delayTime;           //berechnete Taktzeit
 volatile char global_adress;                //eingelesene Adresse
 volatile char global_COF = 0x00;            //Größe der Nachricht
 volatile char global_message[8];            //eingelesene Daten
-volatile char mask = 0x01;                  //0000 0001 Binärmaske
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ hier vielleicht auf uint_64 umsteigen? Überlegung für CRC
 volatile int global_adressSize = 3;         //Adressengröße in Bits (maximal (2^adressSize)-2 Teilnehmer)
 volatile int global_COFSize = 3;            //größe des COF Pakets
 volatile char myAdress = NOADRESS;          //Standardadresse eines neuen Busteilnehmers
 volatile char controllerAdress = 0x01;      //Feste Adresse des Hauptcontrollers
+
+char mask = 0x01;                           //0000 0001 Binärmaske
+uint16_t generator_polynomial = 0x1021;     // CRC-16-CCITT Generatorpolynom für CRC
 
 //Listen des Hauptcontollers-----------------------------------------------------------------------------
 //Speichern der Adressen in die Liste mit der zugehörigen Funktion
@@ -121,6 +124,28 @@ bool readMessage(){
   }
   else return false;
 }
+
+// TODO: check if this code actually works as intended
+void encodeMessage(){
+  uint64_t remainder;
+  uint64_t message;           // message to transmit
+
+  for(int i = 0; i < 8; i++){
+    message = (message << 8) | (uint8_t)global_message[i]; // merge the message into a single variable
+  }
+
+  remainder = message << 15;                // append as many zeroes as the degree of the polynomial - 1
+  // divide the message with the generator polynomial
+  for(int i = 15; i > 0; i--){
+    // check for leading 0 -> no XOR while a leading 0
+    if((remainder << i+1) != 0){
+      remainder = remainder ^ (generator_polynomial << i);
+    }
+  }
+  // append remainder to message
+  message = (message << 15) | remainder   // should only append the remainder after the division
+}
+
 //___________________________________________________________________________________________
 void sendSOF(){
   if (DEBUG) Serial.println("sendSOF");
@@ -201,6 +226,27 @@ void sendMessage(char adress,char dataSize,unsigned data){
   sendData(data,dataSize);
   sendEOF();
 }
+
+// TODO: transform the message back into its seperate parts; check if this code works
+void decodeMessage(){
+  uint64_t remainder;
+  uint64_t message;           // message received
+
+  for(int i = 15; i >= 0; i--){
+    // check for leading 0 -> no XOR while a leading 0
+    if((remainder << i+1) != 0){
+      remainder = remainder ^ (generator_polynomial << i);
+    }
+  }
+
+  for(int i = 0; i < 17; i++){
+    if((remainder & (0x01 << i)) == 0x01){
+      // ERROR in the message, ignore this message
+      break;
+    } 
+  }
+}
+
 //___________________________________________________________________________________________
 void USB(){
 
