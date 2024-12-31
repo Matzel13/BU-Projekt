@@ -18,6 +18,8 @@ volatile char global_adress;                //eingelesene Adresse
 volatile char global_COF = 0x00;            //Größe der Nachricht
 volatile char global_message[8];            //eingelesene Daten
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ hier vielleicht auf uint_64 umsteigen? Überlegung für CRC
+// alternativ: encodede message als uint64t speichern:
+volatile uint64_t encodedMessage;
 volatile int global_adressSize = 3;         //Adressengröße in Bits (maximal (2^adressSize)-2 Teilnehmer)
 volatile int global_COFSize = 3;            //größe des COF Pakets
 volatile char myAdress = NOADRESS;          //Standardadresse eines neuen Busteilnehmers
@@ -128,13 +130,12 @@ bool readMessage(){
 // TODO: check if this code actually works as intended
 void encodeMessage(){
   uint64_t remainder;
-  uint64_t message;           // message to transmit
 
   for(int i = 0; i < 8; i++){
-    message = (message << 8) | (uint8_t)global_message[i]; // merge the message into a single variable
+    encodedMessage = (encodedMessage << 8) | (uint8_t)global_message[i]; // merge the message into a single variable
   }
 
-  remainder = message << 15;                // append as many zeroes as the degree of the polynomial - 1
+  remainder = encodedMessage << 15;                // append as many zeroes as the degree of the polynomial - 1
   // divide the message with the generator polynomial
   for(int i = 15; i > 0; i--){
     // check for leading 0 -> no XOR while a leading 0
@@ -143,7 +144,7 @@ void encodeMessage(){
     }
   }
   // append remainder to message
-  message = (message << 15) | remainder   // should only append the remainder after the division
+  encodedMessage = (encodedMessage << 15) | remainder   // should only append the remainder after the division
 }
 
 //___________________________________________________________________________________________
@@ -187,10 +188,11 @@ void sendCOF(char dataSize){
   if (DEBUG) Serial.println();
 }
 
+
+// TODO: check if the code works
 void sendData(unsigned data,char dataSize){
   if (DEBUG) Serial.println("sendData");
-  for (int j = 0; j <= dataSize; j++) {
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 64; i++) {
       if ((data & 0x01) == 0x01) {
         digitalWrite(COMM_OUT, HIGH);
         if (DEBUG) Serial.print("1");
@@ -201,7 +203,6 @@ void sendData(unsigned data,char dataSize){
       DELAY(SENDDELAY);
       data = data >> 1;
     }
-  }
   if (DEBUG) Serial.println();
 }
 
@@ -223,7 +224,8 @@ void sendMessage(char adress,char dataSize,unsigned data){
   sendSOF();
   sendAdress(adress);
   sendCOF(dataSize);
-  sendData(data,dataSize);
+  encodeMessage();
+  sendData(encodedMessage,dataSize);
   sendEOF();
 }
 
