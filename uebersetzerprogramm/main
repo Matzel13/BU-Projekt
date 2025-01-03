@@ -25,6 +25,13 @@ def load_mapping():
     except FileNotFoundError:
         ctk.CTkLabel(root, text="No saved mapping found. Using default.").pack(pady=5)
 
+# Reset Key Mappings
+def reset_mappings():
+    global key_mappings
+    key_mappings = {module: {key: "" for row in key_layout for key in row} for module in key_mappings}
+    update_display()
+    ctk.CTkLabel(root, text="Key mappings have been reset.").pack(pady=5)
+
 # Update Display Labels
 def update_display():
     for row in range(4):
@@ -124,7 +131,7 @@ entry_field.pack(side="left", padx=5)
 instruction_label = ctk.CTkLabel(entry_frame, text="(Use '+' to combine keys, e.g., 'ctrl+c')")
 instruction_label.pack(side="left", padx=5)
 
-# Save and Load Buttons
+# Save, Load, and Reset Buttons
 control_frame = ctk.CTkFrame(root)
 control_frame.pack(pady=10)
 
@@ -133,6 +140,10 @@ save_button.pack(side="left", padx=10)
 
 load_button = ctk.CTkButton(control_frame, text="Load Mapping", command=load_mapping)
 load_button.pack(side="left", padx=10)
+
+# Add Reset Button
+reset_button = ctk.CTkButton(control_frame, text="Reset Mappings", command=reset_mappings, fg_color="red")
+reset_button.pack(side="left", padx=10)
 
 # Start the GUI
 update_display()
