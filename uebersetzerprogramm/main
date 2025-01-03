@@ -1,0 +1,139 @@
+import customtkinter as ctk
+import json
+
+# Default 4x4 Key Layout
+key_layout = [[f"Key {row * 4 + col + 1}" for col in range(4)] for row in range(4)]
+
+# Default Mapping for Multiple Modules
+key_mappings = {"Module 1": {key: "" for row in key_layout for key in row}}
+current_module = "Module 1"
+
+# Save Mapping to File
+def save_mapping():
+    with open("key_mappings.json", "w") as f:
+        json.dump(key_mappings, f)
+    ctk.CTkLabel(root, text="Key mapping saved successfully!").pack(pady=5)
+
+# Load Mapping from File
+def load_mapping():
+    global key_mappings
+    try:
+        with open("key_mappings.json", "r") as f:
+            key_mappings = json.load(f)
+        update_display()
+        ctk.CTkLabel(root, text="Key mapping loaded successfully!").pack(pady=5)
+    except FileNotFoundError:
+        ctk.CTkLabel(root, text="No saved mapping found. Using default.").pack(pady=5)
+
+# Update Display Labels
+def update_display():
+    for row in range(4):
+        for col in range(4):
+            key = key_layout[row][col]
+            labels[row][col].configure(text=f"{key}\n({key_mappings[current_module].get(key, '')})")
+
+# Normalize Key Binding
+def normalize_key_binding(binding):
+    mapping = {
+        "ctrl": "Control",
+        "alt": "Alt",
+        "shift": "Shift",
+        "enter": "Return",
+        "space": "Space"
+    }
+    parts = binding.split("+")
+    normalized_parts = [mapping.get(part.lower(), part) for part in parts]
+    return "+".join(normalized_parts)
+
+# Assign Key Function
+def assign_key(row, col):
+    key = key_layout[row][col]
+    new_binding = entry_var.get()
+    if not new_binding:
+        ctk.CTkLabel(root, text="Please enter a valid key binding.").pack(pady=5)
+        return
+    normalized_binding = normalize_key_binding(new_binding)
+    key_mappings[current_module][key] = normalized_binding
+    update_display()
+
+# Switch Module
+def switch_module(module):
+    global current_module
+    current_module = module
+    if module not in key_mappings:
+        key_mappings[module] = {key: "" for row in key_layout for key in row}
+    update_display()
+
+# Create Main Window
+ctk.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
+ctk.set_default_color_theme("blue")
+
+root = ctk.CTk()
+root.title("4x4 Keyboard Key Mapper")
+
+# Module Selection
+module_frame = ctk.CTkFrame(root)
+module_frame.pack(pady=10)
+
+module_label = ctk.CTkLabel(module_frame, text="Select Module:")
+module_label.pack(side="left", padx=5)
+
+module_var = ctk.StringVar(value="Module 1")
+module_dropdown = ctk.CTkOptionMenu(module_frame, variable=module_var, values=list(key_mappings.keys()), command=switch_module)
+module_dropdown.pack(side="left", padx=5)
+
+# Add Module Button
+def add_module():
+    new_module = f"Module {len(key_mappings) + 1}"
+    key_mappings[new_module] = {key: "" for row in key_layout for key in row}
+    module_dropdown.configure(values=list(key_mappings.keys()))
+    switch_module(new_module)
+
+add_module_button = ctk.CTkButton(module_frame, text="Add Module", command=add_module)
+add_module_button.pack(side="left", padx=5)
+
+# Key Grid
+frame = ctk.CTkFrame(root)
+frame.pack(pady=10)
+
+labels = [[None for _ in range(4)] for _ in range(4)]
+for row in range(4):
+    for col in range(4):
+        key = key_layout[row][col]
+        label_frame = ctk.CTkFrame(frame)
+        label_frame.grid(row=row, column=col, padx=5, pady=5)
+
+        labels[row][col] = ctk.CTkLabel(label_frame, text=f"{key}\n({key_mappings[current_module][key]})", width=100, height=50, corner_radius=5)
+        labels[row][col].pack()
+
+        button = ctk.CTkButton(label_frame, text="Set", command=lambda r=row, c=col: assign_key(r, c))
+        button.pack(pady=(5, 0))
+
+# Entry Field for Key Binding
+entry_frame = ctk.CTkFrame(root)
+entry_frame.pack(pady=10)
+
+entry_label = ctk.CTkLabel(entry_frame, text="Key Binding:")
+entry_label.pack(side="left", padx=5)
+
+entry_var = ctk.StringVar()
+entry_field = ctk.CTkEntry(entry_frame, textvariable=entry_var)
+entry_field.pack(side="left", padx=5)
+
+# Custom Keybind Instructions
+instruction_label = ctk.CTkLabel(entry_frame, text="(Use '+' to combine keys, e.g., 'ctrl+c')")
+instruction_label.pack(side="left", padx=5)
+
+# Save and Load Buttons
+control_frame = ctk.CTkFrame(root)
+control_frame.pack(pady=10)
+
+save_button = ctk.CTkButton(control_frame, text="Save Mapping", command=save_mapping)
+save_button.pack(side="left", padx=10)
+
+load_button = ctk.CTkButton(control_frame, text="Load Mapping", command=load_mapping)
+load_button.pack(side="left", padx=10)
+
+# Start the GUI
+update_display()
+root.mainloop()
