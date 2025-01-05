@@ -12,7 +12,7 @@ current_module = "Module 1"
 def save_mapping():
     with open("key_mappings.json", "w") as f:
         json.dump(key_mappings, f)
-    ctk.CTkLabel(root, text="Key mapping saved successfully!").pack(pady=5)
+    update_display()
 
 # Load Mapping from File
 def load_mapping():
@@ -21,16 +21,8 @@ def load_mapping():
         with open("key_mappings.json", "r") as f:
             key_mappings = json.load(f)
         update_display()
-        ctk.CTkLabel(root, text="Key mapping loaded successfully!").pack(pady=5)
     except FileNotFoundError:
-        ctk.CTkLabel(root, text="No saved mapping found. Using default.").pack(pady=5)
-
-# Reset Key Mappings
-def reset_mappings():
-    global key_mappings
-    key_mappings = {module: {key: "" for row in key_layout for key in row} for module in key_mappings}
-    update_display()
-    ctk.CTkLabel(root, text="Key mappings have been reset.").pack(pady=5)
+        pass
 
 # Update Display Labels
 def update_display():
@@ -38,6 +30,7 @@ def update_display():
         for col in range(4):
             key = key_layout[row][col]
             labels[row][col].configure(text=f"{key}\n({key_mappings[current_module].get(key, '')})")
+    update_remove_button_state()
 
 # Normalize Key Binding
 def normalize_key_binding(binding):
@@ -57,10 +50,15 @@ def assign_key(row, col):
     key = key_layout[row][col]
     new_binding = entry_var.get()
     if not new_binding:
-        ctk.CTkLabel(root, text="Please enter a valid key binding.").pack(pady=5)
         return
     normalized_binding = normalize_key_binding(new_binding)
     key_mappings[current_module][key] = normalized_binding
+    update_display()
+
+# Reset Key Function
+def reset_key(row, col):
+    key = key_layout[row][col]
+    key_mappings[current_module][key] = ""
     update_display()
 
 # Switch Module
@@ -72,15 +70,22 @@ def switch_module(module):
     update_display()
 
 # Create Main Window
-ctk.set_appearance_mode("System")  # Modes: "System" (default), "Dark", "Light"
+ctk.set_appearance_mode("dark")  # Modes: "System" (default), "Dark", "Light"
 ctk.set_default_color_theme("blue")
 
 root = ctk.CTk()
-root.title("4x4 Keyboard Key Mapper")
+root.title("Keypad Mapper")
+
+# Configure grid layout for the main window
+root.grid_rowconfigure(0, weight=1)  # Module selector
+root.grid_rowconfigure(1, weight=10) # Key grid
+root.grid_rowconfigure(2, weight=1)  # Entry field
+root.grid_rowconfigure(3, weight=1)  # Control buttons
+root.grid_columnconfigure(0, weight=1)
 
 # Module Selection
 module_frame = ctk.CTkFrame(root)
-module_frame.pack(pady=10)
+module_frame.grid(row=0, column=0, sticky="nsew", pady=10)
 
 module_label = ctk.CTkLabel(module_frame, text="Select Module:")
 module_label.pack(side="left", padx=5)
@@ -93,32 +98,90 @@ module_dropdown.pack(side="left", padx=5)
 def add_module():
     new_module = f"Module {len(key_mappings) + 1}"
     key_mappings[new_module] = {key: "" for row in key_layout for key in row}
-    module_dropdown.configure(values=list(key_mappings.keys()))
-    switch_module(new_module)
+    module_dropdown.configure(values=list(key_mappings.keys()))  # Update the dropdown list
+    module_var.set(new_module)  # Set the newly created module as the current selection
+    switch_module(new_module)  # Switch to the new module
+
 
 add_module_button = ctk.CTkButton(module_frame, text="Add Module", command=add_module)
 add_module_button.pack(side="left", padx=5)
 
+# Remove Module Button
+# Remove Module Button
+def remove_module():
+    global current_module
+    if current_module == "Module 1":
+        return  # Can't remove "Module 1"
+    
+    # Find the index of the current module
+    module_index = list(key_mappings.keys()).index(current_module)
+    
+    # Remove the current module
+    del key_mappings[current_module]
+    
+    # Update the dropdown values
+    updated_modules = list(key_mappings.keys())
+    module_dropdown.configure(values=updated_modules)
+    
+    # If the current module was not "Module 1", select the next module in the list
+    if module_index > 0:
+        current_module = updated_modules[module_index - 1]
+    else:
+        current_module = updated_modules[0]
+    
+    module_var.set(current_module)  # Update the dropdown display to the new current module
+    update_display()
+
+
+remove_module_button = ctk.CTkButton(module_frame, text="Remove Module", command=remove_module, fg_color="#FF7F7F")
+remove_module_button.pack(side="left", padx=5)
+
+# Update the state of the remove button based on the number of modules
+def update_remove_button_state():
+    if len(key_mappings) == 1 or current_module == "Module 1":  # Only "Module 1" exists or is selected
+        remove_module_button.configure(state="disabled", fg_color="#D3D3D3")  # Disabled with gray color
+    else:
+        remove_module_button.configure(state="normal", fg_color="#FF7F7F")  # Normal color when active
+
+# Update display to check button state
+def update_display():
+    for row in range(4):
+        for col in range(4):
+            key = key_layout[row][col]
+            labels[row][col].configure(text=f"{key}\n({key_mappings[current_module].get(key, '')})")
+    update_remove_button_state()
+
+# Other parts of the code remain unchanged...
+
+
 # Key Grid
 frame = ctk.CTkFrame(root)
-frame.pack(pady=10)
+frame.grid(row=1, column=0, sticky="nsew", pady=10)
+frame.grid_rowconfigure(tuple(range(4)), weight=1)
+frame.grid_columnconfigure(tuple(range(4)), weight=1)
 
 labels = [[None for _ in range(4)] for _ in range(4)]
 for row in range(4):
     for col in range(4):
         key = key_layout[row][col]
         label_frame = ctk.CTkFrame(frame)
-        label_frame.grid(row=row, column=col, padx=5, pady=5)
+        label_frame.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
 
-        labels[row][col] = ctk.CTkLabel(label_frame, text=f"{key}\n({key_mappings[current_module][key]})", width=100, height=50, corner_radius=5)
-        labels[row][col].pack()
+        # Label for the key and its mapping
+        labels[row][col] = ctk.CTkLabel(label_frame, text=f"{key}\n({key_mappings[current_module][key]})", corner_radius=5)
+        labels[row][col].pack(expand=True, fill="both", padx=5, pady=5)
 
-        button = ctk.CTkButton(label_frame, text="Set", command=lambda r=row, c=col: assign_key(r, c))
-        button.pack(pady=(5, 0))
+        # Set Button
+        button = ctk.CTkButton(label_frame, text="Set", command=lambda r=row, c=col: assign_key(r, c), fg_color="#5A9BD8")
+        button.pack(pady=(5, 0), expand=True)
+
+        # Reset Button
+        reset_button = ctk.CTkButton(label_frame, text="Reset", command=lambda r=row, c=col: reset_key(r, c), fg_color="#FF7F7F")
+        reset_button.pack(pady=(5, 0), expand=True)
 
 # Entry Field for Key Binding
 entry_frame = ctk.CTkFrame(root)
-entry_frame.pack(pady=10)
+entry_frame.grid(row=2, column=0, sticky="nsew", pady=10)
 
 entry_label = ctk.CTkLabel(entry_frame, text="Key Binding:")
 entry_label.pack(side="left", padx=5)
@@ -131,19 +194,15 @@ entry_field.pack(side="left", padx=5)
 instruction_label = ctk.CTkLabel(entry_frame, text="(Use '+' to combine keys, e.g., 'ctrl+c')")
 instruction_label.pack(side="left", padx=5)
 
-# Save, Load, and Reset Buttons
+# Save and Load Buttons
 control_frame = ctk.CTkFrame(root)
-control_frame.pack(pady=10)
+control_frame.grid(row=3, column=0, sticky="nsew", pady=10)
 
 save_button = ctk.CTkButton(control_frame, text="Save Mapping", command=save_mapping)
 save_button.pack(side="left", padx=10)
 
 load_button = ctk.CTkButton(control_frame, text="Load Mapping", command=load_mapping)
 load_button.pack(side="left", padx=10)
-
-# Add Reset Button
-reset_button = ctk.CTkButton(control_frame, text="Reset Mappings", command=reset_mappings, fg_color="red")
-reset_button.pack(side="left", padx=10)
 
 # Start the GUI
 update_display()
