@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <iostream>
 #include <list>
+#include <cstring>
 struct device
 {
     char adress;

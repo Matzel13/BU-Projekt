@@ -1,4 +1,9 @@
 #include "header.h"
+
+#include <sstream>
+#include <iomanip>
+
+
 // true -> Upload fuer Master | false -> Upload fur Slave
 #define SENDER true
 //Spezifische Konfiguration fuer Slaves 
@@ -43,6 +48,7 @@ volatile char myAdress = STARTADRESS;
 //Feste Adresse des Hauptcontrollers
 volatile char controllerAdress = 0x01; 
 
+char* global_BITSTUFFED_message; //Bitstuffed message
 //Listen des Hauptcontollers------------------------------
 //Speichern der Adressen in die Liste mit der zugehoerigen Funktion
 
@@ -73,6 +79,33 @@ volatile char controllerAdress = 0x01;
 
 
 //Funktionen aller Teilnehmer-------------------------------
+
+void appendChar(char* &str, char c) {
+    if (str == NULL) {
+        // Wenn str null ist, initialisieren Sie es mit dem neuen Zeichen
+        str = new char[2]; // 1 Zeichen + Nullterminator
+        str[0] = c;
+        str[1] = '\0';
+    } else {
+        size_t len = strlen(str);
+        char* newStr = new char[len + 2]; // +1 für das neue Zeichen, +1 für den Nullterminator
+        strcpy(newStr, str);
+        newStr[len] = c;
+        newStr[len + 1] = '\0';
+        delete[] str;
+        str = newStr;
+    }
+}
+
+std::string toHexString(const char* data) {
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0');
+    while (*data) {
+        oss << std::setw(2) << static_cast<int>(static_cast<unsigned char>(*data));
+        ++data;
+    }
+    return oss.str();
+}
 
 //receive
 bool sync(){
@@ -166,7 +199,7 @@ bool awaitBusFree(){
   }
   return false;
 }
-
+//Bleibt gleich
 void sendSOF(){
   if (DEBUG) Serial.println("sendSOF");
   digitalWrite(COMM_OUT, HIGH);
@@ -179,29 +212,30 @@ void sendAdress(char adress) {
   if (DEBUG) Serial.println("sendAdress");
   for (int i = 0; i < (global_adressSize); i++) {
     if ((adress & 0x01) == 0x01) {
-      digitalWrite(COMM_OUT, HIGH);
+      appendChar(global_BITSTUFFED_message, '1');
+      //digitalWrite(COMM_OUT, HIGH);
       if (DEBUG) Serial.print("1");
     } else {
-      digitalWrite(COMM_OUT, LOW);
+      //digitalWrite(COMM_OUT, LOW);
+      appendChar(global_BITSTUFFED_message, '0');
       if (DEBUG) Serial.print("0");
     }
-    DELAY(SENDDELAY);
     adress = adress >> 1;
   }
   if (DEBUG) Serial.println();
 }
 
+
 void sendCOF(char dataSize){
   if (DEBUG) Serial.println("sendCOF");
   for (int i = 0; i < (global_COFSize); i++) {
     if ((dataSize & 0x01) == 0x01) {
-      digitalWrite(COMM_OUT, HIGH);
+      appendChar(global_BITSTUFFED_message, '1');
       if (DEBUG) Serial.print("1");
     } else {
-      digitalWrite(COMM_OUT, LOW);
+      appendChar(global_BITSTUFFED_message, '0');
       if (DEBUG) Serial.print("0");
     }
-    DELAY(SENDDELAY);
     dataSize = dataSize >> 1;
   }
   if (DEBUG) Serial.println();
@@ -212,19 +246,18 @@ void sendData(unsigned data,char dataSize){
   for (int j = 0; j <= dataSize; j++) {
     for (int i = 0; i < 8; i++) {
       if ((data & 0x01) == 0x01) {
-        digitalWrite(COMM_OUT, HIGH);
+        appendChar(global_BITSTUFFED_message, '1');
         if (DEBUG) Serial.print("1");
       } else {
-        digitalWrite(COMM_OUT, LOW);
+        appendChar(global_BITSTUFFED_message, '0');
         if (DEBUG) Serial.print("0");
       }
-      DELAY(SENDDELAY);
       data = data >> 1;
     }
   }
   if (DEBUG) Serial.println();
 }
-
+//Bleibt gleich
 void sendEOF(){
   if (DEBUG) Serial.println("sendEOF");
   digitalWrite(COMM_OUT, HIGH);
@@ -238,16 +271,33 @@ void sendEOF(){
   if (DEBUG) Serial.println();
 }
 
+void writeBitstuffedMessage(){
+  if (DEBUG) Serial.println("writebitstuffedmessage");
+  for (int i = 0; i < strlen(global_BITSTUFFED_message); i++){
+    if (global_BITSTUFFED_message[i] == '1'){
+      digitalWrite(COMM_OUT, HIGH);
+    }
+    else digitalWrite(COMM_OUT, LOW);
+    DELAY(SENDDELAY);
+  }
+  
+}
+
 void sendMessage(char adress,char dataSize,unsigned data){
   if (DEBUG) Serial.println("sendMessage");
-  //Abfrage Bus frei
-  if (awaitBusFree())  { 
-    Serial.println("Sending!");                       
-    sendSOF();
     sendAdress(adress);
     sendCOF(dataSize);
     sendData(data,dataSize);
+    Serial.println("Message:");
+    Serial.println(toHexString(global_BITSTUFFED_message).c_str());
+  //Abfrage Bus frei
+  if (awaitBusFree())  { 
+
+    Serial.println("Sending!");                       
+    sendSOF();
+    writeBitstuffedMessage();
     sendEOF();
+    global_BITSTUFFED_message = NULL;
   }
 }
 //------------------------------

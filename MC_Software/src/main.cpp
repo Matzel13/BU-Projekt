@@ -1,6 +1,11 @@
 #include "header.h"
+
+#include <sstream>
+#include <iomanip>
+
+
 // true -> Upload fuer Master | false -> Upload fur Slave
-#define SENDER true
+#define SENDER false
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
@@ -19,6 +24,7 @@
   //Adresse des Hauptmoduls
   #define STARTADRESS 0x01
 #endif
+#define BITSTUFFING 3
 
 #define DELAY(x) delayMicroseconds(x)
 #define SENDDELAY 1000                      
@@ -27,7 +33,9 @@
 // Zum testen!
 #define DEBUG false                    
 #define DEBUG1 false
-#define DEBUG2 true
+#define DEBUG2 false
+#define DEBUG3 true
+#define DEBUG4 true
 
 volatile unsigned long timeStamp;      //Zeit Merker
 volatile unsigned long delayTime;      //berechnete Taktzeit
@@ -43,6 +51,10 @@ volatile char myAdress = STARTADRESS;
 //Feste Adresse des Hauptcontrollers
 volatile char controllerAdress = 0x01; 
 
+char* global_decoded_message; //Bitstuffed message
+char* global_BITSTUFFED_message; //Bitstuffed message
+char* global_BITSTUFFED_message_recv; //Bitstuffed message empfangen
+char* global_decoded_message_recv; //decodierte message empfangen
 //Listen des Hauptcontollers------------------------------
 //Speichern der Adressen in die Liste mit der zugehoerigen Funktion
 
@@ -74,6 +86,23 @@ volatile char controllerAdress = 0x01;
 
 //Funktionen aller Teilnehmer-------------------------------
 
+void appendChar(char* &str, char c) {
+    if (str == NULL) {
+        // Wenn str null ist, initialisieren Sie es mit dem neuen Zeichen
+        str = new char[2]; // 1 Zeichen + Nullterminator
+        str[0] = c;
+        str[1] = '\0';
+    } else {
+        size_t len = strlen(str);
+        char* newStr = new char[len + 2]; // +1 für das neue Zeichen, +1 für den Nullterminator
+        strcpy(newStr, str);
+        newStr[len] = c;
+        newStr[len + 1] = '\0';
+        delete[] str;
+        str = newStr;
+    }
+}
+
 //receive
 bool sync(){
   if (DEBUG) Serial.println("sync");
@@ -85,68 +114,161 @@ bool sync(){
       lok_delayTime < SENDDELAY*1.75){
     delayTime = lok_delayTime/1.5;
     Serial.println(delayTime);                                                       // Ich kann diese Zeile nicht loeschen?? Warum?!
-    DELAY(delayTime);
+    DELAY(delayTime*1.2);
+    //digitalWrite(COMM_OUT, HIGH);
+    //DELAY(delayTime);
     return true;
   }
   else return false;
 }
 
-char readAdress() {
-  
-  if (DEBUG) Serial.println("readAdress");
-  char lok_adress = 0x00;
-  for (int i = 0; i < global_adressSize; i++){
-    if (digitalRead(COMM_IN) == HIGH)
-    {
-      lok_adress |= (1 << i);
+// Funktion zum Dekodieren von Bitstuffing
+void decodeBitstuffedMessage(const char* stuffedMessage, char* &decodedMessage, int x) {
+    int count;
+    char lastBit = '\0';
+    size_t len = strlen(stuffedMessage);
+    decodedMessage = new char[len + 1]; // +1 für den Nullterminator
+    size_t decodedIndex = 0;
+    count = 1; // Zähler auf 1 setzen
+    
+    // Durchlaufen der bitgestopften Nachricht
+    for (size_t i = 0; i < len; ++i) {
+        char currentBit = stuffedMessage[i];
+        
+        if (currentBit == lastBit) {
+            count++;
+            if (count < x) {
+                decodedMessage[decodedIndex++] = currentBit;
+            } else {// Wenn x gleiche Bits gefunden wurden
+                decodedMessage[decodedIndex++] = currentBit; // Füge das Bit hinzu
+                i++; // überspringe das nächste Bit
+                count = 1; // Zähler zurücksetzen
+                if (i >= len) break; // Vermeiden von Überläufen
+                currentBit = stuffedMessage[i];
+            }
+        } else {
+            decodedMessage[decodedIndex++] = currentBit;
+            count = 1; // Zähler zurücksetzen und auf 1 setzen
+        }
+
+        lastBit = currentBit;
+        
     }
-    DELAY(delayTime);
-  }
-  global_adress = lok_adress;
-  return lok_adress;
+
+    decodedMessage[decodedIndex] = '\0'; // Nullterminator hinzufügen
+    if (DEBUG3) Serial.println("Empfangene decodierte Nachricht:");
+    if (DEBUG3) Serial.println(decodedMessage);
 }
 
-char readCOF(){
-  if (DEBUG) Serial.println("readCOF");
-  char lok_COF =0x00;
-  for (int i = 0; i < global_COFSize; i++){
-    if (digitalRead(COMM_IN) == HIGH)
-    {
-      lok_COF |= (1 << i);
+
+
+void parseDecodedMessage(const char* decodedMessage) {
+    // Adresse extrahieren
+    global_adress = 0;
+    for (int i = 0; i < global_adressSize; i++) {
+        if (decodedMessage[i] == '1') {
+            global_adress |= (1 << i);
+        }
     }
-    DELAY(delayTime);
-  }
-  global_COF = lok_COF;
-  return lok_COF;   
-}
 
-void readData(char dataSize) {
-  if (DEBUG) Serial.println("readData");
-  for (int n = dataSize; n >= 0; n--){
-    char message = 0x00;
-    for (int i = 0; i < 8; i++){
-      if (digitalRead(COMM_IN) == HIGH)
-      {
-        message |= (1 << i);
-      }
-      DELAY(delayTime);
+    // COF extrahieren
+    global_COF = 0;
+    for (int i = 0; i < global_COFSize; i++) {
+        if (decodedMessage[global_adressSize + i] == '1') {
+            global_COF |= (1 << i);
+        }
     }
-    global_message[n] = message;
 
-  }  
+    // Daten extrahieren basierend auf der Größe des COF
+    int dataSize = global_COF + 1; // COF gibt die Größe der Nachricht in Bytes an (0 bedeutet 1 Byte)
+    for (int i = 0; i < dataSize; i++) {
+        char message[8] = {0};
+        for (int j = 0; j < 8; j++) {
+            if (decodedMessage[global_adressSize + global_COFSize + i * 8 + j] == '1') {
+                message[i] |= (1 << j);
+            }
+            
+          }
+        global_message[dataSize-1-i] = message[i];
+        //global_message[i] = message[i];
+    }
+    
+
+    // Ausgabe der extrahierten Bestandteile
+    if (DEBUG3) Serial.print("Empfangene Adresse: ");
+    if (DEBUG3) Serial.println(global_adress, HEX);
+    if (DEBUG3) Serial.print("Empfangener COF: ");
+    if (DEBUG3) Serial.println(global_COF, HEX);
+    if (DEBUG3) Serial.print("Empfangene Daten: ");
+    if (DEBUG3) for (int i = 0; i < dataSize; i++) {
+        Serial.print(global_message[i], HEX);
+        Serial.print(" ");
+    }
+    if (DEBUG3) Serial.println();
 }
 
-bool readMessage(){
-  if (DEBUG) Serial.println("readMessage");
-  //neue Nachricht auf dem Bus 
-  if (sync()) {                   
-      readAdress();
-      readCOF();
-      readData(global_COF);
-      return true; 
-  }
-  else return false;
+
+
+bool readMessage() {
+    if (DEBUG) Serial.println("readMessage");
+    // neue Nachricht auf dem Bus
+    if (sync()) {
+        // Initialisieren Sie die globale bitgestopfte Nachricht
+        global_BITSTUFFED_message_recv = new char[1];
+        global_BITSTUFFED_message_recv[0] = '\0';
+        // Lesen Sie die Nachricht bitweise ein
+        int eofCounter = 0;
+        while (true) {
+            char bit = (digitalRead(COMM_IN) == HIGH) ? '1' : '0';
+            appendChar(global_BITSTUFFED_message_recv, bit);
+            //digitalWrite(COMM_OUT, HIGH);
+            DELAY(delayTime);
+            //digitalWrite(COMM_OUT, LOW);
+            // Überprüfen Sie auf EOF (Ende der Nachricht)
+            if (bit == '1') {
+                eofCounter = 1; // Start des EOF-Musters erkannt
+            } else if (eofCounter > 0) {
+                eofCounter++;
+                if (eofCounter == 6) {
+                    // EOF-Muster erkannt: 1 gefolgt von 5 Nullen
+                    // Entfernen Sie das EOF-Muster aus der Nachricht
+                    global_BITSTUFFED_message_recv[strlen(global_BITSTUFFED_message_recv) - 6] = '\0';
+                    break;
+                }
+            } else {
+                eofCounter = 0; // Zähler zurücksetzen, wenn das Muster unterbrochen wird
+            }
+        }
+        if (DEBUG3) Serial.println("Empfangene Nachricht:");
+        if (DEBUG3) Serial.println((global_BITSTUFFED_message_recv));
+        // Dekodieren Sie die bitgestopfte Nachricht
+        char* decodedMessage = NULL;
+        decodeBitstuffedMessage(global_BITSTUFFED_message_recv, decodedMessage, BITSTUFFING);
+        global_decoded_message_recv = decodedMessage;
+        if (DEBUG3) Serial.println("Empfangene decodierte Nachricht:");
+        if (DEBUG3) Serial.println(global_decoded_message_recv);
+
+        parseDecodedMessage(global_decoded_message_recv);
+
+        if (DEBUG3) Serial.println("Adresse:");
+        if (DEBUG3) Serial.println(global_adress,HEX);
+        if (DEBUG3) Serial.println("COF:");
+        if (DEBUG3) Serial.println(global_COF,HEX);
+        if (DEBUG3) Serial.println("Daten:");
+        if (DEBUG3) for (int i = 0; i <= global_COF; i++) {
+            Serial.println(global_message[i],HEX);
+        }
+        
+        delete[] decodedMessage; // Speicher freigeben
+        return true;
+    } else {
+        return false;
+    }
 }
+
+
+
+
 //------------------------------
 
 //send
@@ -166,7 +288,7 @@ bool awaitBusFree(){
   }
   return false;
 }
-
+//Bleibt gleich
 void sendSOF(){
   if (DEBUG) Serial.println("sendSOF");
   digitalWrite(COMM_OUT, HIGH);
@@ -179,29 +301,30 @@ void sendAdress(char adress) {
   if (DEBUG) Serial.println("sendAdress");
   for (int i = 0; i < (global_adressSize); i++) {
     if ((adress & 0x01) == 0x01) {
-      digitalWrite(COMM_OUT, HIGH);
+      appendChar(global_decoded_message, '1');
+      //digitalWrite(COMM_OUT, HIGH);
       if (DEBUG) Serial.print("1");
     } else {
-      digitalWrite(COMM_OUT, LOW);
+      //digitalWrite(COMM_OUT, LOW);
+      appendChar(global_decoded_message, '0');
       if (DEBUG) Serial.print("0");
     }
-    DELAY(SENDDELAY);
     adress = adress >> 1;
   }
   if (DEBUG) Serial.println();
 }
 
+
 void sendCOF(char dataSize){
   if (DEBUG) Serial.println("sendCOF");
   for (int i = 0; i < (global_COFSize); i++) {
     if ((dataSize & 0x01) == 0x01) {
-      digitalWrite(COMM_OUT, HIGH);
+      appendChar(global_decoded_message, '1');
       if (DEBUG) Serial.print("1");
     } else {
-      digitalWrite(COMM_OUT, LOW);
+      appendChar(global_decoded_message, '0');
       if (DEBUG) Serial.print("0");
     }
-    DELAY(SENDDELAY);
     dataSize = dataSize >> 1;
   }
   if (DEBUG) Serial.println();
@@ -212,42 +335,105 @@ void sendData(unsigned data,char dataSize){
   for (int j = 0; j <= dataSize; j++) {
     for (int i = 0; i < 8; i++) {
       if ((data & 0x01) == 0x01) {
-        digitalWrite(COMM_OUT, HIGH);
+        appendChar(global_decoded_message, '1');
         if (DEBUG) Serial.print("1");
       } else {
-        digitalWrite(COMM_OUT, LOW);
+        appendChar(global_decoded_message, '0');
         if (DEBUG) Serial.print("0");
       }
-      DELAY(SENDDELAY);
       data = data >> 1;
     }
   }
   if (DEBUG) Serial.println();
 }
-
+//Bleibt gleich
 void sendEOF(){
   if (DEBUG) Serial.println("sendEOF");
   digitalWrite(COMM_OUT, HIGH);
   if (DEBUG) Serial.print("1");
   DELAY(SENDDELAY);
   digitalWrite(COMM_OUT, LOW);
-  for (int i = 0; i < 4; i++) {   //5 mal?                
+  for (int i = 0; i < 5; i++) {   //5 mal?                
     if (DEBUG) Serial.print("0");                 
     DELAY(SENDDELAY);                             
   }
   if (DEBUG) Serial.println();
 }
 
+void writeBitstuffedMessage(int x) {
+    if (DEBUG) Serial.println("writeBitstuffedMessage");
+
+    std::string stuffedMessage;
+    int count = 0;
+    char lastBit = '\0';
+
+    for (int i = 0; i < strlen(global_decoded_message); i++) {
+        char currentBit = global_decoded_message[i];
+        stuffedMessage += currentBit;
+
+        if (currentBit == lastBit) {
+            count++;
+            if (count == x) { // Wenn x gleiche Bits gefunden wurden
+                // Bitwechsel einfügen
+                char stuffedBit = (currentBit == '1') ? '0' : '1';
+                stuffedMessage += stuffedBit;
+                count = 1; // Zähler zurücksetzen
+                switch (currentBit)
+                {
+                case '0': lastBit = '1';
+                  /* code */
+                  break;
+                case '1': lastBit = '0';
+                  /* code */
+                  break;
+                default:
+                  break;
+                }
+            }
+        } else {
+            count = 1; // Zähler zurücksetzen und auf 1 setzen
+            lastBit = currentBit;
+        }
+
+        
+    }
+
+    // Update the global_BITSTUFFED_message with the stuffed message
+    delete[] global_BITSTUFFED_message;
+    global_BITSTUFFED_message = new char[stuffedMessage.length() + 1];
+    strcpy(global_BITSTUFFED_message, stuffedMessage.c_str());
+    
+    if (DEBUG3) Serial.println("Decoded Message:");
+    if (DEBUG3) Serial.println(global_decoded_message);
+    if (DEBUG3) Serial.println("Bitstuffed Message:");
+    if (DEBUG3) Serial.println(global_BITSTUFFED_message);
+
+    // Send the bitstuffed message
+    for (int i = 0; i < stuffedMessage.length(); i++) {
+        if (stuffedMessage[i] == '1') {
+            digitalWrite(COMM_OUT, HIGH);
+        } else {
+            digitalWrite(COMM_OUT, LOW);
+        }
+        DELAY(SENDDELAY);
+    }
+}
+
 void sendMessage(char adress,char dataSize,unsigned data){
   if (DEBUG) Serial.println("sendMessage");
-  //Abfrage Bus frei
-  if (awaitBusFree())  { 
-    Serial.println("Sending!");                       
-    sendSOF();
     sendAdress(adress);
     sendCOF(dataSize);
     sendData(data,dataSize);
+    if (DEBUG3) Serial.println("Message:");
+    if (DEBUG3) Serial.println((global_decoded_message));
+  //Abfrage Bus frei
+  if (awaitBusFree())  { 
+
+    if (DEBUG3) Serial.println("Sending!");                       
+    sendSOF();
+    writeBitstuffedMessage(BITSTUFFING);
     sendEOF();
+    global_decoded_message = NULL;
   }
 }
 //------------------------------
@@ -262,15 +448,18 @@ void global_reset(){
   global_adress = 0;
 }
 
-bool await_response(char adress){
-  for (int i = 0; i < 10000; i++)
-  {
-    if (readMessage()){
-      if (global_adress == myAdress) return true;
-      else return false;
+
+bool await_response(char adress) {
+    for (int i = 0; i < 20000; i++) {
+        if (readMessage()) {
+          if (DEBUG3) Serial.println("eingelesene Adresse:");
+          if (DEBUG3) Serial.println(global_adress,HEX);
+            if (global_adress == adress) {
+                return true;
+            }
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 
@@ -284,9 +473,9 @@ void getAdress(){
   if (await_response(NOADRESS)){   
     //Speichern der neuen Adresse
     myAdress = global_message[0];
-    Serial.println("Adresse Empfangen!");
-    Serial.print(myAdress,HEX);   
-    Serial.println();                                  
+    if (DEBUG3) Serial.print("Adresse Empfangen!");
+    if (DEBUG3) Serial.print(myAdress,HEX);
+    if (DEBUG3) Serial.println();
   } 
 }
 
@@ -305,10 +494,10 @@ void myFunction(){
 
 //Spezifische Funktionen fuer Master
 #elif SENDER == true
-void USB(char adress,char function,char data){
+void USB(char adress,char function,char* data){
   Serial2.println("START");
   Serial2.println(adress);
-  Serial2.println(function);
+  //Serial2.println(function);
   Serial2.println(data);
   Serial2.println("ENDE");
 }
@@ -329,6 +518,7 @@ void printInfo(int stelle){
 }
 
 char newAdress(){
+  if (DEBUG4) Serial.println("newAdress");
 //es sind noch Adressen frei
 if (unusedAdresses.empty() == false)          
 {
@@ -343,7 +533,10 @@ if (unusedAdresses.empty() == false)
   device teilnehmer = device(freeAdress,0,0,0);
   devices.push_back(teilnehmer);
   //Pollingschleife vergroessern
-  num_adresses++;                             
+  num_adresses++;   
+
+  if (DEBUG4) Serial.println("Neue Adresse:");
+  if (DEBUG4) Serial.println(freeAdress,HEX);                          
   return freeAdress;                          
 }
 // keine Adressen mehr frei!
@@ -354,31 +547,6 @@ int whichFunction(char adresse,char data) {
   
 }
 
-void functionKeypad(volatile char[]){
-  if (DEBUG) Serial.println("functionKeypad");
-  
-}
-
-void functionAudiopad(volatile char[]){
-  if (DEBUG) Serial.println("functionAudiopad");
-
-}
-
-void switchFunction(char adresse){
-  if (DEBUG) Serial.println("switchFunction");
-  switch (whichFunction(adresse,global_message[0]))
-  {
-  case 1:
-    functionKeypad(global_message);
-    break;
-  case 2:
-    functionAudiopad(global_message);
-    break;
-  
-  default:
-    break;
-  }
-}
 
 void printList(const std::list<char>& lst) {
     // Ueberpruefen, ob die Liste leer ist
@@ -404,9 +572,9 @@ void timeout(char adress, bool no_response){
   if (global_message[0] == NOADRESS && global_adress ==
       controllerAdress && !no_response ) {      
     device geraet = *iterator_devices;
-    // speichern der Funktion
+    // Speichern der Funktion
     geraet.funktion = global_message[1];                                                          
-    if (DEBUG2) Serial.println("Neuer Teilnehmer");  
+    if (DEBUG4) Serial.println("Neuer Teilnehmer");  
     // freie Adresse senden an noadress                            
     sendMessage(NOADRESS,0,newAdress());                                                           
   }
@@ -436,9 +604,8 @@ void polling(){
 
   //request fuer abzufragende Adresse
   sendMessage(geraet.adress,0,0xFF);  
-  //warten auf Rueckmeldung 
-  response = await_response(controllerAdress);                                           
-  if (response){ 
+  //warten auf Rueckmeldung                                            
+  if (await_response(controllerAdress)){ 
     //Serial.println("Antwort!!!");                     
     geraet.latest_data = global_message;
     //Ruecksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
@@ -448,7 +615,7 @@ void polling(){
   } 
   //keine Antwort erhalten      
   else{
-    Serial.println("FEHLER!!!");      
+    if (DEBUG3) Serial.println("FEHLER!!!");      
     //Zaehlen der nicht vorhandenen Antworten (bei NOADRESS nicht!)                                                 
     timeout(geraet.adress,true);                                     
   }
@@ -515,7 +682,7 @@ void loop() {
   if(SENDER){
   polling();
 
-  if (DEBUG | DEBUG1 | DEBUG2){
+  if (DEBUG | DEBUG1 | DEBUG2 | DEBUG3 | DEBUG4){
 
     delay(1000);
   } 
@@ -526,6 +693,7 @@ void loop() {
     if (readMessage())
     { 
     Serial.println("Nachricht empfangen!");
+    Serial.println("Meine Adresse:");
     Serial.print(myAdress,HEX);   
     Serial.println();
       if (global_adress == myAdress && myAdress == NOADRESS){

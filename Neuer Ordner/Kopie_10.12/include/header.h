@@ -19,7 +19,7 @@ struct device
 };
 
 
-//recieve funktionen----------------------------------------
+//recieve funktionen-----------------------------------------------
 
 /*
 synchronisiert die Taktgeschwindigkeit
@@ -55,14 +55,14 @@ gesamte Nachricht einzulesen
 bool readMessage();
 
 
-//transmit funktionen------------------------------------
+//transmit funktionen-------------------------------------
 
 
 /*
 
 @return Bus ist frei
 */
-bool awaitBusFree();
+bool busFree();
 /*
 
 @return 
@@ -85,6 +85,9 @@ void sendData(char data) ;
 void sendMessage();
 
 
+
+//--------------------------------------------------
+
 /*
 
 @return 
@@ -95,7 +98,7 @@ void setup() ;
 
 @return 
 */
-void printInfo(int stelle);
+void printAdr(std::list<char>& Function, int stelle);
 /*
 
 @return 

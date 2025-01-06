@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <iostream>
 #include <list>
+#include <cstring>
 struct device
 {
     char adress;
@@ -45,7 +46,7 @@ liest die Daten ein (global gespeichert)
 @dataSize anzahl der einzulesenden datenbytes
 @return 
 */
-void readData(char dataSize);
+void readData(volatile char* data,char dataSize);
 
 /*
 Kombiniert die vorangegangenen Funktionen um eine 
