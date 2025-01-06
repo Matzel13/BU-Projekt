@@ -16,10 +16,21 @@ def save_mapping():
 
 # Load Mapping from File
 def load_mapping():
-    global key_mappings
+    global key_mappings, current_module
     try:
         with open("key_mappings.json", "r") as f:
-            key_mappings = json.load(f)
+            loaded_data = json.load(f)
+            # Merged data (to avoid overwriting new modules with old ones)
+            key_mappings.update(loaded_data)
+        
+        # Update the dropdown with all available modules
+        module_dropdown.configure(values=list(key_mappings.keys()))
+        
+        # Ensure the current module is selected after loading (it may not exist if the file is new)
+        if current_module not in key_mappings:
+            current_module = list(key_mappings.keys())[0]  # Select the first module if the current module doesn't exist
+        module_var.set(current_module)
+        
         update_display()
     except FileNotFoundError:
         pass
@@ -102,11 +113,9 @@ def add_module():
     module_var.set(new_module)  # Set the newly created module as the current selection
     switch_module(new_module)  # Switch to the new module
 
-
 add_module_button = ctk.CTkButton(module_frame, text="Add Module", command=add_module)
 add_module_button.pack(side="left", padx=5)
 
-# Remove Module Button
 # Remove Module Button
 def remove_module():
     global current_module
@@ -132,7 +141,6 @@ def remove_module():
     module_var.set(current_module)  # Update the dropdown display to the new current module
     update_display()
 
-
 remove_module_button = ctk.CTkButton(module_frame, text="Remove Module", command=remove_module, fg_color="#FF7F7F")
 remove_module_button.pack(side="left", padx=5)
 
@@ -143,41 +151,54 @@ def update_remove_button_state():
     else:
         remove_module_button.configure(state="normal", fg_color="#FF7F7F")  # Normal color when active
 
-# Update display to check button state
-def update_display():
-    for row in range(4):
-        for col in range(4):
-            key = key_layout[row][col]
-            labels[row][col].configure(text=f"{key}\n({key_mappings[current_module].get(key, '')})")
-    update_remove_button_state()
-
-# Other parts of the code remain unchanged...
-
-
 # Key Grid
 frame = ctk.CTkFrame(root)
 frame.grid(row=1, column=0, sticky="nsew", pady=10)
-frame.grid_rowconfigure(tuple(range(4)), weight=1)
-frame.grid_columnconfigure(tuple(range(4)), weight=1)
+
+frame.grid_rowconfigure(tuple(range(4)), weight=1)  # Equal weight for all rows
+frame.grid_columnconfigure(tuple(range(4)), weight=1)  # Equal weight for all columns
 
 labels = [[None for _ in range(4)] for _ in range(4)]
 for row in range(4):
     for col in range(4):
         key = key_layout[row][col]
         label_frame = ctk.CTkFrame(frame)
-        label_frame.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
+        
+        # Increase the padding (spacing between the Key Frames)
+        label_frame.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")  # Padding increased
 
         # Label for the key and its mapping
         labels[row][col] = ctk.CTkLabel(label_frame, text=f"{key}\n({key_mappings[current_module][key]})", corner_radius=5)
         labels[row][col].pack(expand=True, fill="both", padx=5, pady=5)
 
+        # Horizontal Frame for Buttons
+        button_frame = ctk.CTkFrame(label_frame)
+        button_frame.pack(fill="x", pady=2)
+
+        # Configure button_frame grid layout
+        button_frame.grid_columnconfigure((0, 1), weight=1)
+
         # Set Button
-        button = ctk.CTkButton(label_frame, text="Set", command=lambda r=row, c=col: assign_key(r, c), fg_color="#5A9BD8")
-        button.pack(pady=(5, 0), expand=True)
+        button = ctk.CTkButton(
+            button_frame,
+            text="Set",
+            command=lambda r=row, c=col: assign_key(r, c),
+            fg_color="#5A9BD8",
+            height=30,
+            width=50
+        )
+        button.grid(row=0, column=0, padx=(2, 1), pady=(2, 0), sticky="ew")
 
         # Reset Button
-        reset_button = ctk.CTkButton(label_frame, text="Reset", command=lambda r=row, c=col: reset_key(r, c), fg_color="#FF7F7F")
-        reset_button.pack(pady=(5, 0), expand=True)
+        reset_button = ctk.CTkButton(
+            button_frame,
+            text="Reset",
+            command=lambda r=row, c=col: reset_key(r, c),
+            fg_color="#FF7F7F",
+            height=30,
+            width=50
+        )
+        reset_button.grid(row=0, column=1, padx=(1, 2), pady=(2, 0), sticky="ew")
 
 # Entry Field for Key Binding
 entry_frame = ctk.CTkFrame(root)
@@ -206,4 +227,9 @@ load_button.pack(side="left", padx=10)
 
 # Start the GUI
 update_display()
+
+# Set initial window size and make it the minimum size
+initial_width = 550
+initial_height = 550
+root.minsize(initial_width, initial_height)  # Set the minimum size to the current window size
 root.mainloop()
