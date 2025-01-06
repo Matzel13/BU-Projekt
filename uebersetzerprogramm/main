@@ -90,6 +90,22 @@ ctk.set_default_color_theme("blue")  # Set the default color theme
 root = ctk.CTk()
 root.title("Keypad Mapper")  # Set the window title
 
+# Calculate screen dimensions and center the window
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+initial_width = 550
+initial_height = 550
+
+# Calculate the position for the window to open at the center of the screen
+position_top = int((screen_height - initial_height) / 2)
+position_left = int((screen_width - initial_width) / 2)
+
+# Disable resizability
+root.resizable(False, False)
+
+# Set the geometry of the window to be centered on the screen
+root.geometry(f"{initial_width}x{initial_height}+{position_left}+{position_top}")
+
 # Configure grid layout for the main window
 root.grid_rowconfigure(0, weight=1)  # Row 0: Module selector
 root.grid_rowconfigure(1, weight=10) # Row 1: Key grid
@@ -174,14 +190,13 @@ for row in range(4):
         labels[row][col] = ctk.CTkLabel(label_frame, text=f"{key}\n({key_mappings[current_module][key]})", corner_radius=5)
         labels[row][col].pack(expand=True, fill="both", padx=5, pady=5)
 
-        # Horizontal Frame for Set and Reset buttons
+        # Frame for the Set and Reset buttons
         button_frame = ctk.CTkFrame(label_frame)
         button_frame.pack(fill="x", pady=2)
 
-        # Configure the button frame grid layout
-        button_frame.grid_columnconfigure((0, 1), weight=1)
+        button_frame.grid_columnconfigure((0, 1), weight=1)  # Equal weight distribution for buttons
 
-        # Set Button: Assign a key binding to a key
+        # Set Button to assign a key binding
         button = ctk.CTkButton(
             button_frame,
             text="Set",
@@ -192,7 +207,7 @@ for row in range(4):
         )
         button.grid(row=0, column=0, padx=(2, 1), pady=(2, 0), sticky="ew")
 
-        # Reset Button: Reset the key binding to default
+        # Reset Button to reset a key binding
         reset_button = ctk.CTkButton(
             button_frame,
             text="Reset",
@@ -210,31 +225,24 @@ entry_frame.grid(row=2, column=0, sticky="nsew", pady=10)
 entry_label = ctk.CTkLabel(entry_frame, text="Key Binding:")  # Label for the key binding entry
 entry_label.pack(side="left", padx=5)
 
-entry_var = ctk.StringVar()  # Variable to hold the entry value
+entry_var = ctk.StringVar()  # Variable to hold the key binding input
 entry_field = ctk.CTkEntry(entry_frame, textvariable=entry_var)
 entry_field.pack(side="left", padx=5)
 
-# Custom Instruction for Keybinding Input
+# Instruction Label for Key Binding Format
 instruction_label = ctk.CTkLabel(entry_frame, text="(Use '+' to combine keys, e.g., 'ctrl+c')")
 instruction_label.pack(side="left", padx=5)
 
-# Save and Load Buttons
+# Save and Load Buttons Frame
 control_frame = ctk.CTkFrame(root)
 control_frame.grid(row=3, column=0, sticky="nsew", pady=10)
 
-# Save Button: Save the key mappings to a file
 save_button = ctk.CTkButton(control_frame, text="Save Mapping", command=save_mapping)
 save_button.pack(side="left", padx=10)
 
-# Load Button: Load the key mappings from a file
 load_button = ctk.CTkButton(control_frame, text="Load Mapping", command=load_mapping)
 load_button.pack(side="left", padx=10)
 
 # Start the GUI
 update_display()  # Initial update of the display to show key bindings
-
-# Set initial window size and make it the minimum size
-initial_width = 550
-initial_height = 550
-root.minsize(initial_width, initial_height)  # Set the minimum size for the window
 root.mainloop()  # Start the Tkinter event loop
