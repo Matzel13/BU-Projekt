@@ -127,11 +127,21 @@ module_dropdown.pack(side="left", padx=5)
 # Add Module Button
 def add_module():
     # Generate a new module name and add it to the key mappings
-    new_module = f"Module {len(key_mappings) + 1}"
-    key_mappings[new_module] = {key: "" for row in key_layout for key in row}
-    module_dropdown.configure(values=list(key_mappings.keys()))  # Update the dropdown list
-    module_var.set(new_module)  # Set the newly created module as the current selection
-    switch_module(new_module)  # Switch to the new module
+    if len(key_mappings) < 7:  # Allow adding if there are fewer than 7 modules
+        new_module = f"Module {len(key_mappings) + 1}"
+        key_mappings[new_module] = {key: "" for row in key_layout for key in row}
+        module_dropdown.configure(values=list(key_mappings.keys()))  # Update the dropdown list
+        module_var.set(new_module)  # Set the newly created module as the current selection
+        switch_module(new_module)  # Switch to the new module
+        
+    update_add_module_button_state()  # Update the state of the button after adding a module
+
+# Update Add Module Button state based on the number of modules
+def update_add_module_button_state():
+    if len(key_mappings) >= 7:  # Lock the button when 7 or more modules exist
+        add_module_button.configure(state="disabled", fg_color="#D3D3D3")
+    else:  # Unlock the button if there are fewer than 7 modules
+        add_module_button.configure(state="normal", fg_color="#5A9BD8")
 
 add_module_button = ctk.CTkButton(module_frame, text="Add Module", command=add_module)
 add_module_button.pack(side="left", padx=5)
@@ -157,7 +167,8 @@ def remove_module():
         current_module = updated_modules[0]
     
     module_var.set(current_module)  # Update the dropdown display
-    update_display()
+    update_add_module_button_state()  # Re-check the add button state after removal
+    update_display()  # Update the key mappings display
 
 remove_module_button = ctk.CTkButton(module_frame, text="Remove Module", command=remove_module, fg_color="#FF7F7F")
 remove_module_button.pack(side="left", padx=5)
@@ -238,10 +249,15 @@ control_frame = ctk.CTkFrame(root)
 control_frame.grid(row=3, column=0, sticky="nsew", pady=10)
 
 save_button = ctk.CTkButton(control_frame, text="Save Mapping", command=save_mapping)
-save_button.pack(side="left", padx=10)
+save_button.grid(row=0, column=0, padx=10)
 
 load_button = ctk.CTkButton(control_frame, text="Load Mapping", command=load_mapping)
-load_button.pack(side="left", padx=10)
+load_button.grid(row=0, column=1, padx=10)
+
+# Zentrieren der Buttons
+control_frame.grid_columnconfigure(0, weight=1)
+control_frame.grid_columnconfigure(1, weight=1)
+
 
 # Start the GUI
 update_display()  # Initial update of the display to show key bindings
