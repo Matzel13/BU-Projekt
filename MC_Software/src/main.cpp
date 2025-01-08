@@ -5,7 +5,7 @@
 
 
 // true -> Upload fuer Master | false -> Upload fur Slave
-#define SENDER false
+#define SENDER true
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
@@ -23,6 +23,9 @@
   #define COMM_OUT 14                         
   //Adresse des Hauptmoduls
   #define STARTADRESS 0x01
+  //bei n = INIT Polling Durchläufen wird die INIT 
+  //Nachricht an den PC gesendet
+  #define INIT 10
 #endif
 #define BITSTUFFING 3
 
@@ -34,8 +37,10 @@
 #define DEBUG false                    
 #define DEBUG1 false
 #define DEBUG2 false
-#define DEBUG3 true
-#define DEBUG4 true
+#define DEBUG3 false
+#define DEBUG4 false
+#define DEBUG5 true
+#define DEBUG6 true
 
 volatile unsigned long timeStamp;      //Zeit Merker
 volatile unsigned long delayTime;      //berechnete Taktzeit
@@ -50,6 +55,8 @@ volatile int global_COFSize = 3;       //Groesse des COF Pakets
 volatile char myAdress = STARTADRESS;  
 //Feste Adresse des Hauptcontrollers
 volatile char controllerAdress = 0x01; 
+//Zaehler fuer die Initialisierung
+volatile int init_cnt = 100;
 
 char* global_decoded_message; //Bitstuffed message
 char* global_BITSTUFFED_message; //Bitstuffed message
@@ -120,6 +127,48 @@ bool sync(){
     return true;
   }
   else return false;
+}
+
+bool sync2() { //in Arbeit
+  if (DEBUG6) Serial.println("sync");
+  int lowCount = 0;
+  if (digitalRead(COMM_IN) == LOW) {
+    lowCount++;
+    DELAY(delayTime); // Warten Sie auf das nächste Bit
+    for (int i = 0; i < 3; i++)
+    {
+      if (digitalRead(COMM_IN) == LOW) {
+        lowCount++;
+        DELAY(delayTime); // Warten Sie auf das nächste Bit
+      }
+      else {
+        if (DEBUG6) Serial.println("nur " + String(lowCount) + " LOW Bits gefunden");
+        return false; // Synchronisation fehlgeschlagen
+      }
+    }
+    
+    if (lowCount == 4) {
+      // Überprüfen Sie, ob das nächste Bit HIGH ist
+      DELAY(50); // Warten Sie auf das nächste Bit
+      if (digitalRead(COMM_IN) == HIGH) {
+        unsigned long lok_delayTime;
+        timeStamp = micros();
+        while (digitalRead(COMM_IN) == HIGH);
+        lok_delayTime = micros() - timeStamp;
+        if (DEBUG6) Serial.println(lok_delayTime);
+        DELAY(lok_delayTime); // Warten Sie auf das Ende des Startbits
+        return true; // Synchronisation erfolgreich
+      }
+      else {
+        if (DEBUG6) Serial.println("fehlgeschlagen");
+        if (DEBUG6) Serial.println("nur " + String(lowCount) + " LOW Bits gefunden");
+        return false; // Synchronisation fehlgeschlagen
+      }
+    }
+    } 
+  else {
+    return false; // Synchronisation fehlgeschlagen
+  }
 }
 
 // Funktion zum Dekodieren von Bitstuffing
@@ -495,11 +544,30 @@ void myFunction(){
 //Spezifische Funktionen fuer Master
 #elif SENDER == true
 void USB(char adress,char function,char* data){
+  if (adress == 0x00){
+    init_cnt++;
+    if (init_cnt >= INIT){
+      Serial2.println("initialisierung");
+      if (DEBUG5) Serial.println("initialisierung");
+      init_cnt = 0;
+    }
+  return;
+  }
+  if (data[0] == 0x00 && data[1] == 0x00){
+    return;
+  }
   Serial2.println("START");
-  Serial2.println(adress);
+  if (DEBUG5) Serial.println("START");
+  Serial2.println(adress,HEX);
+  if (DEBUG5) Serial.println(adress,HEX);
   //Serial2.println(function);
-  Serial2.println(data);
+  for (int i = 0; i <= global_COF; i++)
+  {
+    Serial2.println(data[i],HEX);
+    if (DEBUG5) Serial.println(data[i],HEX);
+  }
   Serial2.println("ENDE");
+  if (DEBUG5) Serial.println("ENDE");
 }
 
 void printInfo(int stelle){
@@ -619,13 +687,22 @@ void polling(){
     //Zaehlen der nicht vorhandenen Antworten (bei NOADRESS nicht!)                                                 
     timeout(geraet.adress,true);                                     
   }
+  USB(geraet.adress,geraet.funktion,(char*) global_message);
+  
+  Serial.print("num_adresses: ");
+  Serial.println(num_adresses); 
+  Serial.print("polling_counter: ");
+  Serial.println(polling_counter); 
+  
   //naechstes element der adressliste
-  if (polling_counter < num_adresses) polling_counter++;  
-  //Zuruecksetzen des counters     
-  else polling_counter = 0;
+  polling_counter++;
+  // Überprüfen Sie, ob der polling_counter die Anzahl der Adressen erreicht hat
+  if (polling_counter >= num_adresses + 1) {
+      polling_counter = 0; // Zurücksetzen des polling_counter
+  }
   //Setzen des Iterators an die entsprechende Stelle
   iterator_devices = devices.begin();
-  std::advance(iterator_devices,polling_counter);                                   
+  std::advance(iterator_devices,polling_counter);
 }
 
 
@@ -682,7 +759,7 @@ void loop() {
   if(SENDER){
   polling();
 
-  if (DEBUG | DEBUG1 | DEBUG2 | DEBUG3 | DEBUG4){
+  if (DEBUG | DEBUG1 | DEBUG2 | DEBUG3 | DEBUG4 |true){
 
     delay(1000);
   } 
