@@ -6,8 +6,6 @@
 import customtkinter as ctk
 import serial.tools.list_ports
 import concurrent.futures
-import threading
-import time
 import serial
 import json
 
@@ -33,18 +31,12 @@ def find_keyboard_port(port_info, expected_message="initialisierung"):
             print(f"Prüfe Port: {port_info.device}")
             data = ser.read(100).decode(errors="ignore")
             if expected_message in data:
-                
-                # Start the COM port reading in a new thread
-                thread = threading.Thread(target=read_com_port, daemon=True)
-                thread.start()
-
                 return port_info.device
     except serial.SerialException as e:
         print(f"Fehler beim Zugriff auf {port_info.device}: {e}")
     except UnicodeDecodeError as e:
         print(f"Fehler beim Dekodieren von Daten auf {port_info.device}: {e}")
     return None
-
 
 
 def find_keyboard(com_ports, expected_message="initialisierung"):
@@ -65,6 +57,8 @@ available_ports = list(serial.tools.list_ports.comports())
 
 keyboard_port = find_keyboard(available_ports)
 
+import threading
+import time
 
 def read_com_port():
     """Reads data from the COM port in a loop."""
@@ -85,6 +79,10 @@ def read_com_port():
     except Exception as e:
         print(f"Error reading COM port: {e}")
 
+# Start the COM port reading in a new thread
+if keyboard_port:
+    thread = threading.Thread(target=read_com_port, daemon=True)
+    thread.start()
 
 if keyboard_port:
     print(f"Controller verbunden an: {keyboard_port}")
