@@ -33,7 +33,7 @@ def find_keyboard_port(port_info, expected_message="initialisierung"):
             print(f"Prüfe Port: {port_info.device}")
             data = ser.read(100).decode(errors="ignore")
             if expected_message in data:
-                
+
                 # Start the COM port reading in a new thread
                 thread = threading.Thread(target=read_com_port, daemon=True)
                 thread.start()
@@ -45,20 +45,31 @@ def find_keyboard_port(port_info, expected_message="initialisierung"):
         print(f"Fehler beim Dekodieren von Daten auf {port_info.device}: {e}")
     return None
 
-
-
 def find_keyboard(com_ports, expected_message="initialisierung"):
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(find_keyboard_port, port_info, expected_message)
-            for port_info in com_ports
-        ]
+    result = [None]  # Shared list to store the result
+    def thread_target(port_info):
+        nonlocal result
+        # Call the find_keyboard_port function and check if the result is found
+        res = find_keyboard_port(port_info, expected_message)
+        if res:  # If result is found, update the shared result and stop other threads
+            result[0] = res
 
-        for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            if result:
-                return result
-    return None
+    threads = []
+    
+    # Create and start threads for each com port
+    for port_info in com_ports:
+        thread = threading.Thread(target=thread_target, args=(port_info,))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to complete
+    for thread in threads:
+        thread.join()
+
+    # Return the result found, or None if no result was found
+    return result[0]
+
+
 
 
 available_ports = list(serial.tools.list_ports.comports())
