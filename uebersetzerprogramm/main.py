@@ -1,13 +1,15 @@
 # Bugs:
 # - Tastatur/ Controller wird nicht gefunden wenn das Programm schon läuft aber der Controller noch nicht angeschlossen ist
 # - Nur ein Savefile für alle Module, was passiert bei ungleicher modulanzahl; 3 gespeichert aber nur 2 angeschlossen
-
+# - Info fenster evtl. togglen
 
 import customtkinter as ctk
 import serial.tools.list_ports
 import concurrent.futures
 import serial
 import json
+
+
 
 key_layout = [
     [f"Key {row * 4 + col + 1}" for col in range(4)] for row in range(4)
@@ -54,6 +56,33 @@ def find_keyboard(com_ports, expected_message="initialisierung"):
 available_ports = list(serial.tools.list_ports.comports())
 
 keyboard_port = find_keyboard(available_ports)
+
+import threading
+import time
+
+def read_com_port():
+    """Reads data from the COM port in a loop."""
+    global ser  # Make sure `ser` is properly initialized
+    if not keyboard_port:
+        return  # No COM port to read from
+
+    try:
+        while True:
+            if ser.in_waiting > 0:  # Check if there is data to read
+                data = ser.readline().decode(errors="ignore").strip()
+                print(f"Received data: {data}")
+                # Optionally update the GUI with received data
+                com_port_label.configure(text=f"Last Data: {data}")
+            time.sleep(0.1)  # Small delay to prevent excessive CPU usage
+    except serial.SerialException as e:
+        print(f"Serial exception: {e}")
+    except Exception as e:
+        print(f"Error reading COM port: {e}")
+
+# Start the COM port reading in a new thread
+if keyboard_port:
+    thread = threading.Thread(target=read_com_port, daemon=True)
+    thread.start()
 
 if keyboard_port:
     print(f"Controller verbunden an: {keyboard_port}")
@@ -169,10 +198,6 @@ ctk.set_default_color_theme("blue")
 
 root = ctk.CTk()
 root.title("Keypad Mapper")
-root.attributes(
-    "-topmost", True
-)
-
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -361,16 +386,6 @@ def open_info_window():
     info_window = ctk.CTkToplevel()
     info_window.title("Key Bindings Info") 
     info_window.geometry("400x300") 
-    info_window.resizable(False, False) 
-
-    info_window.attributes(
-        "-topmost", True
-    ) 
-
-    info_window.transient(
-        root
-    ) 
-
    
     screen_width = info_window.winfo_screenwidth()
     screen_height = info_window.winfo_screenheight()
