@@ -1,3 +1,8 @@
+# Bugs:
+# - Tastatur/ Controller wird nicht gefunden wenn das Programm schon läuft aber der Controller noch nicht angeschlossen ist
+# - Nur ein Savefile für alle Module, was passiert bei ungleicher modulanzahl; 3 gespeichert aber nur 2 angeschlossen
+
+
 import customtkinter as ctk
 import serial.tools.list_ports
 import concurrent.futures
@@ -51,11 +56,11 @@ available_ports = list(serial.tools.list_ports.comports())
 keyboard_port = find_keyboard(available_ports)
 
 if keyboard_port:
-    print(f"Tastatur verbunden an: {keyboard_port}")
+    print(f"Controller verbunden an: {keyboard_port}")
     ser = serial.Serial(keyboard_port, 9600, timeout=1)
 
 else:
-    print("Tastatur konnte nicht erkannt werden.")
+    print("Controller konnte nicht erkannt werden.")
 
 
 def load_mapping():
