@@ -59,35 +59,39 @@ keyboard_port = find_keyboard(available_ports)
 
 import threading
 import time
+import serial
 
-def read_com_port():
-    """Reads data from the COM port in a loop."""
-    global ser  # Make sure `ser` is properly initialized
-    if not keyboard_port:
-        return  # No COM port to read from
+# Funktion, um Nachrichten kontinuierlich zu lesen
+def read_from_com_port(serial_connection):
+    while True:
+        try:
+            if serial_connection.in_waiting > 0:
+                message = serial_connection.readline().decode(errors="ignore").strip()
+                if message:
+                    print(f"Nachricht empfangen: {message}")
+            time.sleep(0.1)  # Leichte Pause, um CPU-Auslastung zu reduzieren
+        except serial.SerialException as e:
+            print(f"Fehler beim Lesen vom COM-Port: {e}")
+            break
+        except Exception as e:
+            print(f"Unerwarteter Fehler: {e}")
+            break
 
-    try:
-        while True:
-            if ser.in_waiting > 0:  # Check if there is data to read
-                data = ser.readline().decode(errors="ignore").strip()
-                print(f"Received data: {data}")
-                # Optionally update the GUI with received data
-                com_port_label.configure(text=f"Last Data: {data}")
-            time.sleep(0.1)  # Small delay to prevent excessive CPU usage
-    except serial.SerialException as e:
-        print(f"Serial exception: {e}")
-    except Exception as e:
-        print(f"Error reading COM port: {e}")
-
-# Start the COM port reading in a new thread
+# Start der Lesefunktion, falls ein COM-Port erkannt wurde
 if keyboard_port:
-    thread = threading.Thread(target=read_com_port, daemon=True)
-    thread.start()
+    print(f"Starte das Lesen vom COM-Port {keyboard_port}...")
+    ser = serial.Serial(keyboard_port, 9600, timeout=1)
+
+    # Thread für das kontinuierliche Lesen starten
+    read_thread = threading.Thread(target=read_from_com_port, args=(ser,), daemon=True)
+    read_thread.start()
+else:
+    print("Kein Controller verbunden. Nachrichten können nicht gelesen werden.")
+
 
 if keyboard_port:
     print(f"Controller verbunden an: {keyboard_port}")
-    ser = serial.Serial(keyboard_port, 9600, timeout=1)
-
+    
 else:
     print("Controller konnte nicht erkannt werden.")
 
