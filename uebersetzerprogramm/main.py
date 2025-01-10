@@ -8,7 +8,9 @@ import serial.tools.list_ports
 import concurrent.futures
 import serial
 import json
-
+import threading
+import time
+import serial
 
 
 key_layout = [
@@ -56,10 +58,6 @@ def find_keyboard(com_ports, expected_message="initialisierung"):
 available_ports = list(serial.tools.list_ports.comports())
 
 keyboard_port = find_keyboard(available_ports)
-
-import threading
-import time
-import serial
 
 # Funktion, um Nachrichten kontinuierlich zu lesen
 def read_from_com_port(serial_connection):
