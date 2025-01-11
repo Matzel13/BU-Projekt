@@ -26,7 +26,7 @@ struct device
 synchronisiert die Taktgeschwindigkeit
 @return SOF wurde empfangen
 */
-bool sync();
+bool syncronisation();
 
 /*
 liest die Adresse ein (global gespeichert)

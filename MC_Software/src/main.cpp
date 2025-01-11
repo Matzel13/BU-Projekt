@@ -5,7 +5,7 @@
 
 
 // true -> Upload fuer Master | false -> Upload fur Slave
-#define SENDER true
+#define SENDER false
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
@@ -15,6 +15,12 @@
   //0xAB := Tastatur, 0xAC := ...
   #define FUNCTION  0xAB
   #define STARTADRESS 0x00
+
+
+  #define ROW1 2
+  #define ROW2 0
+  #define COL1 4
+  #define COL2 5
 //Spezifische Konfiguration fuer Master
 #elif SENDER == true
   //Kommunikations Pin
@@ -111,8 +117,8 @@ void appendChar(char* &str, char c) {
 }
 
 //receive
-bool sync(){
-  if (DEBUG) Serial.println("sync");
+bool syncronisation(){
+  if (DEBUG) Serial.println("syncronisation");
   unsigned long lok_delayTime;
   timeStamp = micros();
   while (digitalRead(COMM_IN) == HIGH);
@@ -261,7 +267,7 @@ void parseDecodedMessage(const char* decodedMessage) {
 bool readMessage() {
     if (DEBUG) Serial.println("readMessage");
     // neue Nachricht auf dem Bus
-    if (sync()) {
+    if (syncronisation()) {
         // Initialisieren Sie die globale bitgestopfte Nachricht
         global_BITSTUFFED_message_recv = new char[1];
         global_BITSTUFFED_message_recv[0] = '\0';
@@ -532,6 +538,44 @@ void myFunction(){
   Serial.println("myFunction!");
   char myDatasize = 0;
   unsigned int myData = 0;
+  //---------------------------
+
+  //----------------------------
+  int ROWS[2] {
+    ROW1,
+    ROW2
+  };
+  int COLS[2] {
+    COL1,
+    COL2
+  };
+  //----------------------------
+    unsigned input = 0x0000;
+    for (int row = 0; row < 2; row++) {
+      digitalWrite(ROWS[row], HIGH);
+      for (int col = 0; col < 2; col++) {
+        if (digitalRead(COLS[col]) == HIGH) {
+          if (DEBUG) Serial.println("COL HIGH!");
+          if (DEBUG) Serial.println(COLS[col]);
+          input = input | (0x0001 << col);
+        }
+        input = input << 2;
+      }
+      delay(5);
+      digitalWrite(ROWS[row], LOW);
+    }
+    input = input >> 2;
+    //----------------------------
+    myData = input;
+ // Uebermitteln der Daten
+  DELAY(1000);
+  sendMessage(controllerAdress,myDatasize,myData);
+}
+
+void myFunction2(){
+  Serial.println("myFunction!");
+  char myDatasize = 0;
+  unsigned int myData = 0;
   /*
   do sth.
   */
@@ -719,6 +763,12 @@ void setup() {
   pinMode(COMM_OUT, OUTPUT);
   if (DEBUG) Serial.println("COMM Pins are setup!");
 //------------------------------
+  pinMode(ROW1, OUTPUT);
+  pinMode(ROW2, OUTPUT);
+
+  pinMode(COL1, INPUT_PULLDOWN);
+  pinMode(COL2, INPUT_PULLDOWN);
+
 }
 //Spezifisches Setup fuer Master
 #elif SENDER == true
@@ -759,7 +809,7 @@ void loop() {
   if(SENDER){
   polling();
 
-  if (DEBUG | DEBUG1 | DEBUG2 | DEBUG3 | DEBUG4 |true){
+  if (DEBUG | DEBUG1 | DEBUG2 | DEBUG3 | DEBUG4){
 
     delay(1000);
   } 
