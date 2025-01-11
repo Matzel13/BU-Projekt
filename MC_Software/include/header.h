@@ -15,7 +15,7 @@ struct device
     public:
         device(char Adresse,char Funktion,char* Daten,
                 unsigned int Zaehler)
-        : adress(Adresse),funktion(funktion),latest_data(Daten),
+        : adress(Adresse),funktion(Funktion),latest_data(Daten),
             timeout(Zaehler){}
 };
 
@@ -81,9 +81,6 @@ void sendCOF(char dataSize);
 void sendData(char data) ;
 /*
 
-@return 
-*/
-void sendMessage();
 
 
 /*
@@ -96,7 +93,7 @@ void setup() ;
 
 @return 
 */
-void printInfo(int stelle);
+void transmitDeviceInfo(int stelle);
 /*
 
 @return 
@@ -125,7 +122,7 @@ void switchFunction(char adresse);
 Vergibt neue Adressen
 @return neue Adresse (0x00, wenn keine Adressen mehr frei sind)
 */
-char newAdress();
+char newAdress(char function);
 
 /*
 wartet auf die Antwort eines Busteilnehmers

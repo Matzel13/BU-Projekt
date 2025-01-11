@@ -1,11 +1,10 @@
 #include "header.h"
-
 #include <sstream>
 #include <iomanip>
 
 
 // true -> Upload fuer Master | false -> Upload fur Slave
-#define SENDER true
+#define SENDER false
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
@@ -67,18 +66,9 @@ char* global_decoded_message_recv; //decodierte message empfangen
 
 //Spezifische Konfiguration fuer Master
 #if SENDER == true
-  std::list<char> InputKeypad;
-  auto iterator_InputKeypad = InputKeypad.begin();
-  std::list<char> InputAudiopad;
-  auto iterator_InputAudiopad = InputAudiopad.begin();
-  std::list<char> InputModule3;
-  auto iterator_InputModule3 = InputModule3.begin();
-  std::list<char> InputModule4;
-  auto iterator_InputModule4 = InputModule4.begin();
   //Freie Adressen
   std::list<char> unusedAdresses;
   auto iterator_unusedAdresses = unusedAdresses.begin();
-
   //Adressen aller Teilnehmer
   std::list<char> Adresses;
   auto iterator_Adresses = Adresses.begin();
@@ -517,7 +507,8 @@ bool await_response(char adress) {
 #if SENDER == false
 void getAdress(){
   //Bitte um Adresse + 2. byte = Funktion
-  sendMessage(controllerAdress,1,0x00AB); 
+  char message[] = {0x00,FUNCTION};
+  sendMessage(controllerAdress,1,message); 
   //Antwort erhalten
   if (await_response(NOADRESS)){   
     //Speichern der neuen Adresse

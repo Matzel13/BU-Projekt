@@ -3,24 +3,25 @@
 #include <sstream>
 #include <iomanip>
 
-
 // true -> Upload fuer Master | false -> Upload fur Slave
-#define SENDER false
+#define SENDER true
 //Spezifische Konfiguration fuer Slaves 
 #if SENDER == false
   //Kommunikations Pin (MOSI) ATMEGA 15 | ATTINY 5
   #define COMM_IN 12    
   //Kommunikations Pin (MISO) ATMEGA 16 | ATTINY 6                      
   #define COMM_OUT 14                         
-  //0xAB := Tastatur, 0xAC := ...
-  #define FUNCTION  0xAB
+  //0x01 := Tastatur, 0x02 := Audiopad, ...
+  #define FUNCTION  0x01 
+  //Standardadresse eines neuen Busteilnehmers
   #define STARTADRESS 0x00
-
-
+  #define REQUESTADRESS 0xFF
+  //PIN-Belegung spezifisch fuer Slave
   #define ROW1 2
   #define ROW2 0
   #define COL1 4
   #define COL2 5
+
 //Spezifische Konfiguration fuer Master
 #elif SENDER == true
   //Kommunikations Pin
@@ -29,9 +30,11 @@
   #define COMM_OUT 14                         
   //Adresse des Hauptmoduls
   #define STARTADRESS 0x01
+  #define REQUESTADRESS 0xFF
   //bei n = INIT Polling Durchläufen wird die INIT 
   //Nachricht an den PC gesendet
   #define INIT 10
+  #define LIST 10
 #endif
 #define BITSTUFFING 3
 
@@ -48,6 +51,9 @@
 #define DEBUG5 true
 #define DEBUG6 true
 
+//Variablen--------------------------------
+bool FLAG_NEWDEVICE = false;
+
 volatile unsigned long timeStamp;      //Zeit Merker
 volatile unsigned long delayTime;      //berechnete Taktzeit
 volatile char global_adress = 0x00;    //eingelesene Adresse
@@ -63,7 +69,7 @@ volatile char myAdress = STARTADRESS;
 volatile char controllerAdress = 0x01; 
 //Zaehler fuer die Initialisierung
 volatile int init_cnt = 100;
-
+volatile int list_cnt = 100;
 char* global_decoded_message; //Bitstuffed message
 char* global_BITSTUFFED_message; //Bitstuffed message
 char* global_BITSTUFFED_message_recv; //Bitstuffed message empfangen
@@ -73,31 +79,32 @@ char* global_decoded_message_recv; //decodierte message empfangen
 
 //Spezifische Konfiguration fuer Master
 #if SENDER == true
-  std::list<char> InputKeypad;
-  auto iterator_InputKeypad = InputKeypad.begin();
-  std::list<char> InputAudiopad;
-  auto iterator_InputAudiopad = InputAudiopad.begin();
-  std::list<char> InputModule3;
-  auto iterator_InputModule3 = InputModule3.begin();
-  std::list<char> InputModule4;
-  auto iterator_InputModule4 = InputModule4.begin();
   //Freie Adressen
   std::list<char> unusedAdresses;
   auto iterator_unusedAdresses = unusedAdresses.begin();
-
   //Adressen aller Teilnehmer
   std::list<char> Adresses;
   auto iterator_Adresses = Adresses.begin();
   //polling counter iteriert durch die liste der adressen 
-  volatile int polling_counter = 0; 
+  int polling_counter = 0; 
   //Anzahl der vergebenen Adressen
-  volatile int num_adresses = 0;              
+  int num_adresses = 0;              
   std::list<device> devices;
   auto iterator_devices = devices.begin(); 
 #endif
 
 
-//Funktionen aller Teilnehmer-------------------------------
+//allg. Funktionen -------------------------------
+#ifdef SENDER == true
+bool isArrayZero(volatile char* array, int size) {
+    for (int i = 0; i < size; i++) {
+        if (array[i] != 0) {
+            return false; // Ein Element ist nicht 0
+        }
+    }
+    return true; // Alle Elemente sind 0
+}
+#endif
 
 void appendChar(char* &str, char c) {
     if (str == NULL) {
@@ -118,7 +125,7 @@ void appendChar(char* &str, char c) {
 
 //receive
 bool syncronisation(){
-  if (DEBUG) Serial.println("syncronisation");
+  //if (DEBUG) Serial.println("syncronisation");
   unsigned long lok_delayTime;
   timeStamp = micros();
   while (digitalRead(COMM_IN) == HIGH);
@@ -265,7 +272,7 @@ void parseDecodedMessage(const char* decodedMessage) {
 
 
 bool readMessage() {
-    if (DEBUG) Serial.println("readMessage");
+    //if (DEBUG) Serial.println("readMessage");
     // neue Nachricht auf dem Bus
     if (syncronisation()) {
         // Initialisieren Sie die globale bitgestopfte Nachricht
@@ -352,6 +359,7 @@ void sendSOF(){
   DELAY(SENDDELAY);
 }
 
+
 void sendAdress(char adress) {
   if (DEBUG) Serial.println("sendAdress");
   for (int i = 0; i < (global_adressSize); i++) {
@@ -385,18 +393,47 @@ void sendCOF(char dataSize){
   if (DEBUG) Serial.println();
 }
 
-void sendData(unsigned data,char dataSize){
+void sendData(char dataSize,char* data) {
+    if (true) Serial.println("sendData");
+    Serial.print("dataSize: ");
+    Serial.println(dataSize,HEX);
+    Serial.print("data: "); 
+    for (int i = 0; i < dataSize; i++) {
+      Serial.print(data[i],HEX);
+      Serial.print(" ");
+    }
+    Serial.println();
+    for (int i = dataSize; i >= 0; i--)
+    {
+      for (int j = 0; j < 8; j++)
+      {
+        if ((data[i] & 0x01) == 0x01) {
+          appendChar(global_decoded_message, '1');
+          if (DEBUG) Serial.print("1");
+        } else {
+          appendChar(global_decoded_message, '0');
+          if (DEBUG) Serial.print("0");
+        }
+        data[i] = data[i] >> 1;
+      }
+      
+    }
+    
+
+}
+
+void sendData2(char dataSize,char* data){
   if (DEBUG) Serial.println("sendData");
   for (int j = 0; j <= dataSize; j++) {
     for (int i = 0; i < 8; i++) {
-      if ((data & 0x01) == 0x01) {
+      if ((data[j] & 0x01) == 0x01) {
         appendChar(global_decoded_message, '1');
         if (DEBUG) Serial.print("1");
       } else {
         appendChar(global_decoded_message, '0');
         if (DEBUG) Serial.print("0");
       }
-      data = data >> 1;
+      data[i] = data[i] >> 1;
     }
   }
   if (DEBUG) Serial.println();
@@ -474,13 +511,13 @@ void writeBitstuffedMessage(int x) {
     }
 }
 
-void sendMessage(char adress,char dataSize,unsigned data){
+void sendMessage(char adress,char dataSize,char* data){
   if (DEBUG) Serial.println("sendMessage");
     sendAdress(adress);
     sendCOF(dataSize);
-    sendData(data,dataSize);
-    if (DEBUG3) Serial.println("Message:");
-    if (DEBUG3) Serial.println((global_decoded_message));
+    sendData(dataSize,data);
+    if (true) Serial.println("Message:");
+    if (true) Serial.println((global_decoded_message));
   //Abfrage Bus frei
   if (awaitBusFree())  { 
 
@@ -510,10 +547,14 @@ bool await_response(char adress) {
           if (DEBUG3) Serial.println("eingelesene Adresse:");
           if (DEBUG3) Serial.println(global_adress,HEX);
             if (global_adress == adress) {
+                Serial.println("Antwort erhalten!");
                 return true;
             }
         }
     }
+    Serial.println("Keine Antwort erhalten!");
+    Serial.println("Adresse:");
+    Serial.println(global_adress,HEX);
     return false;
 }
 
@@ -523,12 +564,14 @@ bool await_response(char adress) {
 #if SENDER == false
 void getAdress(){
   //Bitte um Adresse + 2. byte = Funktion
-  sendMessage(controllerAdress,1,0x00AB); 
+  char message[] = {REQUESTADRESS,FUNCTION};
+  sendMessage(controllerAdress,0x01,message); 
+  Serial.println("Adresse angefragt!");
   //Antwort erhalten
   if (await_response(NOADRESS)){   
     //Speichern der neuen Adresse
     myAdress = global_message[0];
-    if (DEBUG3) Serial.print("Adresse Empfangen!");
+    if (DEBUG3) Serial.print("meine Adresse: ");
     if (DEBUG3) Serial.print(myAdress,HEX);
     if (DEBUG3) Serial.println();
   } 
@@ -537,7 +580,7 @@ void getAdress(){
 void myFunction(){
   Serial.println("myFunction!");
   char myDatasize = 0;
-  unsigned int myData = 0;
+  char myData[8] = {0};
   //---------------------------
 
   //----------------------------
@@ -550,36 +593,82 @@ void myFunction(){
     COL2
   };
   //----------------------------
-    unsigned input = 0x0000;
     for (int row = 0; row < 2; row++) {
       digitalWrite(ROWS[row], HIGH);
       for (int col = 0; col < 2; col++) {
         if (digitalRead(COLS[col]) == HIGH) {
-          if (DEBUG) Serial.println("COL HIGH!");
-          if (DEBUG) Serial.println(COLS[col]);
-          input = input | (0x0001 << col);
+          switch (ROWS[row])
+          {
+          case ROW1:  
+            switch (COLS[col])
+            {
+            case COL1:
+              /* A1 */
+              //Serial.println("A1");
+              myData[myDatasize] = 0xA1;
+              myDatasize ++;  
+              break;
+            case COL2:
+              /* B1 */
+              //Serial.println("B1");
+              myData[myDatasize] = 0xB1; 
+              myDatasize ++;
+              break;
+            default:
+              break;
+            }
+            break;
+          case ROW2:
+            switch (COLS[col])
+            {
+            case COL1:
+              /* A2 */
+              //Serial.println("A2");
+              myData[myDatasize] = 0xA2;
+              myDatasize ++;
+              break;
+            case COL2:
+              /* B2 */
+              //Serial.println("B2");
+              myData[myDatasize] = 0xB2;
+              myDatasize ++;
+              break;
+            break;
+          default:
+            break;
+          }
+          Serial.print("COL: ");
+          Serial.println(COLS[col]);
+          Serial.print("ROW: ");
+          Serial.println(ROWS[row]);
+          
         }
-        input = input << 2;
       }
       delay(5);
       digitalWrite(ROWS[row], LOW);
     }
-    input = input >> 2;
+  }  
     //----------------------------
-    myData = input;
+    //char message[] = myData;
  // Uebermitteln der Daten
   DELAY(1000);
-  sendMessage(controllerAdress,myDatasize,myData);
+  if (myDatasize == 0){
+    sendMessage(controllerAdress,myDatasize,myData);
+  }else{
+    sendMessage(controllerAdress,myDatasize-1,myData);
+  }
+  
+  
 }
 
 void myFunction2(){
   Serial.println("myFunction!");
   char myDatasize = 0;
-  unsigned int myData = 0;
+  char* myData;
   /*
   do sth.
   */
-  myData = 0xAB;
+  myData[0] = 0xAB;
  // Uebermitteln der Daten
   DELAY(1000);
   sendMessage(controllerAdress,myDatasize,myData);
@@ -587,17 +676,37 @@ void myFunction2(){
 
 //Spezifische Funktionen fuer Master
 #elif SENDER == true
-void USB(char adress,char function,char* data){
+void USB(char adress,char function,volatile char* data){
   if (adress == 0x00){
     init_cnt++;
     if (init_cnt >= INIT){
-      Serial2.println("initialisierung");
-      if (DEBUG5) Serial.println("initialisierung");
+      Serial2.println("INIT");
+      if (DEBUG5) Serial.println("INIT");
       init_cnt = 0;
+    }
+  }
+  if (adress == 0x00){
+    list_cnt++;
+    if (list_cnt >= LIST | FLAG_NEWDEVICE){
+      FLAG_NEWDEVICE = false;
+      Serial2.println("LIST");
+      if (DEBUG5) Serial.println("LIST");
+      for (int i = 1; i <= num_adresses; i++)
+      {
+        transmitDeviceInfo(i);
+      }
+      Serial2.println("END");      
+      list_cnt = 0;
     }
   return;
   }
-  if (data[0] == 0x00 && data[1] == 0x00){
+  if (data == NULL){
+    Serial.println("data == NULL");
+    return;
+  }
+  //keine Daten zu Übertragen
+  if (isArrayZero(data,8)){
+    Serial.println("keine Daten zu Übertragen");
     return;
   }
   Serial2.println("START");
@@ -608,28 +717,23 @@ void USB(char adress,char function,char* data){
   for (int i = 0; i <= global_COF; i++)
   {
     Serial2.println(data[i],HEX);
-    if (DEBUG5) Serial.println(data[i],HEX);
+    if (true) Serial.println(data[i],HEX);
   }
-  Serial2.println("ENDE");
-  if (DEBUG5) Serial.println("ENDE");
+  Serial2.println("END");
+  if (DEBUG5) Serial.println("END");
 }
 
-void printInfo(int stelle){
-  if (DEBUG) Serial.println("printInfo");
-  // device geraet;
-  // std::advance(iterator_devices,stelle);
-  // geraet = *iterator_devices;
-  // Serial.println("Adresse");
-  // Serial.println(geraet.adress,HEX);
-  // Serial.println("Funktion");
-  // Serial.println(geraet.funktion,HEX);
-  // Serial.println("");
-  // Serial.println(geraet.);
-  // Serial.println("");
-  // Serial.println(geraet.adress);
+void transmitDeviceInfo(int stelle){
+  if (DEBUG) Serial.println("transmitDeviceInfo");
+  device geraet;
+  std::advance(iterator_devices,stelle);
+  geraet = *iterator_devices;
+  Serial2.println(geraet.adress,HEX);
+  Serial2.println(geraet.funktion,HEX);
+  Serial2.println();
 }
 
-char newAdress(){
+char newAdress(char function){
   if (DEBUG4) Serial.println("newAdress");
 //es sind noch Adressen frei
 if (unusedAdresses.empty() == false)          
@@ -642,11 +746,17 @@ if (unusedAdresses.empty() == false)
   //fuege Sie zur Pollingliste hinzu                 
   Adresses.push_back(freeAdress);             
   //neuen Teilnehmer der device Liste hinzufuegen
-  device teilnehmer = device(freeAdress,0,0,0);
+  Serial.print("device function: ");
+  Serial.println(function,HEX);
+  device teilnehmer(freeAdress,function,nullptr,0);
+  Serial.print("device adress: ");
+  Serial.println(teilnehmer.adress,HEX);  
+  Serial.print("device funktion: ");
+  Serial.println(teilnehmer.funktion,HEX);
   devices.push_back(teilnehmer);
   //Pollingschleife vergroessern
   num_adresses++;   
-
+  FLAG_NEWDEVICE = true;
   if (DEBUG4) Serial.println("Neue Adresse:");
   if (DEBUG4) Serial.println(freeAdress,HEX);                          
   return freeAdress;                          
@@ -654,12 +764,6 @@ if (unusedAdresses.empty() == false)
 // keine Adressen mehr frei!
 else return 0x00;                             
 }
-int whichFunction(char adresse,char data) {
-  if (DEBUG) Serial.println("whichFunction");
-  
-}
-
-
 void printList(const std::list<char>& lst) {
     // Ueberpruefen, ob die Liste leer ist
     if (lst.empty()) {
@@ -676,19 +780,23 @@ void printList(const std::list<char>& lst) {
 }
 
 void timeout(char adress, bool no_response){
-  // if (DEBUG2) Serial.println("eingelesene Daten:");
-  // if (DEBUG2) Serial.print(global_message[0],HEX);
-  // if (DEBUG2) Serial.println(global_message[1],HEX);
-  //if (!no_response) Serial.println("Antwort!");
-  // neuer Teilnehmer!
-  if (global_message[0] == NOADRESS && global_adress ==
-      controllerAdress && !no_response ) {      
-    device geraet = *iterator_devices;
-    // Speichern der Funktion
-    geraet.funktion = global_message[1];                                                          
-    if (DEBUG4) Serial.println("Neuer Teilnehmer");  
-    // freie Adresse senden an noadress                            
-    sendMessage(NOADRESS,0,newAdress());                                                           
+  if (DEBUG) Serial.println("timeout");
+  device geraet = *iterator_devices;
+  if (no_response) Serial.print("no_response");
+  Serial.print("global_adress: ");
+  Serial.println(global_adress,HEX);
+  Serial.print("global_message[0]: ");
+  Serial.println(global_message[0],HEX);
+  Serial.print("global_message[1]: ");
+  Serial.println(global_message[1],HEX);
+  //neuer Teilnehmer!
+  if (global_message[0] == REQUESTADRESS && global_adress ==
+      controllerAdress && !no_response ) {                                                       
+    if (true) Serial.println("Neuer Teilnehmer");  
+    // neuen Teilnehmer hinzufuegen mit seiner Funktion
+    char freeAdress[] = {newAdress(global_message[1])}; 
+    // freie Adresse senden an noadress                       
+    sendMessage(NOADRESS,0,freeAdress);                                                           
   }
   //kein neuer Teilnehmer
   else if (no_response && adress == NOADRESS){
@@ -700,44 +808,12 @@ void timeout(char adress, bool no_response){
     device geraet = *iterator_devices;
     // inkrementieren des Timeout-counters
     geraet.timeout++;                                                                             
-    if (DEBUG2) Serial.println("keine Antwort von:");
-    if (DEBUG2) Serial.println(geraet.adress,HEX);
+    if (true) Serial.println("keine Antwort von:");
+    if (true) Serial.println(geraet.adress,HEX);
   }
 }
 
 void polling(){
-  bool response = false;
-  global_reset();
-  
-  device geraet;
-  
-  geraet = *iterator_devices;
-
-
-  //request fuer abzufragende Adresse
-  sendMessage(geraet.adress,0,0xFF);  
-  //warten auf Rueckmeldung                                            
-  if (await_response(controllerAdress)){ 
-    //Serial.println("Antwort!!!");                     
-    geraet.latest_data = global_message;
-    //Ruecksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
-    timeout(geraet.adress,false);      
-    //bearbeiten der Daten                                
-    whichFunction(geraet.adress,global_message[0]);                    
-  } 
-  //keine Antwort erhalten      
-  else{
-    if (DEBUG3) Serial.println("FEHLER!!!");      
-    //Zaehlen der nicht vorhandenen Antworten (bei NOADRESS nicht!)                                                 
-    timeout(geraet.adress,true);                                     
-  }
-  USB(geraet.adress,geraet.funktion,(char*) global_message);
-  
-  Serial.print("num_adresses: ");
-  Serial.println(num_adresses); 
-  Serial.print("polling_counter: ");
-  Serial.println(polling_counter); 
-  
   //naechstes element der adressliste
   polling_counter++;
   // Überprüfen Sie, ob der polling_counter die Anzahl der Adressen erreicht hat
@@ -747,6 +823,31 @@ void polling(){
   //Setzen des Iterators an die entsprechende Stelle
   iterator_devices = devices.begin();
   std::advance(iterator_devices,polling_counter);
+  if (DEBUG) Serial.println("polling");
+  bool response = false;
+  char request[] = {0xFF};
+  global_reset();
+  
+  device geraet;
+  
+  geraet = *iterator_devices;
+  //request fuer abzufragende Adresse
+  sendMessage(geraet.adress,0,request);  
+  //warten auf Rueckmeldung                                            
+  response = await_response(controllerAdress);
+  //Ruecksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
+  timeout(geraet.adress,!response);
+  //Speichern der Daten
+  geraet.latest_data = global_message;
+  //Uebermitteln der Daten an den PC
+  USB(geraet.adress,geraet.funktion,geraet.latest_data);
+  
+  Serial.print("num_adresses: ");
+  Serial.println(num_adresses); 
+  Serial.print("polling_counter: ");
+  Serial.println(polling_counter); 
+  
+
 }
 
 
@@ -820,6 +921,19 @@ void loop() {
     if (readMessage())
     { 
     Serial.println("Nachricht empfangen!");
+    Serial.print("Adresse:");
+    Serial.print(global_adress,HEX);
+    Serial.println();
+    Serial.print("COF:");
+    Serial.print(global_COF,HEX);
+    Serial.println();
+    Serial.print("Daten:");
+    for (int i = 0; i <= global_COF; i++)
+    {
+      Serial.print(global_message[i],HEX);
+      Serial.print(" ");
+    } 
+    Serial.println();
     Serial.println("Meine Adresse:");
     Serial.print(myAdress,HEX);   
     Serial.println();
@@ -833,4 +947,11 @@ void loop() {
       } 
   }
 }
+//void loop() {
+//  char message[] = {0x00,FUNCTION};
+//  Serial.println("message");
+//  Serial.print(message[0],HEX);Serial.print(" ");Serial.println(message[1],HEX);
+//  delay(1000);
+//  sendMessage(0x01, 0x01, message);
+//}
 #endif
