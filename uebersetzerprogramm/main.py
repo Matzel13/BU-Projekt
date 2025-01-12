@@ -3,12 +3,6 @@
 # - Nur ein Savefile für alle Module, was passiert bei ungleicher modulanzahl; 3 gespeichert aber nur 2 angeschlossen
 # - Info fenster evtl. togglen
 
-
-# START
-# Adresse 2-7
-# Daten
-# ENDE
-
 import customtkinter as ctk
 import serial.tools.list_ports
 import concurrent.futures
@@ -21,26 +15,10 @@ import time
 key_layout = [
     [f"{chr(65 + row)}{col + 1}" for col in range(4)] for row in range(4)
 ]
-key_mappings = {"Module 1": {key: "" for row in key_layout for key in row}}
-current_module = "Module 1"
 
-
-def address_to_module(address):
-    module_map = {
-        7: "Module 1",
-        6: "Module 2",
-        5: "Module 3",
-        4: "Module 4",
-        3: "Module 5",
-        2: "Module 6",
-    }
-    return module_map.get(address, None)
-
-
-def address_to_function(function):
-    function_map = {1: "Keyboard", 2: "Audiomodul"}
-    return function_map.get(function, None)
-
+current_module = []
+key_mappings = {}
+modules = {}
 
 def normalize_key_binding(binding):
     mapping = {
@@ -107,140 +85,121 @@ def find_keyboard(com_ports, expected_message="INIT"):
                 return result
     return None
 
+def address_to_function(function):
+    function_map = {1: "Keyboard", 2: "Audiomodul"}
+    return function_map.get(function)
 
 available_ports = list(serial.tools.list_ports.comports())
 keyboard_port = find_keyboard(available_ports)
 
+def refresh_module_dropdown():
+    global modules
+    module_dropdown.configure(values=list(modules.keys()))
+    if module_var.get() not in list(modules.keys()):
+        module_var.set(sorted(modules.keys(), reverse = True)[0])
 
 def read_from_com_port(serial_connection):
-    global module_count
+    global module_count, modules, current_module
     address = None
     data = None
-    pressed_keys = []  # Liste zum Speichern der gedrückten Tasten
-    modules = []  # Liste zum Speichern der angeschlossenen Module
+    pressed_keys = []  # List to store pressed keys
 
     while True:
         try:
             if serial_connection.in_waiting > 0:
-                message = (
-                    serial_connection.readline().decode(errors="ignore").strip()
-                )
+                message = serial_connection.readline().decode(errors="ignore").strip()
                 if message:
-                    print(f"Nachricht empfangen: {message}")
+                    print(f"Message received: {message}")
 
-                    # Überprüfen, ob es sich um "START" handelt
                     if message == "START":
-                        print(
-                            "Start-Nachricht empfangen, warte auf Adresse und Tasten..."
-                        )
+                        print("Start message received, waiting for address and keys...")
                         address = None
                         data = None
-                        pressed_keys = (
-                            []
-                        )  # Liste zurücksetzen, wenn ein neuer Block beginnt
+                        pressed_keys = []
+
                     elif message == "END":
-                        print("Ende-Nachricht empfangen.")
-                        # Wenn sowohl Adresse als auch Daten vorhanden sind, dann verarbeiten
+                        print("End message received.")
                         if address is not None and pressed_keys:
-                            module = address_to_module(address)
-                            if module:
-                                print(f"Modul {module} empfangen.")
-                                # Nacheinander alle gesammelten Tasten ausführen
+                            module_name = f"{function_name} (Address {address})"
+                            if module_name:
+                                print(f"Module {module_name} processed.")
                                 for key in pressed_keys:
-                                    if key in key_mappings[module]:
-                                        press = key_mappings[module][key]
+                                    print("1")
+                                    if key in key_mappings[module_name]:
+                                        print("2")
+                                        press = key_mappings[module_name][key]
                                         if press:
-                                            print(
-                                                f"Taste {key} auf {module} aktiviert."
-                                            )
-                                            keyboard.press_and_release(
-                                                f"{press}"
-                                            )
+                                            print(f"Key {key} on {module_name} activated.")
+                                            keyboard.press_and_release(press)
                                         else:
-                                            print("Keine Belegung")
+                                            print("No binding assigned.")
                                     else:
-                                        print(
-                                            f"Ungültige Taste {key} für {module}."
-                                        )
+                                        print(f"Invalid key {key} for {module_name}.")
                             else:
-                                print(f"Ungültige Adresse: {address}")
+                                print(f"Invalid address: {address}")
                         else:
-                            print(
-                                "Fehler: Adresse oder keine Tasten vorhanden!"
-                            )
+                            print("Error: Missing address or keys!")
+
 
                     elif message == "LIST":
-                        print(
-                            "LIST-Nachricht empfangen. Lese angeschlossene Module..."
-                        )
-                        modules = []  # Liste der Module zurücksetzen
-                        # Jetzt warten wir auf die Module-Daten
+                        print("LIST message received. Reading connected modules...")
+                        new_modules = {}  # Dictionary to store modules with their corresponding functions
                         while True:
-                            module_message = (
-                                serial_connection.readline()
-                                .decode(errors="ignore")
-                                .strip()
-                            )
+                            module_message = serial_connection.readline().decode(errors="ignore").strip()
                             if module_message == "END":
-                                print("Ende der LIST-Nachricht empfangen.")
+                                print("End of LIST message received.")
                                 break
                             elif module_message.isdigit():
-                                # Wenn die Nachricht eine Zahl (Adresse) ist
                                 address = int(module_message)
-                                print(f"Adresse {address} empfangen.")
-                                # Nächste Zeile ist die Funktion des Moduls
-                                function_message = (
-                                    serial_connection.readline()
-                                    .decode(errors="ignore")
-                                    .strip()
-                                )
+                                print(f"Address {address} received.")
+                                function_message = serial_connection.readline().decode(errors="ignore").strip()
                                 if function_message.isdigit():
                                     function = int(function_message)
-                                    print(f"Funktion {function} empfangen.")
-                                    function_name = address_to_function(
-                                        function
-                                    )
+                                    print(f"Function {function} received.")
+                                    function_name = address_to_function(function)
                                     if function_name:
-                                        modules.append((address, function_name))
-                                        print(
-                                            f"Modul {function_name} bei Adresse {address} hinzugefügt."
-                                        )
+                                        module_name = f"{function_name} (Address {address})"
+                                        new_modules[module_name] = {}
+                                        print(f"Module {module_name} added.")
+                                        # Dynamically create key mappings for the module
+                                        if module_name not in key_mappings:
+                                            key_mappings[module_name] = {
+                                                key: "" for row in key_layout for key in row
+                                            }
+                                            print(f"Key mappings created for {module_name}.")
                                     else:
-                                        print(
-                                            f"Unbekannte Funktion {function} für Adresse {address}."
-                                        )
-                            time.sleep(
-                                0.1
-                            )  # Leichte Pause, um CPU-Auslastung zu reduzieren
-                        module_count = len(modules)
-                        print(f"Module Count: {module_count}")
-                        update_display()
+                                        print(f"Unknown function {function} for Address {address}.")
+            
+                        print(f"KKKKKKKKKKKKKKKKKKKKKKKKKK{new_modules}")
+                        current_module = sorted(new_modules.keys(), reverse = True)[0]
+                        print(f"CCCCCCCCCCCCCCCCCCC{current_module}")
+
+
+                        # Check if the module list has changed
+                        if new_modules != modules:
+                            modules = new_modules
+                            module_count = len(modules)
+                            print(f"Module Count: {module_count}")
+                            refresh_module_dropdown()
+      
 
                     elif message != "INIT":
-                        # Wenn es keine START, END oder LIST Nachricht ist, dann könnte es Adresse oder Daten sein
                         try:
-                            # Versuchen, die Nachricht als Adresse zu interpretieren
                             address = int(message)
-                            print(f"Adresse {address} empfangen.")
+                            print(f"Address {address} received.")
                         except ValueError:
-                            # Falls es sich nicht um eine Adresse handelt, nehmen wir an, dass es sich um Daten handelt
                             data = message
-                            print(f"Daten {data} empfangen.")
+                            print(f"Data {data} received.")
                             if address is not None:
-                                pressed_keys.append(
-                                    data
-                                )  # Die Taste zur Liste der gedrückten Tasten hinzufügen
+                                pressed_keys.append(data)
+                    time.sleep(0.1)
 
-                    time.sleep(
-                        0.1
-                    )  # Leichte Pause, um CPU-Auslastung zu reduzieren
         except serial.SerialException as e:
-            print(f"Fehler beim Lesen vom COM-Port: {e}")
+            print(f"Error reading from COM port: {e}")
             break
         except Exception as e:
-            print(f"Unerwarteter Fehler: {e}")
+            print(f"Unexpected error: {e}")
             break
-
 
 # Start der Lesefunktion, falls ein COM-Port erkannt wurde
 if keyboard_port:
@@ -263,7 +222,16 @@ else:
     print("Controller konnte nicht erkannt werden.")
 
 
+def start_display():
+    for row in range(4):
+        for col in range(4):
+            key = key_layout[row][col]
+            labels[row][col].configure(
+                text=f"{key}\n({key_mappings.get(key, '')})"
+            )
+
 def update_display():
+
     for row in range(4):
         for col in range(4):
             key = key_layout[row][col]
@@ -275,8 +243,6 @@ def update_display():
         com_port_label.configure(text=f"COM Port: {keyboard_port}")
     else:
         com_port_label.configure(text="COM Port: Not Connected")
-
-    update_remove_button_state()
 
 
 def save_mapping():
@@ -316,6 +282,7 @@ def reset_key(row, col):
 
 
 def switch_module(module):
+    print(f"KEYMAPPINGS: {key_mappings}")
     global current_module
     current_module = module
     if module not in key_mappings:
@@ -355,77 +322,14 @@ module_frame.grid(row=0, column=0, sticky="nsew", pady=10)
 module_label = ctk.CTkLabel(module_frame, text="Select Module:")
 module_label.pack(side="left", padx=5)
 
-module_var = ctk.StringVar(value="Module 1")
+module_var = ctk.StringVar(value="")
 module_dropdown = ctk.CTkOptionMenu(
     module_frame,
     variable=module_var,
-    values=list(key_mappings.keys()),
+    values=list(sorted(key_mappings.keys(),reverse=True)),
     command=switch_module,
 )
 module_dropdown.pack(side="left", padx=5)
-
-
-def add_module():
-    if len(key_mappings) < 7:
-        new_module = f"Module {len(key_mappings) + 1}"
-        key_mappings[new_module] = {
-            key: "" for row in key_layout for key in row
-        }
-        module_dropdown.configure(values=list(key_mappings.keys()))
-        module_var.set(new_module)
-        switch_module(new_module)
-
-    update_add_module_button_state()
-
-
-def update_add_module_button_state():
-    if len(key_mappings) >= 7:
-        add_module_button.configure(state="disabled", fg_color="#D3D3D3")
-    else:
-        add_module_button.configure(state="normal", fg_color="#5A9BD8")
-
-
-add_module_button = ctk.CTkButton(
-    module_frame, text="Add Module", command=add_module
-)
-add_module_button.pack(side="left", padx=5)
-
-
-def remove_module():
-    global current_module
-    if current_module == "Module 1":
-        return
-
-    module_index = list(key_mappings.keys()).index(current_module)
-    del key_mappings[current_module]
-
-    updated_modules = list(key_mappings.keys())
-    module_dropdown.configure(values=updated_modules)
-
-    if module_index > 0:
-        current_module = updated_modules[module_index - 1]
-    else:
-        current_module = updated_modules[0]
-
-    module_var.set(current_module)
-    update_add_module_button_state()
-    update_display()
-
-
-remove_module_button = ctk.CTkButton(
-    module_frame,
-    text="Remove Module",
-    command=remove_module,
-    fg_color="#FF7F7F",
-)
-remove_module_button.pack(side="left", padx=5)
-
-
-def update_remove_button_state():
-    if len(key_mappings) == 1 or current_module == "Module 1":
-        remove_module_button.configure(state="disabled", fg_color="#D3D3D3")
-    else:
-        remove_module_button.configure(state="normal", fg_color="#FF7F7F")
 
 
 frame = ctk.CTkFrame(root)
@@ -444,7 +348,7 @@ for row in range(4):
 
         labels[row][col] = ctk.CTkLabel(
             label_frame,
-            text=f"{key}\n({key_mappings[current_module][key]})",
+            text=f"{key}\n()",
             corner_radius=5,
         )
         labels[row][col].pack(expand=True, fill="both", padx=5, pady=5)
@@ -500,9 +404,6 @@ def open_info_window():
     info_window = ctk.CTkToplevel()
     info_window.title("Key Bindings Info")
     info_window.geometry("400x300")
-
-    screen_width = info_window.winfo_screenwidth()
-    screen_height = info_window.winfo_screenheight()
 
     window_width = 400
     window_height = 600
@@ -598,5 +499,5 @@ control_frame.grid_columnconfigure(0, weight=1)
 control_frame.grid_columnconfigure(1, weight=1)
 
 
-update_display()
+start_display()
 root.mainloop()
