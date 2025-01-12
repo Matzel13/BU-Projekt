@@ -27,12 +27,12 @@ current_module = "Module 1"
 
 def address_to_module(address):
     module_map = {
-        2: "Module 1",
-        3: "Module 2",
-        4: "Module 3",
-        5: "Module 4",
-        6: "Module 5",
-        7: "Module 6",
+        7: "Module 1",
+        6: "Module 2",
+        5: "Module 3",
+        4: "Module 4",
+        3: "Module 5",
+        2: "Module 6",
     }
     return module_map.get(address, None)
 
@@ -505,9 +505,9 @@ def open_info_window():
     screen_height = info_window.winfo_screenheight()
 
     window_width = 400
-    window_height = 300
-    x = (screen_width // 2) - (window_width // 2)
-    y = (screen_height // 2) - (window_height // 2)
+    window_height = 600
+    x = root.winfo_x() + root.winfo_width()
+    y = root.winfo_y()
 
     info_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
