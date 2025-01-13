@@ -276,21 +276,30 @@ def update_display(is_initializing=True):
 
 
 def save_mapping():
-    global key_mappings
     if modules:
-        with open("key_mappings.json", "w") as f:
-            json.dump(key_mappings, f)
-            update_display(is_initializing = False)
-    else: 
-        print("Nothing to save.")
+        try:
+            with open("key_mappings.json", "w") as f:
+                json.dump(key_mappings, f, indent=4)  
+                update_display(is_initializing=False)
+                print("Mappings successfully saved.")
+        except Exception as e:
+            print(f"An error occurred while saving mappings: {e}")
+    else:
+        print("Modules are not initialized. Nothing to save.")
 
 
 def load_mapping():
-    global key_mappings, current_module
-
+    global current_module, modules
+    print(f"{modules}")
     with open("key_mappings.json", "r") as f:
         loaded_data = json.load(f)
-        key_mappings = loaded_data
+
+        for key in key_mappings.keys():
+            if key in loaded_data:  # Nur wenn der Schlüssel in beiden Dictionaries existiert
+                for sub_key in key_mappings[key].keys():
+                    if sub_key in loaded_data[key]:
+                        key_mappings[key][sub_key] = loaded_data[key][sub_key]
+
         module_dropdown.configure(values=list(key_mappings.keys()))
     update_display(is_initializing = False)
 
