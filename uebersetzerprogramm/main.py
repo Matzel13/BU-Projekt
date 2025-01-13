@@ -59,27 +59,24 @@ def normalize_key_binding(binding):
     return "+".join(normalized_parts)
 
 
-def find_keyboard_port(port_info, expected_message="INIT"):
-    try:
-        with serial.Serial(port_info.device, baudrate=9600, timeout=2) as ser:
-            print(f"Prüfe Port: {port_info.device}")
-            data = ser.read(100).decode(errors="ignore")
-            if expected_message in data:
-                return port_info.device
-    except serial.SerialException as e:
-        print(f"Fehler beim Zugriff auf {port_info.device}: {e}")
-    except UnicodeDecodeError as e:
-        print(f"Fehler beim Dekodieren von Daten auf {port_info.device}: {e}")
-    return None
+def find_keypad_port(com_ports, expected_message="INIT"):
+    def check_port(port_info):
+        print(f"Prüfe Port: {port_info.device}")  # Debug-Ausgabe
+        try:
+            with serial.Serial(
+                port_info.device, baudrate=9600, timeout=2
+            ) as ser:
+                data = ser.read(100).decode(errors="ignore")
+                if expected_message in data:
+                    return port_info.device
+        except (serial.SerialException, UnicodeDecodeError):
+            pass
+        return None
 
-
-def find_keyboard(com_ports, expected_message="INIT"):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(find_keyboard_port, port_info, expected_message)
-            for port_info in com_ports
-        ]
-
+        futures = {
+            executor.submit(check_port, port): port for port in com_ports
+        }
         for future in concurrent.futures.as_completed(futures):
             result = future.result()
             if result:
@@ -88,18 +85,17 @@ def find_keyboard(com_ports, expected_message="INIT"):
 
 
 def address_to_function(function):
-    function_map = {1: "Keyboard", 2: "Audiomodul"}
+    function_map = {1: "Keypad", 2: "Audiomodul"}
     return function_map.get(function)
 
 
 available_ports = list(serial.tools.list_ports.comports())
-keyboard_port = find_keyboard(available_ports)
+keypad_port = find_keypad_port(available_ports)
+
 
 def switch_module(module):
     global current_module
     current_module = module
-
-    print(f"CurrentModuleSwitch: {current_module}")
 
     module_dropdown.configure(values=list(modules.keys()))
     module_var.set(current_module)
@@ -107,7 +103,6 @@ def switch_module(module):
     if module not in key_mappings:
         key_mappings[module] = {key: "" for row in key_layout for key in row}
     update_display()
-
 
 
 def read_from_com_port(serial_connection):
@@ -192,24 +187,30 @@ def read_from_com_port(serial_connection):
                                                 for row in key_layout
                                                 for key in row
                                             }
-                                            print(f"Key mappings created for {module_name}.")
+                                            print(
+                                                f"Key mappings created for {module_name}."
+                                            )
                                     else:
-                                        print(f"Unknown function {function} for Address {address}.")
+                                        print(
+                                            f"Unknown function {function} for Address {address}."
+                                        )
 
                         if not current_module:
                             current_module = sorted(
-                                 new_modules.keys(), reverse= True)[0]
-                            
+                                new_modules.keys(), reverse=True
+                            )[0]
+
                         module_count = len(new_modules)
 
-                        #switch_module(current_module)
+                        # switch_module(current_module)
                         # Check if the module list has changed
                         if new_modules != modules:
                             modules = new_modules
                             module_count = len(modules)
                             current_module = sorted(
-                                new_modules.keys(), reverse= True)[0]
-                            
+                                new_modules.keys(), reverse=True
+                            )[0]
+
                             print(f"Module Count: {module_count}")
                             switch_module(current_module)
 
@@ -233,9 +234,9 @@ def read_from_com_port(serial_connection):
 
 
 # Start der Lesefunktion, falls ein COM-Port erkannt wurde
-if keyboard_port:
-    print(f"Starte das Lesen vom COM-Port {keyboard_port}...")
-    ser = serial.Serial(keyboard_port, 9600, timeout=1)
+if keypad_port:
+    print(f"Starte das Lesen vom COM-Port {keypad_port}...")
+    ser = serial.Serial(keypad_port, 9600, timeout=1)
 
     # Thread für das kontinuierliche Lesen starten
     read_thread = threading.Thread(
@@ -244,6 +245,7 @@ if keyboard_port:
     read_thread.start()
 else:
     print("Kein Controller verbunden. Nachrichten können nicht gelesen werden.")
+
 
 def start_display():
     for row in range(4):
@@ -263,8 +265,8 @@ def update_display():
                 text=f"{key}\n({key_mappings[current_module].get(key, '')})"
             )
 
-    if keyboard_port:
-        com_port_label.configure(text=f"COM Port: {keyboard_port}")
+    if keypad_port:
+        com_port_label.configure(text=f"COM Port: {keypad_port}")
     else:
         com_port_label.configure(text="COM Port: Not Connected")
 
@@ -275,9 +277,12 @@ def update_display():
 
 
 def save_mapping():
-    with open("key_mappings.json", "w") as f:
-        json.dump(key_mappings, f)
-    update_display()
+    if modules:
+        with open("key_mappings.json", "w") as f:
+            json.dump(key_mappings, f)
+        update_display()
+    else: 
+        print("Nothing to save.")
 
 
 def load_mapping():
@@ -285,7 +290,7 @@ def load_mapping():
 
     with open("key_mappings.json", "r") as f:
         loaded_data = json.load(f)
-        key_mappings = loaded_data
+        key_mappings = {**loaded_data, **key_mappings}
 
     module_dropdown.configure(values=list(key_mappings.keys()))
 
@@ -314,7 +319,6 @@ def reset_key(row, col):
     update_display()
 
 
-
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
@@ -329,7 +333,7 @@ initial_height = 600
 position_top = int((screen_height - initial_height) / 2)
 position_left = int((screen_width - initial_width) / 2)
 
-root.resizable(False, False)
+root.resizable(True, True)
 
 root.geometry(
     f"{initial_width}x{initial_height}+{position_left}+{position_top}"
@@ -348,22 +352,13 @@ module_label = ctk.CTkLabel(module_frame, text="Select Module:")
 module_label.pack(side="left", padx=5)
 
 module_var = ctk.StringVar(value="N/A")
-if current_module:
-    module_dropdown = ctk.CTkOptionMenu(
-        module_frame,
-        values=list(sorted(key_mappings.keys(), reverse= True)),
-        command=switch_module(current_module),
-        variable=module_var
-    )
-    module_dropdown.pack(side="left", padx=5)
-else: 
-    module_dropdown = ctk.CTkOptionMenu(
-        module_frame,
-        values=list(sorted(key_mappings.keys(), reverse= True)),
-        command=switch_module,
-        variable=module_var
-    )
-    module_dropdown.pack(side="left", padx=5)
+module_dropdown = ctk.CTkOptionMenu(
+    module_frame,
+    values=list(sorted(key_mappings.keys(), reverse=True)),
+    command=switch_module,
+    variable=module_var,
+)
+module_dropdown.pack(side="left", padx=5)
 
 
 frame = ctk.CTkFrame(root)
