@@ -12,6 +12,7 @@ import serial
 import json
 import time
 
+
 key_layout = [
     [f"{chr(65 + row)}{col + 1}" for col in range(4)] for row in range(4)
 ]
@@ -59,6 +60,40 @@ def normalize_key_binding(binding):
     return "+".join(normalized_parts)
 
 
+key_mapping_info = """
+ctrl = Control
+alt = Alt
+shift = Shift
+enter = Return
+space = Space
+backspace = BackSpace
+delete = Delete
+esc = Escape
+tab = Tab
+capslock = Caps_Lock
+home = Home
+end = End
+pageup = Page_Up
+pagedown = Page_Down
+up = Up
+down = Down
+left = Left
+right = Right
+f1 = F1
+f2 = F2
+f3 = F3
+f4 = F4
+f5 = F5
+f6 = F6
+f7 = F7
+f8 = F8
+f9 = F9
+f10 = F10
+f11 = F11
+f12 = F12
+""".strip()
+
+
 def find_keypad_port(com_ports, expected_message="INIT"):
     def check_port(port_info):
         print(f"Prüfe Port: {port_info.device}")  # Debug-Ausgabe
@@ -102,8 +137,7 @@ def switch_module(module):
 
     if module not in key_mappings:
         key_mappings[module] = {key: "" for row in key_layout for key in row}
-    update_display(is_initializing = False)
-
+    update_display(is_initializing=False)
 
 
 def read_from_com_port(serial_connection):
@@ -151,7 +185,7 @@ def read_from_com_port(serial_connection):
 
                     elif message == "LIST":
                         print("LIST")
-                        new_modules = ({})  
+                        new_modules = {}
                         while True:
                             module_message = (
                                 serial_connection.readline()
@@ -257,7 +291,9 @@ def update_display(is_initializing=True):
                 key_text = f"{key}\n({key_mappings.get(key, '')})"
             else:
                 # Use module-specific key_mappings for updating
-                key_text = f"{key}\n({key_mappings[current_module].get(key, '')})"
+                key_text = (
+                    f"{key}\n({key_mappings[current_module].get(key, '')})"
+                )
             labels[row][col].configure(text=key_text)
 
     # Configure COM port label
@@ -274,12 +310,11 @@ def update_display(is_initializing=True):
             module_count_label.configure(text="Module Count: N/A")
 
 
-
 def save_mapping():
     if modules:
         try:
             with open("key_mappings.json", "w") as f:
-                json.dump(key_mappings, f, indent=4)  
+                json.dump(key_mappings, f, indent=4)
                 update_display(is_initializing=False)
                 print("Mappings successfully saved.")
         except Exception as e:
@@ -295,14 +330,15 @@ def load_mapping():
         loaded_data = json.load(f)
 
         for key in key_mappings.keys():
-            if key in loaded_data:  # Nur wenn der Schlüssel in beiden Dictionaries existiert
+            if (
+                key in loaded_data
+            ):  # Nur wenn der Schlüssel in beiden Dictionaries existiert
                 for sub_key in key_mappings[key].keys():
                     if sub_key in loaded_data[key]:
                         key_mappings[key][sub_key] = loaded_data[key][sub_key]
 
         module_dropdown.configure(values=list(key_mappings.keys()))
-    update_display(is_initializing = False)
-
+    update_display(is_initializing=False)
 
 
 def assign_key(row, col):
@@ -314,16 +350,14 @@ def assign_key(row, col):
     normalized_binding = normalize_key_binding(new_binding)
 
     key_mappings[current_module][key] = normalized_binding
-    update_display(is_initializing = False)
-
+    update_display(is_initializing=False)
 
 
 def reset_key(row, col):
     global current_module, key_mappings
     key = key_layout[row][col]
     key_mappings[current_module][key] = ""
-    update_display(is_initializing = False)
-
+    update_display(is_initializing=False)
 
 
 ctk.set_appearance_mode("dark")
@@ -470,40 +504,6 @@ info_button = ctk.CTkButton(
 )
 info_button.pack(side="left", padx=5)
 
-key_mapping_info = """
-ctrl = Control
-alt = Alt
-shift = Shift
-enter = Return
-space = Space
-backspace = BackSpace
-delete = Delete
-esc = Escape
-tab = Tab
-capslock = Caps_Lock
-home = Home
-end = End
-pageup = Page_Up
-pagedown = Page_Down
-up = Up
-down = Down
-left = Left
-right = Right
-f1 = F1
-f2 = F2
-f3 = F3
-f4 = F4
-f5 = F5
-f6 = F6
-f7 = F7
-f8 = F8
-f9 = F9
-f10 = F10
-f11 = F11
-f12 = F12
-""".strip()
-
-
 control_frame = ctk.CTkFrame(root)
 control_frame.grid(row=4, column=0, sticky="nsew", pady=10)
 
@@ -535,5 +535,5 @@ control_frame.grid_columnconfigure(0, weight=1)
 control_frame.grid_columnconfigure(1, weight=1)
 
 
-update_display(is_initializing = True)
+update_display(is_initializing=True)
 root.mainloop()
