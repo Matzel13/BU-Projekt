@@ -195,7 +195,7 @@ def read_from_com_port(serial_connection):
                                             f"Unknown function {function} for Address {address}."
                                         )
 
-                        if not current_module:
+                        if not current_module and new_modules:
                             current_module = sorted(
                                 new_modules.keys(), reverse=True
                             )[0]
