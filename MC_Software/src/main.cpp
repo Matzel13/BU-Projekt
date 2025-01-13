@@ -35,25 +35,39 @@
   //Nachricht an den PC gesendet
   #define INIT 10
   #define LIST 10
+  //Timeout-Schwellwert
+  #define TIMEOUT_THRESHOLD 3
 #endif
+
 #define BITSTUFFING 3
-
 #define DELAY(x) delayMicroseconds(x)
-#define SENDDELAY 1000                      
+#define SENDDELAY 1000                       
 #define NOADRESS 0x00
-
+#define WAITLOOP 100000
 // Zum testen!
 #define DEBUG false                    
 #define DEBUG1 false
 #define DEBUG2 false
 #define DEBUG3 false
 #define DEBUG4 false
-#define DEBUG5 true
-#define DEBUG6 true
+#define DEBUG5 false
+#define DEBUG6 false
 
+//Matrix-Tastatur--------------------------
+//           row col              
+int tasten2x2[2] [2] = {
+  {0xA1,0xB1},
+  {0xA2,0xB2}
+};
+int tasten4x4[4] [4] = {
+  {0xA1,0xB1,0xC1,0xD1},
+  {0xA2,0xB2,0xC2,0xD2},
+  {0xA3,0xB3,0xC3,0xD3},
+  {0xA4,0xB4,0xC4,0xD4}
+};
 //Variablen--------------------------------
 bool FLAG_NEWDEVICE = false;
-
+bool FLAG_DELETEDEVICE = false;
 volatile unsigned long timeStamp;      //Zeit Merker
 volatile unsigned long delayTime;      //berechnete Taktzeit
 volatile char global_adress = 0x00;    //eingelesene Adresse
@@ -133,7 +147,7 @@ bool syncronisation(){
   if (lok_delayTime > SENDDELAY*1.25 &&
       lok_delayTime < SENDDELAY*1.75){
     delayTime = lok_delayTime/1.5;
-    Serial.println(delayTime);                                                       // Ich kann diese Zeile nicht loeschen?? Warum?!
+    //Serial.println(delayTime);                                                       // Ich kann diese Zeile nicht loeschen?? Warum?!
     DELAY(delayTime*1.2);
     //digitalWrite(COMM_OUT, HIGH);
     //DELAY(delayTime);
@@ -451,15 +465,28 @@ void sendEOF(){
   }
   if (DEBUG) Serial.println();
 }
-
+void sendOnBus(char* stuffedMessage) {
+  if (DEBUG) Serial.println("sendOnBus");
+      for (int i = 0; i < sizeof(stuffedMessage); i++) {
+        if (stuffedMessage[i] == '1') {
+            digitalWrite(COMM_OUT, HIGH);
+        } else {
+            digitalWrite(COMM_OUT, LOW);
+        }
+        DELAY(SENDDELAY);
+    }
+  
+}
 void writeBitstuffedMessage(int x) {
     if (DEBUG) Serial.println("writeBitstuffedMessage");
 
     std::string stuffedMessage;
     int count = 0;
+
     char lastBit = '\0';
 
     for (int i = 0; i < strlen(global_decoded_message); i++) {
+
         char currentBit = global_decoded_message[i];
         stuffedMessage += currentBit;
 
@@ -469,6 +496,7 @@ void writeBitstuffedMessage(int x) {
                 // Bitwechsel einfügen
                 char stuffedBit = (currentBit == '1') ? '0' : '1';
                 stuffedMessage += stuffedBit;
+
                 count = 1; // Zähler zurücksetzen
                 switch (currentBit)
                 {
@@ -500,7 +528,9 @@ void writeBitstuffedMessage(int x) {
     if (DEBUG3) Serial.println("Bitstuffed Message:");
     if (DEBUG3) Serial.println(global_BITSTUFFED_message);
 
+
     // Send the bitstuffed message
+
     for (int i = 0; i < stuffedMessage.length(); i++) {
         if (stuffedMessage[i] == '1') {
             digitalWrite(COMM_OUT, HIGH);
@@ -509,6 +539,7 @@ void writeBitstuffedMessage(int x) {
         }
         DELAY(SENDDELAY);
     }
+
 }
 
 void sendMessage(char adress,char dataSize,char* data){
@@ -542,7 +573,7 @@ void global_reset(){
 
 
 bool await_response(char adress) {
-    for (int i = 0; i < 20000; i++) {
+    for (int i = 0; i < WAITLOOP; i++) {
         if (readMessage()) {
           if (DEBUG3) Serial.println("eingelesene Adresse:");
           if (DEBUG3) Serial.println(global_adress,HEX);
@@ -555,6 +586,12 @@ bool await_response(char adress) {
     Serial.println("Keine Antwort erhalten!");
     Serial.println("Adresse:");
     Serial.println(global_adress,HEX);
+    Serial.println("COF:");
+    Serial.println(global_COF,HEX);
+    Serial.println("Daten:");
+    for (int i = 0; i <= global_COF; i++) {
+        Serial.println(global_message[i],HEX);
+    }     
     return false;
 }
 
@@ -597,57 +634,15 @@ void myFunction(){
       digitalWrite(ROWS[row], HIGH);
       for (int col = 0; col < 2; col++) {
         if (digitalRead(COLS[col]) == HIGH) {
-          switch (ROWS[row])
-          {
-          case ROW1:  
-            switch (COLS[col])
-            {
-            case COL1:
-              /* A1 */
-              //Serial.println("A1");
-              myData[myDatasize] = 0xA1;
-              myDatasize ++;  
-              break;
-            case COL2:
-              /* B1 */
-              //Serial.println("B1");
-              myData[myDatasize] = 0xB1; 
-              myDatasize ++;
-              break;
-            default:
-              break;
-            }
-            break;
-          case ROW2:
-            switch (COLS[col])
-            {
-            case COL1:
-              /* A2 */
-              //Serial.println("A2");
-              myData[myDatasize] = 0xA2;
-              myDatasize ++;
-              break;
-            case COL2:
-              /* B2 */
-              //Serial.println("B2");
-              myData[myDatasize] = 0xB2;
-              myDatasize ++;
-              break;
-            break;
-          default:
-            break;
+          //bei OUTPUT ROWS[row] ist COLS[col] HIGH 
+          myData[myDatasize] = tasten2x2[row][col];
+          myDatasize++;
           }
-          Serial.print("COL: ");
-          Serial.println(COLS[col]);
-          Serial.print("ROW: ");
-          Serial.println(ROWS[row]);
-          
         }
-      }
       delay(5);
       digitalWrite(ROWS[row], LOW);
-    }
-  }  
+      }
+
     //----------------------------
     //char message[] = myData;
  // Uebermitteln der Daten
@@ -657,8 +652,6 @@ void myFunction(){
   }else{
     sendMessage(controllerAdress,myDatasize-1,myData);
   }
-  
-  
 }
 
 void myFunction2(){
@@ -676,6 +669,27 @@ void myFunction2(){
 
 //Spezifische Funktionen fuer Master
 #elif SENDER == true
+
+void printDeviceList(const std::list<device>& deviceList) {
+    // Überprüfen, ob die Liste leer ist
+    if (deviceList.empty()) {
+        Serial.println("Die Liste ist leer");
+        return;
+    }
+    // Elemente der Liste ausgeben
+    auto it = deviceList.begin();
+    if (it != deviceList.end()) {
+        ++it; // Erster Teilnehmer wird übersprungen
+    }
+    for (; it != deviceList.end(); ++it) {    
+        //Serial.print("Adresse: ");
+        Serial2.println(it->adress, HEX);
+        //Serial.print(", Funktion: ");
+        Serial2.println(it->funktion, HEX);
+}
+    }
+    
+
 void USB(char adress,char function,volatile char* data){
   if (adress == 0x00){
     init_cnt++;
@@ -689,14 +703,11 @@ void USB(char adress,char function,volatile char* data){
     list_cnt++;
     if (list_cnt >= LIST | FLAG_NEWDEVICE){
       FLAG_NEWDEVICE = false;
+      list_cnt = 0;
       Serial2.println("LIST");
       if (DEBUG5) Serial.println("LIST");
-      for (int i = 1; i <= num_adresses; i++)
-      {
-        transmitDeviceInfo(i);
-      }
-      Serial2.println("END");      
-      list_cnt = 0;
+      printDeviceList(devices);
+      Serial2.println("END");
     }
   return;
   }
@@ -781,7 +792,6 @@ void printList(const std::list<char>& lst) {
 
 void timeout(char adress, bool no_response){
   if (DEBUG) Serial.println("timeout");
-  device geraet = *iterator_devices;
   if (no_response) Serial.print("no_response");
   Serial.print("global_adress: ");
   Serial.println(global_adress,HEX);
@@ -805,17 +815,49 @@ void timeout(char adress, bool no_response){
   } 
   //Keine Anwort des angefragten Teilnehmers
   else if (no_response && adress != NOADRESS){
-    device geraet = *iterator_devices;
     // inkrementieren des Timeout-counters
-    geraet.timeout++;                                                                             
+    iterator_devices->timeout++;                                                                             
     if (true) Serial.println("keine Antwort von:");
-    if (true) Serial.println(geraet.adress,HEX);
+    if (true) Serial.println(iterator_devices->adress,HEX);
+    if (iterator_devices->timeout >= TIMEOUT_THRESHOLD) {
+      //Adresse wieder freigeben
+      unusedAdresses.push_back(iterator_devices->adress); 
+      //Adresse aus der Pollingliste entfernen
+      Adresses.remove(iterator_devices->adress);        
+      //Adresse aus der device Liste entfernen
+      devices.erase(iterator_devices);                  
+      //Pollingschleife verkleinern
+      num_adresses--;
+      //Änderung der Liste                                  
+      FLAG_NEWDEVICE = true;
+      //
+      FLAG_DELETEDEVICE = true;
+    }
+  }
+  //Antwort erhalten
+  else if (!no_response && adress != NOADRESS){
+    //Timeout zuruecksetzen
+    iterator_devices->timeout = 0;                                                                             
+    if (DEBUG2) Serial.println("Antwort von:");
+    if (DEBUG2) Serial.println(iterator_devices->adress,HEX);
+    //Daten speichern
+    iterator_devices->latest_data = global_message; 
   }
 }
 
 void polling(){
+  if (DEBUG) Serial.println("polling");
   //naechstes element der adressliste
-  polling_counter++;
+  if (!FLAG_DELETEDEVICE)
+  {
+    polling_counter++;
+  }
+  else
+  {
+    FLAG_DELETEDEVICE = false;
+  }
+  
+  
   // Überprüfen Sie, ob der polling_counter die Anzahl der Adressen erreicht hat
   if (polling_counter >= num_adresses + 1) {
       polling_counter = 0; // Zurücksetzen des polling_counter
@@ -823,24 +865,21 @@ void polling(){
   //Setzen des Iterators an die entsprechende Stelle
   iterator_devices = devices.begin();
   std::advance(iterator_devices,polling_counter);
-  if (DEBUG) Serial.println("polling");
+
   bool response = false;
   char request[] = {0xFF};
   global_reset();
   
-  device geraet;
-  
-  geraet = *iterator_devices;
+
   //request fuer abzufragende Adresse
-  sendMessage(geraet.adress,0,request);  
+  sendMessage(iterator_devices->adress,0,request);  
   //warten auf Rueckmeldung                                            
   response = await_response(controllerAdress);
   //Ruecksetzen des Timeouts (zudem Zuweisung von neuen Adressen)
-  timeout(geraet.adress,!response);
-  //Speichern der Daten
-  geraet.latest_data = global_message;
+  timeout(iterator_devices->adress,!response);
+  
   //Uebermitteln der Daten an den PC
-  USB(geraet.adress,geraet.funktion,geraet.latest_data);
+  USB(iterator_devices->adress,iterator_devices->funktion,iterator_devices->latest_data);
   
   Serial.print("num_adresses: ");
   Serial.println(num_adresses); 
