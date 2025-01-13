@@ -94,7 +94,7 @@ keypad_port = find_keypad_port(available_ports)
 
 
 def switch_module(module):
-    global current_module
+    global current_module, key_mappings
     current_module = module
 
     module_dropdown.configure(values=list(modules.keys()))
@@ -102,11 +102,12 @@ def switch_module(module):
 
     if module not in key_mappings:
         key_mappings[module] = {key: "" for row in key_layout for key in row}
-    update_display()
+    update_display(is_initializing = False)
+
 
 
 def read_from_com_port(serial_connection):
-    global module_count, modules, current_module
+    global module_count, modules, current_module, key_mappings
     address = None
     data = None
     pressed_keys = []  # List to store pressed keys
@@ -150,9 +151,7 @@ def read_from_com_port(serial_connection):
 
                     elif message == "LIST":
                         print("LIST")
-                        new_modules = (
-                            {}
-                        )  # Dictionary to store modules with their corresponding functions
+                        new_modules = ({})  
                         while True:
                             module_message = (
                                 serial_connection.readline()
@@ -199,10 +198,10 @@ def read_from_com_port(serial_connection):
                             current_module = sorted(
                                 new_modules.keys(), reverse=True
                             )[0]
-
                         module_count = len(new_modules)
 
                         # switch_module(current_module)
+
                         # Check if the module list has changed
                         if new_modules != modules:
                             modules = new_modules
@@ -247,40 +246,41 @@ else:
     print("Kein Controller verbunden. Nachrichten können nicht gelesen werden.")
 
 
-def start_display():
+def update_display(is_initializing=True):
+    global current_module, key_mappings
+
     for row in range(4):
         for col in range(4):
             key = key_layout[row][col]
-            labels[row][col].configure(
-                text=f"{key}\n({key_mappings.get(key, '')})"
-            )
+            if is_initializing:
+                # Use global key_mappings for initialization
+                key_text = f"{key}\n({key_mappings.get(key, '')})"
+            else:
+                # Use module-specific key_mappings for updating
+                key_text = f"{key}\n({key_mappings[current_module].get(key, '')})"
+            labels[row][col].configure(text=key_text)
 
-
-def update_display():
-    global current_module
-    for row in range(4):
-        for col in range(4):
-            key = key_layout[row][col]
-            labels[row][col].configure(
-                text=f"{key}\n({key_mappings[current_module].get(key, '')})"
-            )
-
+    # Configure COM port label
     if keypad_port:
         com_port_label.configure(text=f"COM Port: {keypad_port}")
     else:
         com_port_label.configure(text="COM Port: Not Connected")
 
-    if module_count:
-        module_count_label.configure(text=f"Module Count: {module_count}")
-    else:
-        module_count_label.configure(text="Module Count: N/A")
+    # Configure module count label if updating (not initializing)
+    if not is_initializing:
+        if module_count:
+            module_count_label.configure(text=f"Module Count: {module_count}")
+        else:
+            module_count_label.configure(text="Module Count: N/A")
+
 
 
 def save_mapping():
+    global key_mappings
     if modules:
         with open("key_mappings.json", "w") as f:
             json.dump(key_mappings, f)
-        update_display()
+            update_display(is_initializing = False)
     else: 
         print("Nothing to save.")
 
@@ -290,18 +290,14 @@ def load_mapping():
 
     with open("key_mappings.json", "r") as f:
         loaded_data = json.load(f)
-        key_mappings = {**loaded_data, **key_mappings}
+        key_mappings = loaded_data
+        module_dropdown.configure(values=list(key_mappings.keys()))
+    update_display(is_initializing = False)
 
-    module_dropdown.configure(values=list(key_mappings.keys()))
-
-    if current_module not in key_mappings:
-        current_module = list(key_mappings.keys())[0]
-    module_var.set(current_module)
-    update_display()
 
 
 def assign_key(row, col):
-    global current_module
+    global current_module, key_mappings
     key = key_layout[row][col]
     new_binding = entry_var.get()
     if not new_binding:
@@ -309,14 +305,16 @@ def assign_key(row, col):
     normalized_binding = normalize_key_binding(new_binding)
 
     key_mappings[current_module][key] = normalized_binding
-    update_display()
+    update_display(is_initializing = False)
+
 
 
 def reset_key(row, col):
-    global current_module
+    global current_module, key_mappings
     key = key_layout[row][col]
     key_mappings[current_module][key] = ""
-    update_display()
+    update_display(is_initializing = False)
+
 
 
 ctk.set_appearance_mode("dark")
@@ -528,5 +526,5 @@ control_frame.grid_columnconfigure(0, weight=1)
 control_frame.grid_columnconfigure(1, weight=1)
 
 
-start_display()
+update_display(is_initializing = True)
 root.mainloop()
