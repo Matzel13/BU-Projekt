@@ -97,13 +97,13 @@ keyboard_port = find_keyboard(available_ports)
 
 def switch_module(module):
     global current_module
+    current_module = module
 
     print(f"CurrentModuleSwitch: {current_module}")
 
     module_dropdown.configure(values=list(modules.keys()))
     module_var.set(current_module)
 
-    current_module = module
     if module not in key_mappings:
         key_mappings[module] = {key: "" for row in key_layout for key in row}
     update_display()
@@ -202,7 +202,7 @@ def read_from_com_port(serial_connection):
                             
                         module_count = len(new_modules)
 
-                        switch_module(current_module)
+                        #switch_module(current_module)
                         # Check if the module list has changed
                         if new_modules != modules:
                             modules = new_modules
@@ -351,17 +351,17 @@ module_var = ctk.StringVar(value="N/A")
 if current_module:
     module_dropdown = ctk.CTkOptionMenu(
         module_frame,
-        variable=module_var,
         values=list(sorted(key_mappings.keys(), reverse= True)),
         command=switch_module(current_module),
+        variable=module_var
     )
     module_dropdown.pack(side="left", padx=5)
 else: 
     module_dropdown = ctk.CTkOptionMenu(
-    module_frame,
-    variable=module_var,
-    values=list(sorted(key_mappings.keys(), reverse= True)),
-    command=switch_module,
+        module_frame,
+        values=list(sorted(key_mappings.keys(), reverse= True)),
+        command=switch_module,
+        variable=module_var
     )
     module_dropdown.pack(side="left", padx=5)
 
