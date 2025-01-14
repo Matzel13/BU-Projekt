@@ -11,6 +11,7 @@ import keyboard
 import serial
 import json
 import time
+import os
 
 
 key_layout = [
@@ -101,7 +102,7 @@ def find_keypad_port(com_ports, expected_message="INIT"):
         print(f"Prüfe Port: {port_info.device}")  # Debug-Ausgabe
         try:
             with serial.Serial(
-                port_info.device, baudrate=9600, timeout=2
+                port_info.device, baudrate=115200, timeout=2
             ) as ser:
                 data = ser.read(100).decode(errors="ignore")
                 if expected_message in data:
@@ -271,7 +272,7 @@ def read_from_com_port(serial_connection):
 # Start der Lesefunktion, falls ein COM-Port erkannt wurde
 if keypad_port:
     print(f"Starte das Lesen vom COM-Port {keypad_port}...")
-    ser = serial.Serial(keypad_port, 9600, timeout=1)
+    ser = serial.Serial(keypad_port, 115200, timeout=1)
 
     # Thread für das kontinuierliche Lesen starten
     read_thread = threading.Thread(
@@ -325,16 +326,19 @@ def save_mapping():
         print("Modules are not initialized. Nothing to save.")
 
 
+
 def load_mapping():
-    global current_module, modules
+    global current_module, modules, key_mappings
+    if not os.path.exists("key_mappings.json"):
+        print("No save file found!")
+        return
+
     print(f"{modules}")
     with open("key_mappings.json", "r") as f:
         loaded_data = json.load(f)
 
         for key in key_mappings.keys():
-            if (
-                key in loaded_data
-            ):  # Nur wenn der Schlüssel in beiden Dictionaries existiert
+            if key in loaded_data:  # Nur wenn der Schlüssel in beiden Dictionaries existiert
                 for sub_key in key_mappings[key].keys():
                     if sub_key in loaded_data[key]:
                         key_mappings[key][sub_key] = loaded_data[key][sub_key]
