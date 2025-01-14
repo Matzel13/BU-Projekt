@@ -258,7 +258,7 @@ def read_from_com_port(serial_connection):
                             print(f"D: {data} received.")
                             if address is not None:
                                 pressed_keys.append(data)
-                    time.sleep(0.1)
+                    time.sleep(0.01)
 
         except serial.SerialException as e:
             print(f"Error reading from COM port: {e}")
