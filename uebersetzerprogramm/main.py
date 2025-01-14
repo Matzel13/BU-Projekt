@@ -42,6 +42,7 @@ def normalize_key_binding(binding):
         "down": "Down",
         "left": "Left",
         "right": "Right",
+        "win": "Windows",
         "f1": "F1",
         "f2": "F2",
         "f3": "F3",
@@ -79,6 +80,7 @@ up = Up
 down = Down
 left = Left
 right = Right
+win = Windows
 f1 = F1
 f2 = F2
 f3 = F3
