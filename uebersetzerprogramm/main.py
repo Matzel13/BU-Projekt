@@ -174,6 +174,8 @@ def read_from_com_port(serial_connection):
                                                 f"Key {key} on {module_name} activated."
                                             )
                                             keyboard.press_and_release(press)
+                                            time.sleep(0.1)
+
                                         else:
                                             print("No binding assigned.")
                                     else:
@@ -258,7 +260,6 @@ def read_from_com_port(serial_connection):
                             print(f"D: {data} received.")
                             if address is not None:
                                 pressed_keys.append(data)
-                    time.sleep(0.1)
 
         except serial.SerialException as e:
             print(f"Error reading from COM port: {e}")
