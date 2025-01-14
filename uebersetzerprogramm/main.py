@@ -16,7 +16,7 @@ import time
 key_layout = [
     [f"{chr(65 + row)}{col + 1}" for col in range(4)] for row in range(4)
 ]
-
+debug = False
 current_module = []
 key_mappings = {}
 modules = {}
@@ -156,13 +156,13 @@ def read_from_com_port(serial_connection):
                 )
                 if message:
                     if message == "START":
-                        print("START")
+                        if (debug): print("START")
                         address = None
                         data = None
                         pressed_keys = []
 
                     elif message == "END":
-                        print("END")
+                        if (debug): print("END")
                         if address is not None and pressed_keys:
                             module_name = f"{function_name} (Address {address})"
                             if module_name:
@@ -170,23 +170,23 @@ def read_from_com_port(serial_connection):
                                     if key in key_mappings[module_name]:
                                         press = key_mappings[module_name][key]
                                         if press:
-                                            print(
+                                            if (debug): print(
                                                 f"Key {key} on {module_name} activated."
                                             )
                                             keyboard.press_and_release(press)
                                         else:
-                                            print("No binding assigned.")
+                                            if (debug): print("No binding assigned.")
                                     else:
-                                        print(
+                                        if (debug): print(
                                             f"Invalid key {key} for {module_name}."
                                         )
                             else:
-                                print(f"Invalid address: {address}")
+                                if (debug): print(f"Invalid address: {address}")
                         else:
-                            print("Error: Missing address or keys!")
+                            if (debug): print("Error: Missing address or keys!")
 
                     elif message == "LIST":
-                        print("LIST")
+                        if (debug): print("LIST")
                         new_modules = {}
                         while True:
                             module_message = (
@@ -195,11 +195,11 @@ def read_from_com_port(serial_connection):
                                 .strip()
                             )
                             if module_message == "END":
-                                print("END")
+                                if (debug): print("END")
                                 break
                             elif module_message.isdigit():
                                 address = int(module_message)
-                                print(f"Address {address} received.")
+                                if (debug): print(f"Address {address} received.")
                                 function_message = (
                                     serial_connection.readline()
                                     .decode(errors="ignore")
@@ -207,14 +207,14 @@ def read_from_com_port(serial_connection):
                                 )
                                 if function_message.isdigit():
                                     function = int(function_message)
-                                    print(f"Function {function} received.")
+                                    if (debug): print(f"Function {function} received.")
                                     function_name = address_to_function(
                                         function
                                     )
                                     if function_name:
                                         module_name = f"{function_name} (Address {address})"
                                         new_modules[module_name] = {}
-                                        print(f"Module {module_name} in list.")
+                                        if (debug): print(f"Module {module_name} in list.")
                                         # Dynamically create key mappings for the module
                                         if module_name not in key_mappings:
                                             key_mappings[module_name] = {
@@ -222,11 +222,11 @@ def read_from_com_port(serial_connection):
                                                 for row in key_layout
                                                 for key in row
                                             }
-                                            print(
+                                            if (debug): print(
                                                 f"Key mappings created for {module_name}."
                                             )
                                     else:
-                                        print(
+                                        if (debug): print(
                                             f"Unknown function {function} for Address {address}."
                                         )
 
@@ -246,16 +246,16 @@ def read_from_com_port(serial_connection):
                                 new_modules.keys(), reverse=True
                             )[0]
 
-                            print(f"Module Count: {module_count}")
+                            if (debug): print(f"Module Count: {module_count}")
                             switch_module(current_module)
 
                     elif message not in ("END", "INIT"):
                         try:
                             address = int(message)
-                            print(f"A: {address} received.")
+                            if (debug): print(f"A: {address} received.")
                         except ValueError:
                             data = message
-                            print(f"D: {data} received.")
+                            if (debug): print(f"D: {data} received.")
                             if address is not None:
                                 pressed_keys.append(data)
                     time.sleep(0.01)
