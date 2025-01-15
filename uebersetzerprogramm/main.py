@@ -155,7 +155,10 @@ def switch_module(module):
 
     # Update the module dropdown
     module_dropdown.configure(values=list(modules.keys()))
-    module_var.set(current_module)  # Set the dropdown selection to the current module
+    if (modules):
+        module_var.set(current_module)  # Set the dropdown selection to the current module
+    else:
+        module_var.set("No modules")  # Set the dropdown selection to the current module
 
     # Initialize key mappings for the module if they do not exist
     # May be duplicate Code. Needs to be tested:
@@ -233,7 +236,7 @@ def read_from_com_port(serial_connection):
                                 break
                             
                             # If the first message is a digit, then its the module address
-                            elif module_message.isdigit():
+                            elif module_message.isdigit() and int(module_message) in range(2,8):
                                 address = int(module_message)
                                 if debug: print(f"{address} (Address)")
                                 # Read function associated with the address
@@ -280,9 +283,12 @@ def read_from_com_port(serial_connection):
                             module_count = len(modules)  # Update module count
                             
                             # Sort the module names and pick the first one as the current module
-                            current_module = sorted(
+                            if (new_modules):
+                             current_module = sorted(
                                 new_modules.keys(), reverse=True
                             )[0]
+                            else:
+                                print("No Modules")
                             
                             # Switch to the updated current module
                             switch_module(current_module)
@@ -291,8 +297,9 @@ def read_from_com_port(serial_connection):
                     # Handle messages (Data) that are not "END" or "INIT"
                     elif message not in ("END", "INIT"):
                         try:
-                            address = int(message)
-                            if debug: print(f"{address} (Address)")
+                            if int(message) in range(2, 8):
+                                address = int(message)
+                                if debug: print(f"{address} (Address)")
                         except ValueError:
                             data = message
                             if debug: print(f"{data} (Data)")
@@ -641,4 +648,3 @@ control_frame.grid_columnconfigure(1, weight=1)
 
 update_display(is_initializing=True)
 root.mainloop()
-
