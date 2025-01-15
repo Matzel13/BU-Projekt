@@ -31,6 +31,8 @@ info_window = None
 
 # Text to display in the keybinds info window
 key_mapping_info = """
+Combine Keybinds by using '+'
+
 ctrl = Control
 alt = Alt
 shift = Shift
