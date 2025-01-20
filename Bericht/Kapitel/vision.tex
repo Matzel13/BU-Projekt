@@ -6,7 +6,7 @@ Das Eingabesystem verfolgt die Vision eines flexiblen und erweiterbaren Systems,
 Die Module, wie ein Tastatur-Modul mit einer 4x4-Tastenmatrix oder ein Audio-Modul mit Potentiometern und Fadern, sind frei kombinierbar und können je nach Anwendungsfall hinzugefügt oder entfernt werden. Dies ermöglicht eine Konfiguration für unterschiedliche Aufgaben wie Textverarbeitung, Bildbearbeitung, Audiobearbeitung oder Gaming.
 \\
 \\
-In Abbildung \ref{vision} ist ein Überblick des Eingabesystems zu sehen:
+In Abbildung \ref{vision} ist ein Überblick des Eingabesystems zu sehen.
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.75\textwidth]{Bilder/bu_vision.png}}
@@ -16,7 +16,7 @@ In Abbildung \ref{vision} ist ein Überblick des Eingabesystems zu sehen:
 \noindent Die gestrichelten Linien stellen eine bereits hergestellte Verbindung zwischen den Modulen dar, wobei die \glqq Plus\grqq{} Symbole einen weiteren möglichen Modulanschluss darstellen. Die Module sollen fest aneinander sitzen.
 
 \subsection{Verbindung}
-Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, an jede Seite eines Moduls ein weiteres anzustecken, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch ist das System in jede Richtung erweiterbar. Um eine feste Verbindung zu gewährleisten,  werden Neodym-Magnete ins Gehäuse verbaut. Dies stellt sicher, dass die Pins fest miteinander verbunden sind und Kontakt haben. 
+Zwischen den Modulen werden Daten und Spannungsversorgung über eine 4 Pin-Verbindung realisiert. Diese sind VCC (Spannungsversorgung), Data + (Datenbus), Data - (invertierter Datenbus) und GND (Masse). Da der Benutzer die Möglichkeit haben soll, an jede Seite eines Moduls ein weiteres anzustecken, werden pro Seite zwei 2-Pin Pogo Stecker verwendet, ein 2-Pin Male und ein 2-Pin Female Stecker. Dadurch ist das System in jede Richtung erweiterbar. Um eine feste Verbindung zu gewährleisten,  werden Neodym-Magnete ins Gehäuse verbaut. Dies stellt sicher, dass die Pins fest miteinander verbunden sind und Kontakt haben. Zusätzlich soll mit einem Verlängerungskabel auch die Möglichkeit bestehen eine kurze Distanz (< 50cm) zwischen zwei Modulen zu haben. 
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=.85\textwidth]{Bilder/bu_pogoverbindung.png}}
@@ -51,7 +51,7 @@ Mit einem Nachteil der Störanfälligkeit. Da der Bus als zentrale Verbindung ge
 \end{figure}
 
 
-Auf der Softwareebene ist das Konzept nach der Stern-Topologie aufgebaut, denn das Hauptmodul ist eine zentrale Steuereinheit, an die alle anderen Module angeschlossen sind. Die Tastatur-Module und das Audio-Modul sind jeweils direkt an den Bus angebunden. Die Verbindungen laufen sternförmig von dem Hauptmodul zu den einzelnen Modulen. Die Vorteile einer Stern-Topologie in diesem Projekt sind:
+Auf der Softwareebene ist das Konzept nach der Stern-Topologie aufgebaut, denn das Hauptmodul ist eine zentrale Steuereinheit, an die alle anderen Module angeschlossen sind. Die verschiedene Module sind jeweils direkt an den Bus angebunden. Die Verbindungen laufen sternförmig von dem Hauptmodul zu den einzelnen Modulen. Die Vorteile einer Stern-Topologie in diesem Projekt sind:
 \begin{itemize}
     \item \textbf{Skalierbarkeit:} Weitere Module können einfach an das Hauptmodul angeschlossen werden.
     \item \textbf{Einfache Fehlersuche:} Da jedes Modul eine direkte Verbindung zum Hauptmodul hat, ist der Ausfall eines Moduls leichter zu erkennen.

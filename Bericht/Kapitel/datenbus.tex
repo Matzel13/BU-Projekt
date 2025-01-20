@@ -8,7 +8,7 @@ Der Bus ist nach folgendem Schema aufgebaut:
 	\item \textbf{Sendeadresse:} 3 Bit zum Senden der Adresse; Die Adresse 0x00 ist für neue Teilnehmer reserviert, über diese Adresse findet die Adressvergabe statt. Die Adresse 0x01 ist fest an das Hauptmodul vergeben, alle Teilnehmer wissen das auf dieser Adresse das Hauptmodul liegt. Die Adressen 0x02 bis 0x07 stehen für Teilnehmer zur Verfügung. 3 Bit sind vollkommen ausreichend, da das System als Desktop Erweiterung geplant ist und mehr als 6 Module nicht vorgesehen ist. Sollten in Zukunft mehr Teilnehmer erforderlich sein, lässt sich das im Code leicht anpassen.
 	\item \textbf{Content of Frame (COF):} 3 Bit für Datenlänge in Byte; das COF enthält die Länge der übertragenden Daten in Byte. Dies dient dazu, dass die Länge der zu übertragenden Daten dynamisch sein kann (bis zu 7 Byte). Zusätzlich können Teilnehmer, welche nicht angesprochen werden, festlegen, wie lange der Bus belegt ist, bevor diese versuchen sollten zu senden.
 	\item \textbf{Daten}: 0-7 Byte
-	\item \textbf{Fehlererkennung:} X Bit; Geplante Funktion zur Erkennung von Bitfehler oder Störungen auf dem Bus. Eine fehlerhafte Nachricht soll ignoriert werden. 
+	\item \textbf{Fehlererkennung (CRC):} 15 Bit; Mithilfe eines 16-Bit Generatorpolynom lassen sich bis zu 15-Bit Fehler erkennen. Eine fehlerhafte Nachricht soll ignoriert werden. 
 	\item \textbf{End of Frame (EOF):} 4 Bit Signalende; Vier aufeinanderfolgende LOW-Values geben das Ende der Nachricht an. Ein Teilnehmer, der Senden möchte, wartet bis er 4 aufeinanderfolgende LOW-Value empfangen hat, bevor dieser Sendet.
 \end{itemize}
 
@@ -36,3 +36,7 @@ Zu dem jetzigen Zeitpunkt kann der selbst erstellte Bus Informationen mit einer 
     \caption{Beispiel Datenübertragung}
     \label{beispielDatenübertragung}
 \end{figure}
+
+\subsubsection{CRC Fehlererkennung}
+
+\subsubsection{Bitstuffing}

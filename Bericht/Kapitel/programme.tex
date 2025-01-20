@@ -86,7 +86,7 @@ Im Folgendem wird der Programm-Ablauf eines Eingabemoduls genauer beschrieben. D
 
 
 \subsection{Anforderung einer Adresse}
-Wenn einem Modul noch keine Adresse zugewiesen wurde und der Hauptcontroller nach neuen Teilnehmern auf dem Bus sucht, antwortet das Modul mit einer Nachricht, in der seine Funktion in den übertragenen Daten enthalten ist. Anschließend übermittelt der Hauptcontroller eine neue Adresse an das Modul. Diese Adresse wird vom Modul gespeichert, sodass es danach ausschließlich auf diese Adresse reagiert.\\
+Wenn einem Modul noch keine Adresse zugewiesen wurde und der Kontroller nach neuen Teilnehmern auf dem Bus sucht, antwortet das Modul mit einer Nachricht, in der seine Funktion in den übertragenen Daten enthalten ist. Anschließend übermittelt der Hauptcontroller eine neue Adresse an das Modul. Diese Adresse wird vom Modul gespeichert, sodass es danach ausschließlich auf diese Adresse reagiert.\\
 
 \lstinputlisting[firstline= 281, lastline=290,language = C++,frame=single,label=getAdress(),caption=Anfordern einer Adresse]{
 	Kapitel/Programme/main.cpp}
@@ -94,20 +94,10 @@ Wenn einem Modul noch keine Adresse zugewiesen wurde und der Hauptcontroller nac
 
 \subsection{Auswertung der Modulfunktion}
 Die Auswertung der Modulfunktion ist abhängig von der jeweiligen Funktion des Moduls und kann daher nicht verallgemeinert werden.\\
-Im Fall des Tastatur-Moduls werden die Tasten nur dann ausgewertet, wenn der Hauptcontroller das Modul abfragt. Anschließend werden die Daten übermittelt. Für diese Auswertung wurde eine allgemeine Funktion geschrieben, die jedoch für jedes Modul spezifisch angepasst werden muss.\\
+Im Fall des Tastatur-Moduls werden die Tasten nur dann ausgewertet, wenn der Kontroller das Modul abfragt. Anschließend werden die Daten übermittelt. Für diese Auswertung wurde eine allgemeine Funktion geschrieben, die jedoch für jedes Modul spezifisch angepasst werden muss.\\
 
 \lstinputlisting[firstline= 292, lastline=300,language = C++,frame=single,label=myfunction(),caption=Modul abhängige Funktion]{Kapitel/Programme/main.cpp}
 
-\subsection{Übermittlung der Daten an das Hauptmodul}
+\subsection{Übermittlung der Daten an das Kontroller-Modul}
 Sobald eine Anfrage des Hauptmoduls an die Adresse des Eingabemoduls empfangen wird, übermittelt dieses die Information der Modulfunktion. Im Falle der Tastatur wären dies die zurzeit gedrückten Tasten.
-
-
-\section{Auswertung der Daten am PC}
-Zur Auswertung der HEX-Werte aus der UART-Verbindung des Hauptmoduls am Computer
-wird ein Python-Skript geschrieben, das die übertragenen Werte einliest und analysiert. \\
-
-Mithilfe der aktuellen Prototypen ist es möglich, die vier Tasten individuell zu konfigurieren
-und beispielsweise zur Steuerung einer PowerPoint-Präsentation zu verwenden.
-
-Das Skript in \ref{pyscript} liest über die serielle Schnittstelle \glqq COM15\grqq{} Daten ein, wenn diese vorliegen. Der übertragene HEX-Wert wird dann entsprechend der Bedingungen ausgewertet und der zugewiesene Tastendruck simuliert. 
 
