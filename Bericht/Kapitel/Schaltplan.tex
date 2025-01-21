@@ -83,15 +83,40 @@ Es wird die folgenden Möglichkeiten geben:
 
 \newpage
 \section{Platine}
+Beim Layout der Platine wurde darauf geachtet, dass die Kontaktstecker so angeordnet werden, dass sie modular über Magneten gut miteinander verbunden werden können. 
+
+\begin{itemize}
+	\item Platzierung der Kontaktstecker, entsprechend der Modularen Verbindungsmöglichkeit
+	\item Räumliche Nähe der zusammengehörenden Bauteile
+	\item Optimierung der Masseführung durch Verwendung einer möglichst durchgehenden Massefläche
+	\item Vermeidung von 90°-Ecken der Leiterbahnen, um Reflexionen zu minimieren
+	\item Platzierung von Abblockkondensatoren nahe den Versorgungspins der ICs.
+	\item Geringer Abstand zwischen den differenziellen Leitungen
+	\item Gleiche Länge der differenziellen Leitungen
+\end{itemize}
+
+
 
 
 \subsubsection{Differenzielle Übertragung}
+
+
+
+\begin{itemize}
+	\item Geringer Abstand zwischen den differenziellen Leitungen
+	\item Gleiche Länge der differenziellen Leitungen
+	\item Abstand zu anderen Leiterbahnen entsprechend \ref{AbstandLeiterbahnen}
+	\item möglichst kurze Leitungen 
+\end{itemize}
+
 
 Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten. 
 
 \subsection{Verbesserungen}
 Da die erste Platine hauptsächlich zum Testen der differenziellen Übertragungsbauteile dient, sind einige Anpassungen geplant. \newline
 Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
+Durch diese Änderungen wird die Platine vorraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
+Außerdem soll als weitere Möglichkeit eine Kabelverbindung zwischen den Modulen entwickelt werden, um noch höhere Flexibilität zu ermöglichen.
 
 Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in \ref{Imepdanz} zu sehen, einen Einfluss auf die Impedanz hat. Im Datenblatt der SN65LVDXXX wird eine Mikrostrip-Topology, wie in dargestellt Abb. \ref{MikrostripTopology} empfohlen. Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendetetn Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
 In \ref{BSPImpedanzl} ist die Rechung für die Werte, die im Datenblatt der SN65LVDXXX Bauteile angegeben sind, entsprechend des Terminationswiderstandes von 100 Ohm.
