@@ -6,7 +6,7 @@ unterschiedlichen Funktionen der Module müssen jeweils eigene Platinen entwicke
 
 
 \subsection{Controller Modul}
-Der verwendete ESP32 ist wie in Abb. \ref{ESP} verschaltet. Die UART-Bridge wird an den Pins D34 und D35 angeschlossen, da diese al UART Pins vom ESP32 vorgesehen sind. Der interne Datenbus wird an den Pins D13 und D15 angeschlossen, wobei D13 als Receive-Pin und D15 als Transmit-Pin fungiert. Der ESP32 wird über V\textsubscript{in} mit 5V über die USB Spannung versorgt.
+Der verwendete ESP32 ist wie in Abb. \ref{ESP} verschaltet. Das UART-Bridge wird an den Pins D34 und D35 angeschlossen, da diese al UART Pins vom ESP32 vorgesehen sind. Der interne Datenbus wird an den Pins D13 und D15 angeschlossen, wobei D13 als Receive-Pin und D15 als Transmit-Pin fungiert. Der ESP32 wird über V\textsubscript{in} mit 5V über die USB Spannung versorgt.
 
 \begin{figure}[H]
     \centering    
@@ -15,7 +15,7 @@ Der verwendete ESP32 ist wie in Abb. \ref{ESP} verschaltet. Die UART-Bridge wird
     \label{ESP}
 \end{figure}
 
-Für die Kommunikation mit einem PC, werden die Daten über eine UART-Bridge gegeben, bevor sie an die USB Schnittstelle übertragen werden. D+ und D- sind in diesem Fall die USB-Datenleitungen, welche über eine USB-Buchse herausgeführt werden. Die UART-Datenleitungen vom ESP32 zur UART-Bridge sind in Abb. \ref{USB} verdreht, da es sich um die Labels aus Sicht des ESP32 handelt.
+Für die Kommunikation mit einem PC, werden die Daten über ein UART-Bridge gegeben, bevor sie an die USB Schnittstelle übertragen werden. D+ und D- sind in diesem Fall die USB-Datenleitungen, welche über eine USB-Buchse herausgeführt werden. Die UART-Datenleitungen vom ESP32 zum UART-Bridge sind in Abb. \ref{USB} verdreht, da es sich um die Labels aus Sicht des ESP32 handelt.
 
 
 \begin{figure}[H]
@@ -86,7 +86,7 @@ Es wird die folgenden Möglichkeiten geben:
 Beim Layout der Platine wurde auf die folgenden Punkte geachtet:
 
 \begin{itemize}
-	\item Platzierung der Kontaktstecker, entsprechend der Modularen Verbindungsmöglichkeit
+	\item Platzierung der Kontaktstecker, entsprechend der modularen Verbindungsmöglichkeit
 	\item Räumliche Nähe der zusammengehörenden Bauteile
 	\item Optimierung der Masseführung durch Verwendung einer möglichst durchgehenden Massefläche
 	\item Vermeidung von 90°-Ecken der Leiterbahnen, um Reflexionen zu minimieren
@@ -115,28 +115,27 @@ Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leite
 
 Da die erste Platine hauptsächlich zum Testen der differenziellen Übertragungsbauteile dient, sind einige Anpassungen geplant. \newline
 Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten, soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
-Durch diese Änderungen wird die Platine voraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
-<<<<<<< Updated upstream
+Durch diese Änderungen wird die Platine voraussichtlich kleiner und günstiger werden. Ein Ziel ist es, das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
 
-Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in Formel \ref{Impedanz} zu sehen, einen Einfluss auf die Impedanz hat. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
-=======
+Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche, wie in Formel \ref{Impedanz} zu sehen, einen Einfluss auf die Impedanz hat. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
+
 \subsubsection{Kabelverbindung}
 Außerdem soll als weitere Möglichkeit eine Kabelverbindung zwischen den Modulen entwickelt werden, um noch höhere Flexibilität zu ermöglichen.
 
 \subsubsection{Anpassung der Layer}
-Es soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche hat einen Einfluss auf die Impedanz, wie in \ref{Imepdanz} zu sehen. Vom Hersteller wird ein vier Layer Stackup empfohlen, da sie die nötigen Spezifikationen für eine Impedanz von 100 Ohm ermöglichen. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
->>>>>>> Stashed changes
+Es soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche hat einen Einfluss auf die Impedanz, wie in \ref{Impedanz} zu sehen. Vom Hersteller wird ein vier Layer Stackup empfohlen, da sie die nötigen Spezifikationen für eine Impedanz von 100 Ohm ermöglichen. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
 
  
-Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Siganlen eine Microstrip-Topologie, wie in Abb. \ref{MikrostripTopology} empfohlen. 
+Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Signalen eine Microstrip-Topologie, wie in Abb. \ref{MikrostripTopology} empfohlen.  
 
 
+Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektrikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendeten Dielektrikums die Dicke der einzelnen Layer eingesehen werden.  
+In Formel \ref{Leiterbahnbreite} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend dem Terminationswiderstand von 100 Ohm.
 
 \subsubsection{Anpassung der Leiterbahnbreite}
 Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektrikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendeten Dielektrikums die Dicke der einzelnen Layer eingesehen werden.
-In Abb. \ref{Leiterbahnbreitel} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend des Terminationswiderstandes von 100 Ohm.
->>>>>>> Stashed changes
-\newline
+In Formel \ref{Leiterbahnbreite} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend dem Terminationswiderstand von 100 Ohm.
+
 Eingesetzte Werte:
 \begin{itemize}
 	\item Dielektrizitätskonstante \( \varepsilon_r = 3.4 \)
@@ -159,7 +158,7 @@ Berechnung der Leiterbahnbreite W mit den eingesetzten Werten:
 W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\right)} - \frac{0.035}{0.8}
 \end{equation}
 
-\begin{equation}
+\begin{equation} \label{Leiterbahnbreite}
 	W = 0.043 \, \text{mm}
 \end{equation}
 
@@ -188,9 +187,9 @@ W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\righ
 
 \subsection{Layout}
 
-In Abb. \ref{LayoutController} wird das Layout des Controller Moduls dargestellt.
+In Abb. \ref{LayoutController} wird das Layout des Controllermoduls dargestellt.
 
-In Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls dargestellt. 
+In Abb. \ref{LayoutTastatur} wird das Layout des Keypadmoduls dargestellt. 
 
 \begin{figure}[H]
 	\centering    

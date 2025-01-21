@@ -17,7 +17,7 @@ Mit diesem Stand des Prototyps lässt sich ein 2x2 Keypad beliebig belegen und z
     \label{prototyp}
 \end{figure}
 
-Nach Bestellen der PCBs konnte ein erster richtiger Aufbau der Module realisiert werden und auch die Funktionalität der Hardware Bedingungen (Pogo-Pin Verbindung und Mangetische Halterung) können nun getestet werden. Die PCBs sind, aufgrund des Budget, teilbestückt bestellt worden, daher werden diese jetzt von Hand final bestückt.
+Nach Bestellen der PCBs kann ein erster richtiger Aufbau der Module realisiert werden und auch die Funktionalität der Hardware Bedingungen (Pogo-Pin Verbindung und magnetische Halterung) können nun getestet werden. Die PCBs sind, aufgrund des Budget, teilbestückt bestellt worden, daher werden diese jetzt von Hand final bestückt.
 
 \subsection{Erfolge}
 \subsubsection{Synchronisation}
@@ -30,7 +30,7 @@ Durch die selbst geschriebene Software lassen sich in der Theorie beliebig groß
 Das Hauptmodul startet eine dauerhafte vordefinierte Abfrage der Adressen. Über die erste abgefragte Adresse wird einem neuen Modul eine Adresse vergeben und diese mit der Art des Moduls in Hauptmodul abgespeichert. Die erhaltenen Werte der Module gibt das Hauptmodul zusammen mit der Modul-Adresse an den PC weiter.
 
 \subsubsection{Input-Mapper Program}
-Als Bedienoberfläche wurde ein Program geschrieben welches die Empfangen Daten auf vom Nutzer definierte Keybindings mappt.
+Als Bedienoberfläche wurde ein Programm geschrieben, welches die empfangenen Daten auf die vom Nutzer definierte Keybindings mappt.
 
 \subsubsection{Parallele Entwicklung}
 Das parallele Entwickeln war durch das Verwenden des Versionsverwaltungs-Programms \glqq Git\grqq{} und einem zentralen Repository auf \glqq GitHub\grqq{}(https://github.com/Matzel13/BU-Projekt) von Beginn an erfolgreich und hat sich durch die Länge des Projekts gezogen. Durch das Erstellen von persönlichen \glqq Branches\grqq{} konnte jeder Entwickler an seinem eigenen Fortschritt arbeiten und bei Bedarf mit dem Hauptzweig zusammenführen. In Abb. \ref{gitgraph} ist ein Ausschnitt des GitGraphen unseres Repository zu sehen.
@@ -38,13 +38,13 @@ Das parallele Entwickeln war durch das Verwenden des Versionsverwaltungs-Program
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=0.4\textwidth]{Bilder/gitGraph.png}}
-    \caption{GitGraph stand 19.01.2025. Die Linie links stellen die Unterschiedlichen Branches dar. Ein Punkt auf der Linie bedeutet das dort ein Commit erstellt wurde. Das Datum ist das Commitdatum und der Name die Person welche den Commit erstellt hat.}
+    \caption{GitGraph stand 19.01.2025. Die Linie links stellen die Unterschiedlichen Branches dar. Ein Punkt auf der Linie bedeutet, dass dort ein Commit erstellt wurde. Das Datum ist das Commitdatum und der Name der Person, die den Commit erstellt hat.}
     \label{gitgraph}
 \end{figure}
 
 \subsection{Probleme}
 \subsubsection{ATtiny und ATmega}
-Die eingesetzten Mikrocontroller (ATtiny und ATmega) lassen sich nicht direkt über USB programmieren. Aus diesem Grund wurde innerhalb zwei Sprints der versucht, einen eigenen ISP-Programmer (In-System Programmer) zu entwickeln. Trotz vieler verfügbarer Anleitungen und Forenbeiträge zu bereits selbstgebauten Flashern gelang es nicht innerhalb des vorgegebenen Zeitrahmens, einen funktionierenden Programmer zu erstellen. Schließlich wurde ein fertiger ISP-Programmer gekauft, wodurch die Programmierung der Mikrocontroller schnell und erfolgreich möglich wurde.
+Die eingesetzten Mikrocontroller (ATtiny und ATmega) lassen sich nicht direkt über USB programmieren. Aus diesem Grund wurde innerhalb zwei Sprints versucht, einen eigenen ISP-Programmer (In-System Programmer) zu entwickeln. Trotz vieler verfügbarer Anleitungen und Forenbeiträge zu bereits selbstgebauten Flashern gelang es nicht innerhalb des vorgegebenen Zeitrahmens, einen funktionierenden Programmer zu erstellen. Schließlich wurde ein fertiger ISP-Programmer gekauft, wodurch die Programmierung der Mikrocontroller schnell und erfolgreich möglich wurde.
 
 \subsubsection{Differenzielle Datenübertragung}
 Der erste Ansatz zum Erstellen einer differenziellen Datenübertragung war es, dies über die Software zu lösen. Jedoch kam nach gemeinsamer Absprache der Entschluss, dass dies nicht sonderlich förderlich sei und hauptsächlich der Geschwindigkeit des Busses schadet. Bei der Erweiterung des Eindraht Prototypen auf einen Zweidraht Bus mit differenzieller Datenübertragung entstand das Problem, dass in einigen Fällen die Busleitung kurzgeschlossen wird. Dieser Kurzschluss lässt sich durch galvanische Trennung der Teilnehmer vom Bus, ähnlich wie beim CAN und USB, lösen. Um weiterhin mit den zur Verfügung gestellten Produkten zu arbeiten, wurde erstmal ein Optokoppler der HAW getestet. Scheinbar war dieser Optokoppler defekt, da sich die Schaltzeiten im \si{ms} Bereich bewegt haben. Dies wäre ein viel zu hohe Latenz für die Datenübertragung und daher wurden vier mögliche alternative Bausteine bestellt, zwei verschiedene Optokoppler, einen Operationsverstärker und einen digitalen Isolator. Die Optokoppler lieferten ein zufriedenstellendes Ergebnis mit einer Latenz im einstelligen \si{\micro\second} Bereich. Zusätzlich zu den Optokopplern wurde ein Transmitter und Receiver Bauteil entdeckt, da jedoch die Lieferzeit für diese Bauteile sehr hoch ist, werden diese Bauteile vom PCB Hersteller direkt auf das PCB designt, welches das Testen der Bauteile leider nicht ermöglicht. Der aktuelle Prototyp wurde mit diskret aufgebauten Invertierern und Optokopplern realisiert.
@@ -63,33 +63,32 @@ Einen groben Übersichtsplan des Zeitmanagements ist in Abbildung \ref{zeitplan}
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=1\textwidth]{Bilder/zeitplanBU.png}}
-    \caption{Zeitmanagement stand 17.12.2024}
+    \caption{Zeitmanagement stand 21.01.2025}
     \label{zeitplan}
 \end{figure}
 
 
 \subsection{Budget}
-Zur Entwicklung der Testaufbauten und des Prototypen wurden dieverse Bauteile bestellt. Da wir im Anschluss an das Hochschulmodul jeder eine Version unseres Projektes behalten wollte haben wir uns entschieden das Projekt selber zu finanzieren.
-Um die Kosten der Module gering zu halten haben wir bei jeder Entscheidung darauf geachtet die günstigste Version zu finden. In Abbildung \ref{Finanzen} sind alle Bauteile die bestellt worden sind aufgelistet und diese wurde genutzt einen Überblick über unsere Ausgaben zu behalten. Durch die Liste in Abbildung \ref{Finanzen} lässt sich auch gut erkennen wie teuer die Modul-Prototypen sind, das Hauptmodul befindet sich derzeitig bei 39,68€ und das Keypad-Modul bei 44,61€. Diese Preise lassen sich in Zukunft vermutlich noch reduzieren, da die PCBs mit verschiedenen Testcases bestückt sind. 
+Zur Entwicklung der Testaufbauten und des Prototyps wurden diverse Bauteile bestellt. Da im Anschluss an das Hochschulmodul jedes Gruppenmitglied ein Exemplar behalten wollte, entschieden wir uns das Projekt selbst zu finanzieren. Um die Kosten der Module gering zu halten, wurde bei jeder Entscheidung darauf geachtet, die günstigste Version zu finden. In Abbildung \ref{Finanzen} sind alle Bauteile, die bestellt worden sind, aufgelistet und diese Liste wurde genutzt, um einen Überblick über die Ausgaben zu behalten. Es lässt sich gut erkennen, wie teuer die Modul-Prototypen sind, das Hauptmodul befindet sich derzeitig bei 39,68 € und das Keypad-Modul bei 44,61 €. Diese Preise lassen sich in Zukunft vermutlich noch reduzieren, da die PCBs mit verschiedenen Testcases bestückt sind. In dieser Berechnung sind die Kosten für die Gehäuse nicht berücksichtigt. 
 
 \begin{figure}[H]
-    \centering    
-    \fbox{\includegraphics[width=1\textwidth]{Bilder/Finanzen.png}}
-    \caption{Exceltablle der Ausgaben, stand 19.01.2025. Darstellung der gekauften Bauteile und von wem diese gekauft wurden. Mit Grün hinterlegte Felder sind auf dem aktuellen Prototypen verbaute Bauteile. In F1 steht der Gesamtbetrag der bisher investiert wurde}
-    \label{Finanzen}
+	\centering    
+	\fbox{\includegraphics[width=1\textwidth]{Bilder/Finanzen.png}}
+	\caption{Exceltablle der Ausgaben, stand 19.01.2025. Darstellung der gekauften Bauteile und von wem diese gekauft wurden. Mit Grün hinterlegte Felder sind auf dem aktuellen Prototyp verbaute Bauteile. In F1 steht der Gesamtbetrag der bisher investiert wurde}
+	\label{Finanzen}
 \end{figure}
 
-Das Produkt lässt sich sehr gut mit dem Stream Deck von elgato vergleichen. Bei einer Möglichen vermarktung unseres Produkt kann sich an dem Presi des Stream Deck orientert werden. Dazu ist in Abbildung \ref{streamDeck} der offizielle Preis des 3x5 Keypad Stream Deck von elgato dargestellt.
+Das Produkt lässt sich sehr gut mit dem Stream Deck von elgato vergleichen. Bei einer möglichen Vermarktung unseres Produktes kann sich an dem Preis des Streamdeck orientiert werden. Dazu ist in Abbildung \ref{streamDeck} der offizielle Preis des 3x5 Keypad Stream Deck von elgato dargestellt.
 
 \begin{figure}[H]
-    \centering    
-    \fbox{\includegraphics[width=1\textwidth]{Bilder/streamDeck.png}}
-    \caption{Stream Deck Preis von elgato. Dies dient lediglich als Vergleich in welcher Preis-Kategorie unser Produkt vermakrtet werden könnte. [https://www.elgato.com/de/de/p/stream-deck-mk2-black, 19.01.2025]}
-    \label{streamDeck}
+	\centering    
+	\fbox{\includegraphics[width=1\textwidth]{Bilder/streamDeck.png}}
+	\caption{Stream Deck Preis von elgato. Dies dient lediglich als Vergleich, in welcher Preis-Kategorie unser Produkt vermakrtet werden könnte. [https://www.elgato.com/de/de/p/stream-deck-mk2-black, 19.01.2025]}
+	\label{streamDeck}
 \end{figure}
 
-Mit dem Vergleich des elgato Produkts lässt sich ein Vermarktungspreis von ca 200€ für das Hauptmodul und Keypad Modul in Kombination festlegen. Dies lässt sich durch unsere Modularität und Erweiterungsmöglichkeiten begründen. Weitere Module sollten einen Einzelpreis von ca 60-80€ erhalten.
-Dies sind bisher allerdings lediglich Überlegungen, da wir uns noch in der Forschungsperiode besfinden.
+Mit dem Vergleich des elgato Produkts lässt sich ein Vermarktungspreis von ca. 200 € für das Hauptmodul und Keypad Modul in Kombination festlegen. Dies lässt sich durch unsere Modularität und Erweiterungsmöglichkeiten begründen. Weitere Module sollten einen Einzelpreis von ca. 60-80 € erhalten.
+Dies sind bisher allerdings lediglich Überlegungen, da wir uns noch in der Forschungsperiode befinden.
 
 \subsection{Weiteres Vorgehen}
 Wir wollen das Produkt auch nach Abschluss des Faches \glqq Bussysteme und Sensorik\grqq{} weiterentwickeln, da wir großes Potential sehen dies auch in Zukunft vermarkten zu können.
@@ -97,8 +96,8 @@ Wir wollen das Produkt auch nach Abschluss des Faches \glqq Bussysteme und Senso
 Als nächstes wollen wir eine intensive Testphase des Prototypen durchführen. Dazu werden wir 5 Prototypen aufbauen und diese auch an externe Personen verteilen um eine größtmögliche Menge an Feedback Daten zu erhalten.
 Während der letzten Monate konnten wir bereits durch Gespräche mit Freunden mehrere interessierte Tester ausfindig machen. \\
 
-Geplant ist, die Platinen durch Optimierung der Schaltung und Verwendung von möglichst vielen SMT Bauteilen kleiner und günstiger zu machen und um die Modularität zu optimieren. Außerdem soll die Möglichkeit der Kabelverbindung zwischen den Modulen umgesetzt werden, um dem Nutzenden möglich hohe Flexibilität zu ermöglichen. \newline 
+Geplant ist, die Platinen durch Optimierung der Schaltung und Verwendung von möglichst vielen SMD Bauteilen kleiner und günstiger zu machen und um die Modularität zu optimieren. Außerdem soll die Möglichkeit der Kabelverbindung zwischen den Modulen umgesetzt werden, um dem Nutzenden möglich hohe Flexibilität zu ermöglichen. \newline 
 
-Die Funktionen der CRC Fehlererkennung werden fest in die Programme der Module eingearbeitet. Das Input-Mapper Programm bekommt noch weitere Features, zum Beispiel die Möglichkeit eine Zeitverzögerung in die Tastenkombination mit einzubauen.
+Das Input-Mapper Programm bekommt noch weitere Features, zum Beispiel die Möglichkeit eine Zeitverzögerung in die Tastenkombination mit einzubauen.
 \\\\
 Im Anschluss an die oben genannten Punkte wird mit der Entwicklung weiterer Module begonnen. Durch die verallgemeinerte Entwicklung des ersten Moduls sollte die Entwicklung weiterer Module relativ einfach sein, da sich lediglich mit der Funktion des Moduls auseinandergesetzt werden muss. Der Kommunikation zwischen dem Modul-Mikrocontrollers und dem Hauptmodul ist im Grunde die gleiche.

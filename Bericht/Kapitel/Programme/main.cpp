@@ -96,6 +96,7 @@ volatile unsigned long delayTime;      //berechnete Taktzeit
 volatile char global_adress = 0x00;    //eingelesene Adresse
 volatile char global_COF = 0x00;       //Groesse der Nachricht
 volatile char global_message[8];       //eingelesene Daten
+volatile int global_CRC;
 volatile char mask = 0x01;             //0000 0001 Binaermaske
 //Adressengroesse in Bits (maximal (2^adressSize)-2 Teilnehmer)
 volatile int global_adressSize = 3;    
@@ -132,6 +133,45 @@ char* global_decoded_message_recv; //decodierte message empfangen
 
 
 //allg. Funktionen -------------------------------
+// CRC-16-Implementierung mit Polynom 0x1021
+unsigned int crc16(char* data, size_t length) {
+    unsigned int crc = 0xFFFF; // Initialwert
+    unsigned int polynomial = 0x1021; // CRC-16-Polynom
+
+    for (size_t i = 0; i < length; i++) {
+        crc ^= (data[i] << 8); // Datenbyte in CRC-Register laden
+
+        for (int j = 0; j < 8; j++) {
+            if (crc & 0x8000) { // Pruefen, ob das MSB gesetzt ist
+                crc = (crc << 1) ^ polynomial; // Polynom anwenden
+            } else {
+                crc <<= 1; // Bitweise nach links verschieben
+            }
+        }
+    }
+    return crc & 0xFFFF; // Nur die unteren 16 Bits zurueckgeben
+}
+
+bool verifyCrc16(const unsigned char* data, size_t length) {
+    unsigned int crc = 0xFFFF; // Initialwert
+    unsigned int polynomial = 0x1021; // CRC-16-Polynom
+
+    for (size_t i = 0; i < length; i++) {
+        crc ^= (data[i] << 8); // Datenbyte in CRC-Register laden
+
+        for (int j = 0; j < 8; j++) {
+            if (crc & 0x8000) { // Pruefen, ob das MSB gesetzt ist
+                crc = (crc << 1) ^ polynomial; // Polynom anwenden
+            } else {
+                crc <<= 1; // Bitweise nach links verschieben
+            }
+        }
+    }
+
+    return (crc & 0xFFFF) == 0; // Pruefen, ob der Rest 0 ist
+}
+
+
 #if SENDER == true
   bool isArrayZero(volatile char* array, int size) {
     for (int i = 0; i < size; i++) {
@@ -235,7 +275,6 @@ void parseDecodedMessage(const char* decodedMessage) {
             global_COF |= (1 << i);
         }
     }
-
     // Daten extrahieren basierend auf der Groesse des COF
     // COF gibt die Groesse der Nachricht in Bytes an (0 bedeutet 1 Byte)
     int dataSize = global_COF + 1;
@@ -251,18 +290,19 @@ void parseDecodedMessage(const char* decodedMessage) {
         global_message[dataSize-1-i] = message[i];
         //global_message[i] = message[i];
     }
-    
-
+    // Pruefsumme extrahieren
+    for (int i = 0; i < 16; i++) {
+        if (decodedMessage[global_adressSize +global_COF 
+              + (global_COF*8) + i] == '1') {
+            global_CRC |= (1 << i);
+        }
+    }
     // Ausgabe der extrahierten Bestandteile
     if (DEBUG3) Serial.print("Empfangene Adresse: ");
     if (DEBUG3) Serial.println(global_adress, HEX);
     if (DEBUG3) Serial.print("Empfangener COF: ");
     if (DEBUG3) Serial.println(global_COF, HEX);
     if (DEBUG3) Serial.print("Empfangene Daten: ");
-    if (DEBUG3) for (int i = 0; i < dataSize; i++) {
-        Serial.print(global_message[i], HEX);
-        Serial.print(" ");
-    }
     if (DEBUG3) Serial.println();
 }
 
@@ -404,6 +444,23 @@ void writeData(char dataSize,char* data) {
     }
 }
 
+void writeCRC(unsigned int CRC){
+  if (DEBUG) Serial.println("writeAdress");
+  for (int i = 0; i < 16; i++) {
+    if ((CRC & 0x01) == 0x01) {
+      appendChar(global_decoded_message, '1');
+      //digitalWrite(COMM_OUT, HIGH);
+      if (DEBUG) Serial.print("1");
+    } else {
+      //digitalWrite(COMM_OUT, LOW);
+      appendChar(global_decoded_message, '0');
+      if (DEBUG) Serial.print("0");
+    }
+    CRC = CRC >> 1;
+  }
+  if (DEBUG) Serial.println();
+}
+
 //Bleibt gleich
 void sendEOF(){
   if (DEBUG) Serial.println("sendEOF");
@@ -480,10 +537,11 @@ void sendMessage(char adress,char dataSize,char* data){
     writeAdress(adress);
     writeCOF(dataSize);
     writeData(dataSize,data);
+    writeCRC(crc16(global_decoded_message,
+              global_adressSize+global_COFSize+(global_COFSize*8)));
     writeBitstuffedMessage(BITSTUFFING);
   //Abfrage Bus frei
   if (awaitBusFree())  { 
-
     if (DEBUG3) Serial.println("Sending!");                       
     sendSOF();
     sendDataOnBus(global_BITSTUFFED_message);
@@ -656,13 +714,13 @@ if (unusedAdresses.empty() == false)
   //fuege Sie zur Pollingliste hinzu                 
   Adresses.push_back(freeAdress);             
   //neuen Teilnehmer der device Liste hinzufuegen
-  Serial.print("device function: ");
-  Serial.println(function,HEX);
+  if (DEBUG5) Serial.print("device function: ");
+  if (DEBUG5) Serial.println(function,HEX);
   device teilnehmer(freeAdress,function,nullptr,0);
-  Serial.print("device adress: ");
-  Serial.println(teilnehmer.adress,HEX);  
-  Serial.print("device funktion: ");
-  Serial.println(teilnehmer.funktion,HEX);
+  if (DEBUG5) Serial.print("device adress: ");
+  if (DEBUG5) Serial.println(teilnehmer.adress,HEX);  
+  if (DEBUG5) Serial.print("device funktion: ");
+  if (DEBUG5) Serial.println(teilnehmer.funktion,HEX);
   devices.push_back(teilnehmer);
   //Pollingschleife vergroessern
   num_adresses++;   
@@ -859,3 +917,6 @@ void loop() {
   }
 }
 #endif
+
+
+

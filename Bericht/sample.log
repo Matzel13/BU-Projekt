@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.1.21)  21 JAN 2025 17:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.1.21)  21 JAN 2025 23:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -793,6 +793,12 @@ LaTeX Warning: Label `recieve()' multiply defined.
 
 LaTeX Warning: Label `recieve()' multiply defined.
 
+
+LaTeX Warning: Label `recieve()' multiply defined.
+
+
+LaTeX Warning: Label `recieve()' multiply defined.
+
 ) (Kapitel/Keymapper.aux) (Kapitel/Schaltplan.aux
 
 LaTeX Warning: Label `Leiterbahnbreite' multiply defined.
@@ -1018,9 +1024,9 @@ Package tocbasic Info: character protrusion at toc deactivated on input line 11
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sl' in size <10.95> no
 t available
 (Font)              Font shape `T1/LinuxLibertineT-TLF/m/it' tried instead on i
-nput line 59.
+nput line 60.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.95pt on input line 59.
+(Font)              scaled to size 10.95pt on input line 60.
 [3
 
 
@@ -1034,13 +1040,13 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 Package tocbasic Info: character protrusion at lof deactivated on input line 11
 5.
  (sample.lof
-Overfull \hbox (65.10803pt too wide) in paragraph at lines 14--14
- \T1/LinuxLibertineT-TLF/m/n/10.95 (-20) Kategorie un-ser Pro-dukt ver-ma-krtet
- wer-den könn-te. [https://www.elgato.com/de/de/p/stream- 
+Overfull \hbox (90.33482pt too wide) in paragraph at lines 14--14
+ \T1/LinuxLibertineT-TLF/m/n/10.95 (-20) Preis-Kategorie un-ser Pro-dukt ver-ma
+-krtet wer-den könn-te. [https://www.elgato.com/de/de/p/stream- 
  []
 
 
-Overfull \hbox (75.84955pt too wide) in paragraph at lines 19--19
+Overfull \hbox (75.84955pt too wide) in paragraph at lines 18--18
  \T1/LinuxLibertineT-TLF/m/n/10.95 (-20) um 5-Bit Bit-stuf-fing. [https://praya
 snotty.wordpress.com/wp-content/uploads/2010/11/bit12.png, 
  []
@@ -1315,36 +1321,36 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.8})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.74 
+l.73 
       <./Bilder/zeitplanBU.png>]
-<Bilder/Finanzen.png, id=301, 1224.82594pt x 476.53032pt>
+<Bilder/Finanzen.png, id=300, 1224.82594pt x 476.53032pt>
 File: Bilder/Finanzen.png Graphic file (type png)
 <use Bilder/Finanzen.png>
-Package pdftex.def Info: Bilder/Finanzen.png  used on input line 77.
+Package pdftex.def Info: Bilder/Finanzen.png  used on input line 76.
 (pdftex.def)             Requested size: 413.85834pt x 161.01472pt.
 
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 77--78
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 76--77
  [][] 
  []
 
-<Bilder/streamDeck.png, id=303, 1415.2875pt x 642.90187pt>
+<Bilder/streamDeck.png, id=302, 1415.2875pt x 642.90187pt>
 File: Bilder/streamDeck.png Graphic file (type png)
 <use Bilder/streamDeck.png>
-Package pdftex.def Info: Bilder/streamDeck.png  used on input line 86.
+Package pdftex.def Info: Bilder/streamDeck.png  used on input line 85.
 (pdftex.def)             Requested size: 413.85834pt x 187.99654pt.
 
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 86--87
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 85--86
  [][] 
  []
 
 
-Underfull \hbox (badness 8189) in paragraph at lines 87--87
+Underfull \hbox (badness 7613) in paragraph at lines 86--86
 [][][]\T1/LinuxLibertineT-TLF/m/n/10.95 (+20) Stream Deck Preis von el-ga-to. D
-ies dient le-dig-lich als Ver-gleich
+ies dient le-dig-lich als Ver-gleich,
  []
 
 
-Underfull \hbox (badness 2293) in paragraph at lines 87--87
+Underfull \hbox (badness 2293) in paragraph at lines 86--86
 \T1/LinuxLibertineT-TLF/m/n/10.95 (+20) in wel-cher Preis-Kategorie un-ser Pro-
 dukt ver-ma-krtet wer-den könn-te.
  []
@@ -1356,14 +1362,14 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.9})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.90 
+l.89 
       <./Bilder/Finanzen.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 97--99
+Underfull \hbox (badness 10000) in paragraph at lines 96--98
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 100--101
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
 
  []
 
@@ -1374,9 +1380,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.10})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.101 
+l.100 
        <./Bilder/streamDeck.png>])
-Underfull \hbox (badness 10000) in paragraph at lines 102--132
+Underfull \hbox (badness 10000) in paragraph at lines 101--132
 
  []
 
@@ -1392,16 +1398,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 102--132
 
 
 ]
-<Bilder/datenbus.png, id=323, 482.80376pt x 111.41624pt>
+<Bilder/datenbus.png, id=322, 482.80376pt x 111.41624pt>
 File: Bilder/datenbus.png Graphic file (type png)
 <use Bilder/datenbus.png>
 Package pdftex.def Info: Bilder/datenbus.png  used on input line 18.
 (pdftex.def)             Requested size: 413.85834pt x 95.50838pt.
-<Bilder/Datenaustausch.png, id=324, 452.892pt x 301.125pt>
-File: Bilder/Datenaustausch.png Graphic file (type png)
-<use Bilder/Datenaustausch.png>
-Package pdftex.def Info: Bilder/Datenaustausch.png  used on input line 28.
-(pdftex.def)             Requested size: 331.08792pt x 220.14565pt.
+<Bilder/Adressvergabe.png, id=323, 413.545pt x 285.065pt>
+File: Bilder/Adressvergabe.png Graphic file (type png)
+<use Bilder/Adressvergabe.png>
+Package pdftex.def Info: Bilder/Adressvergabe.png  used on input line 28.
+(pdftex.def)             Requested size: 331.08792pt x 228.23064pt.
 
 
 [18
@@ -1411,17 +1417,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.11})
                                                   \__shipout_drop_firstpage_...
 l.32 
       <./Bilder/datenbus.png>]
-<Bilder/Beispiel_DatenÃ¼bertragung.png, id=332, 632.3625pt x 487.8225pt>
+<Bilder/Beispiel_DatenÃ¼bertragung.png, id=331, 632.3625pt x 487.8225pt>
 File: Bilder/Beispiel_DatenÃ¼bertragung.png Graphic file (type png)
 <use Bilder/Beispiel_DatenÃ¼bertragung.png>
 Package pdftex.def Info: Bilder/Beispiel_DatenÃ¼bertragung.png  used on input l
 ine 35.
 (pdftex.def)             Requested size: 331.08792pt x 255.41095pt.
-<Bilder/CRC.png, id=334, 140.02313pt x 21.83156pt>
-File: Bilder/CRC.png Graphic file (type png)
-<use Bilder/CRC.png>
-Package pdftex.def Info: Bilder/CRC.png  used on input line 44.
-(pdftex.def)             Requested size: 206.92917pt x 32.26454pt.
 
 
 [19
@@ -1429,63 +1430,26 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.12})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.47 \end{figure}
-                 
+l.43 \begin{align}
+                  
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.13})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.47 \end{figure}
-                  <./Bilder/Datenaustausch.png> <./Bilder/Beispiel_DatenÃ¼bertr
+l.43 \begin{align}
+                   <./Bilder/Adressvergabe.png> <./Bilder/Beispiel_DatenÃ¼bertr
 agung.png (PNG copy)>]
-LaTeX Font Info:    Trying to load font information for T1+LinuxLibertineMonoT-
-TLF on input line 50.
-
-(C:\Users\info\AppData\Local\Programs\MiKTeX\tex/latex/libertine\t1linuxliberti
-nemonot-tlf.fd
-File: T1LinuxLibertineMonoT-TLF.fd 2019/05/20 (autoinst) Font definitions for T
-1/LinuxLibertineMonoT-TLF.
-)
-LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/m/n' in size <10.95>
- not available
-(Font)              Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' tried ins
-tead on input line 50.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' will be
-(Font)              scaled to size 10.95pt on input line 50.
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `LinuxLibertineMonoT-TLF' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/m/n' in size <10> no
-t available
-(Font)              Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' tried ins
-tead on input line 50.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' will be
-(Font)              scaled to size 10.0pt on input line 50.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 51.
-
-
-[20
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.14})
- has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.83    remainder 
-                  = remainder ^ (generator_polynomial << i);{C:/Users/info/AppD
-ata/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_dhi6qf.enc} <./Bilder/
-CRC.png>]
-<Bilder/bitstuffing.png, id=375, 314.67563pt x 235.63031pt>
+<Bilder/bitstuffing.png, id=338, 314.67563pt x 235.63031pt>
 File: Bilder/bitstuffing.png Graphic file (type png)
 <use Bilder/bitstuffing.png>
-Package pdftex.def Info: Bilder/bitstuffing.png  used on input line 112.
+Package pdftex.def Info: Bilder/bitstuffing.png  used on input line 62.
 (pdftex.def)             Requested size: 331.08792pt x 247.93326pt.
 )
 
-[21]
+[20]
 
-[22
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.15})
+[21
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.14})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -1504,77 +1468,76 @@ File: lstlang1.sty 2024/09/23 1.10c listings language file
 (C:\Users\info\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
 File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
 )
-(Kapitel/Programme/main.cpp
+LaTeX Font Info:    Trying to load font information for T1+LinuxLibertineMonoT-
+TLF on input line 12.
+
+(C:\Users\info\AppData\Local\Programs\MiKTeX\tex/latex/libertine\t1linuxliberti
+nemonot-tlf.fd
+File: T1LinuxLibertineMonoT-TLF.fd 2019/05/20 (autoinst) Font definitions for T
+1/LinuxLibertineMonoT-TLF.
+)
+LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/m/n' in size <10.95>
+ not available
+(Font)              Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' tried ins
+tead on input line 12.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' will be
+(Font)              scaled to size 10.95pt on input line 12.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `LinuxLibertineMonoT-TLF' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/m/n' in size <10> no
+t available
+(Font)              Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' tried ins
+tead on input line 12.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/regular/n' will be
+(Font)              scaled to size 10.0pt on input line 12.
+ (Kapitel/Programme/main.cpp
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 535.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/b/n' in size <10> no
 t available
 (Font)              Font shape `T1/LinuxLibertineMonoT-TLF/bold/n' tried instea
-d on input line 433.
+d on input line 535.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/bold/n' will be
-(Font)              scaled to size 10.0pt on input line 433.
+(Font)              scaled to size 10.0pt on input line 535.
+)
+
+[22
 
 
-[23
 
+{C:/Users/info/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_dhi
+6qf.enc}] (Kapitel/Programme/main.cpp) (Kapitel/Programme/main.cpp
 
+[23]) (Kapitel/Programme/main.cpp
 
-]
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 470--471
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-) (Kapitel/Programme/main.cpp
-
-[24]) (Kapitel/Programme/main.cpp
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 291--292
+[24]
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 331--332
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][] 
  []
 
 
-
-[25]
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 293--294
+Overfull \hbox (6.14594pt too wide) in paragraph at lines 333--334
 [][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (24.14612pt too wide) in paragraph at lines 297--298
+Overfull \hbox (24.14612pt too wide) in paragraph at lines 337--338
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 302--303
-[][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (12.146pt too wide) in paragraph at lines 308--309
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
 )
-Underfull \hbox (badness 10000) in paragraph at lines 26--27
+Underfull \hbox (badness 10000) in paragraph at lines 33--34
 
  []
 
+(Kapitel/Programme/main.cpp
 
-
-[26] (Kapitel/Programme/main.cpp
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 187--188
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
-][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 215--216
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-)
-
-[27] (Kapitel/Programme/main.cpp
-Overfull \hbox (24.14612pt too wide) in paragraph at lines 240--241
+[25]) (Kapitel/Programme/main.cpp
+Overfull \hbox (24.14612pt too wide) in paragraph at lines 279--280
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][] 
@@ -1582,80 +1545,84 @@ Overfull \hbox (24.14612pt too wide) in paragraph at lines 240--241
 
 
 
-[28])
-<Bilder/pap_hauptmodul.png, id=619, 591.20876pt x 425.59pt>
+[26]) (Kapitel/Programme/main.cpp
+
+[27]) (Kapitel/Programme/main.cpp)
+
+[28]
+<Bilder/pap_hauptmodul.png, id=575, 591.20876pt x 425.59pt>
 File: Bilder/pap_hauptmodul.png Graphic file (type png)
 <use Bilder/pap_hauptmodul.png>
-Package pdftex.def Info: Bilder/pap_hauptmodul.png  used on input line 49.
+Package pdftex.def Info: Bilder/pap_hauptmodul.png  used on input line 66.
 (pdftex.def)             Requested size: 310.39375pt x 223.44458pt.
 
-
-[29]
-Underfull \hbox (badness 10000) in paragraph at lines 57--58
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
 
  []
 
 (Kapitel/Programme/header.h
 
-[30
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.16})
+[29
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.15})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.17                 unsigned 
-                              int Zaehler) <./Bilder/pap_hauptmodul.png>])
-Underfull \hbox (badness 10000) in paragraph at lines 63--64
+l.9     volatile 
+                 char* latest_data; <./Bilder/pap_hauptmodul.png>])
+Underfull \hbox (badness 10000) in paragraph at lines 80--81
 
  []
 
 (Kapitel/Programme/main.cpp
 
-[31])
-Underfull \hbox (badness 10000) in paragraph at lines 67--69
+[30])
+Underfull \hbox (badness 10000) in paragraph at lines 84--86
 
  []
 
 (Kapitel/Programme/main.cpp
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 724--725
+
+[31]
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 782--783
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][] 
  []
 
 )
-
-[32]
-Underfull \hbox (badness 10000) in paragraph at lines 76--77
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 
  []
 
 (Kapitel/Programme/main.cpp
 
-[33]) (Kapitel/Programme/main.cpp)
+[32])
 
-[34]
-<Bilder/pap_eingabemodul.png, id=780, 1548.53531pt x 2117.66156pt>
+[33] (Kapitel/Programme/main.cpp
+
+[34])
+<Bilder/pap_eingabemodul.png, id=758, 1548.53531pt x 2117.66156pt>
 File: Bilder/pap_eingabemodul.png Graphic file (type png)
 <use Bilder/pap_eingabemodul.png>
-Package pdftex.def Info: Bilder/pap_eingabemodul.png  used on input line 99.
+Package pdftex.def Info: Bilder/pap_eingabemodul.png  used on input line 117.
 (pdftex.def)             Requested size: 310.39375pt x 424.46188pt.
 
 
 [35]
-Underfull \hbox (badness 10000) in paragraph at lines 105--106
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
 
  []
 
 
 
 [36
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.17})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.16})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.108 	Kapitel/Programme/main.cpp}
+l.126 	Kapitel/Programme/main.cpp}
                                    <./Bilder/pap_eingabemodul.png>]
 (Kapitel/Programme/main.cpp)
-Underfull \hbox (badness 10000) in paragraph at lines 112--114
+Underfull \hbox (badness 10000) in paragraph at lines 130--132
 
  []
 
@@ -1667,7 +1634,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 112--114
 \openout2 = `Kapitel/Keymapper.aux'.
 
  (Kapitel/Keymapper.tex
-<Bilder/mapper.png, id=852, 452.4403pt x 460.72125pt>
+<Bilder/mapper.png, id=844, 452.4403pt x 460.72125pt>
 File: Bilder/mapper.png Graphic file (type png)
 <use Bilder/mapper.png>
 Package pdftex.def Info: Bilder/mapper.png  used on input line 7.
@@ -1679,7 +1646,7 @@ Package pdftex.def Info: Bilder/mapper.png  used on input line 7.
 
 
 
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.18})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.17})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -1687,7 +1654,7 @@ l.12
       <./Bilder/mapper.png>]
 
 [40]
-<Bilder/Save file.png, id=867, 627.84563pt x 74.52844pt>
+<Bilder/Save file.png, id=859, 627.84563pt x 74.52844pt>
 File: Bilder/Save file.png Graphic file (type png)
 <use Bilder/Save file.png>
 Package pdftex.def Info: Bilder/Save file.png  used on input line 32.
@@ -1695,13 +1662,13 @@ Package pdftex.def Info: Bilder/Save file.png  used on input line 32.
 
 
 [41
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.19})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.18})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.37 \newpage
               <./Bilder/Save file.png>]
-<Bilder/Info_window.png, id=874, 298.86656pt x 470.50781pt>
+<Bilder/Info_window.png, id=866, 298.86656pt x 470.50781pt>
 File: Bilder/Info_window.png Graphic file (type png)
 <use Bilder/Info_window.png>
 Package pdftex.def Info: Bilder/Info_window.png  used on input line 40.
@@ -1709,7 +1676,7 @@ Package pdftex.def Info: Bilder/Info_window.png  used on input line 40.
 )
 
 [42
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.20})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.19})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -1719,11 +1686,17 @@ l.136 \include{Kapitel/Keymapper}
 
 
 (Kapitel/Schaltplan.tex
-<Bilder/ESP.PNG, id=882, 408.02437pt x 371.88937pt>
+<Bilder/ESP.PNG, id=874, 408.02437pt x 371.88937pt>
 File: Bilder/ESP.PNG Graphic file (type png)
 <use Bilder/ESP.PNG>
 Package pdftex.def Info: Bilder/ESP.PNG  used on input line 13.
 (pdftex.def)             Requested size: 310.39375pt x 282.9169pt.
+
+Overfull \hbox (2.8764pt too wide) in paragraph at lines 18--19
+\T1/LinuxLibertineT-TLF/m/n/10.95 (-20) Datenleitungen, wel-che über ei-ne USB-
+Buchse her-aus-ge-führt wer-den. Die UART-Datenleitungen
+ []
+
 
 
 [43
@@ -1731,18 +1704,18 @@ Package pdftex.def Info: Bilder/ESP.PNG  used on input line 13.
 
 
 
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.21})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.20})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.19 
       <./Bilder/ESP.PNG>]
-<Bilder/BU_USB.PNG, id=889, 482.92921pt x 245.79327pt>
+<Bilder/BU_USB.PNG, id=881, 482.92921pt x 245.79327pt>
 File: Bilder/BU_USB.PNG Graphic file (type png)
 <use Bilder/BU_USB.PNG>
 Package pdftex.def Info: Bilder/BU_USB.PNG  used on input line 23.
 (pdftex.def)             Requested size: 331.08792pt x 168.51738pt.
-<Bilder/BU_T_R_Bausteine.PNG, id=890, 467.12016pt x 302.63063pt>
+<Bilder/BU_T_R_Bausteine.PNG, id=882, 467.12016pt x 302.63063pt>
 File: Bilder/BU_T_R_Bausteine.PNG Graphic file (type png)
 <use Bilder/BU_T_R_Bausteine.PNG>
 Package pdftex.def Info: Bilder/BU_T_R_Bausteine.PNG  used on input line 32.
@@ -1750,19 +1723,19 @@ Package pdftex.def Info: Bilder/BU_T_R_Bausteine.PNG  used on input line 32.
 
 
 [44
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.22})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.21})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.42 
      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.23})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.22})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.42 
       <./Bilder/BU_USB.PNG> <./Bilder/BU_T_R_Bausteine.PNG>]
-<Bilder/BU_Tastatur.PNG, id=899, 543.90703pt x 423.45703pt>
+<Bilder/BU_Tastatur.PNG, id=891, 543.90703pt x 423.45703pt>
 File: Bilder/BU_Tastatur.PNG Graphic file (type png)
 <use Bilder/BU_Tastatur.PNG>
 Package pdftex.def Info: Bilder/BU_Tastatur.PNG  used on input line 46.
@@ -1772,7 +1745,7 @@ Overfull \hbox (6.79999pt too wide) in paragraph at lines 46--47
  [][] 
  []
 
-<Bilder/AtMega.PNG, id=900, 480.29437pt x 462.97969pt>
+<Bilder/AtMega.PNG, id=892, 480.29437pt x 462.97969pt>
 File: Bilder/AtMega.PNG Graphic file (type png)
 <use Bilder/AtMega.PNG>
 Package pdftex.def Info: Bilder/AtMega.PNG  used on input line 54.
@@ -1780,13 +1753,13 @@ Package pdftex.def Info: Bilder/AtMega.PNG  used on input line 54.
 
 
 [45
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.24})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.23})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.58 
       <./Bilder/BU_Tastatur.PNG>]
-<Bilder/BU_Optokoppler.PNG, id=906, 771.63281pt x 460.72125pt>
+<Bilder/BU_Optokoppler.PNG, id=898, 771.63281pt x 460.72125pt>
 File: Bilder/BU_Optokoppler.PNG Graphic file (type png)
 <use Bilder/BU_Optokoppler.PNG>
 Package pdftex.def Info: Bilder/BU_Optokoppler.PNG  used on input line 77.
@@ -1799,7 +1772,7 @@ Overfull \hbox (6.79999pt too wide) in paragraph at lines 77--78
 
 
 [46
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.25})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.24})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -1807,90 +1780,87 @@ l.81
       <./Bilder/AtMega.PNG>]
 
 [47
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.26})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.25})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.84 \newpage
               <./Bilder/BU_Optokoppler.PNG>]
+Underfull \hbox (badness 10000) in paragraph at lines 116--119
+
+ []
+
+
 
 [48]
 
-LaTeX Warning: Reference `Imepdanz' on page 49 undefined on input line 127.
-
-
-
 [49]
-
-LaTeX Warning: Reference `Leiterbahnbreitel' on page 50 undefined on input line
- 141.
-
-<Bilder/Mikrostrip.png, id=942, 307.1475pt x 139.27031pt>
+<Bilder/Mikrostrip.png, id=936, 307.1475pt x 139.27031pt>
 File: Bilder/Mikrostrip.png Graphic file (type png)
 <use Bilder/Mikrostrip.png>
-Package pdftex.def Info: Bilder/Mikrostrip.png  used on input line 173.
+Package pdftex.def Info: Bilder/Mikrostrip.png  used on input line 168.
 (pdftex.def)             Requested size: 351.7821pt x 159.51994pt.
 
 
 [50]
-<Bilder/StriplineTopology.PNG, id=955, 364.36125pt x 149.8097pt>
+<Bilder/StriplineTopology.PNG, id=949, 364.36125pt x 149.8097pt>
 File: Bilder/StriplineTopology.PNG Graphic file (type png)
 <use Bilder/StriplineTopology.PNG>
-Package pdftex.def Info: Bilder/StriplineTopology.PNG  used on input line 180.
+Package pdftex.def Info: Bilder/StriplineTopology.PNG  used on input line 175.
 (pdftex.def)             Requested size: 351.7821pt x 144.64314pt.
-<Bilder/AbstandLeiterbahnen.png, id=956, 343.2825pt x 100.12407pt>
+<Bilder/AbstandLeiterbahnen.png, id=950, 343.2825pt x 100.12407pt>
 File: Bilder/AbstandLeiterbahnen.png Graphic file (type png)
 <use Bilder/AbstandLeiterbahnen.png>
-Package pdftex.def Info: Bilder/AbstandLeiterbahnen.png  used on input line 187
+Package pdftex.def Info: Bilder/AbstandLeiterbahnen.png  used on input line 182
 .
 (pdftex.def)             Requested size: 351.7821pt x 102.60184pt.
 
 
 [51
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.26})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.192 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Keypadmoduls dargeste...
+
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.27})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.197 I
-       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
+l.192 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Keypadmoduls dargeste...
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.28})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.197 I
-       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
-
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.29})
- has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.197 I
-       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
+l.192 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Keypadmoduls dargeste...
  <./Bilder/Mikrostrip.png> <./Bilder/StriplineTopology.PNG> <./Bilder/AbstandLe
 iterbahnen.png>]
-<Bilder/LayoutController.jpeg, id=966, 666.49pt x 657.45625pt>
+<Bilder/LayoutController.jpeg, id=960, 666.49pt x 657.45625pt>
 File: Bilder/LayoutController.jpeg Graphic file (type jpg)
 <use Bilder/LayoutController.jpeg>
-Package pdftex.def Info: Bilder/LayoutController.jpeg  used on input line 201.
+Package pdftex.def Info: Bilder/LayoutController.jpeg  used on input line 196.
 (pdftex.def)             Requested size: 351.7821pt x 347.01558pt.
-<Bilder/LayoutTastatur.png, id=967, 494.59781pt x 488.57532pt>
+<Bilder/LayoutTastatur.png, id=961, 494.59781pt x 488.57532pt>
 File: Bilder/LayoutTastatur.png Graphic file (type png)
 <use Bilder/LayoutTastatur.png>
-Package pdftex.def Info: Bilder/LayoutTastatur.png  used on input line 208.
+Package pdftex.def Info: Bilder/LayoutTastatur.png  used on input line 203.
 (pdftex.def)             Requested size: 351.7821pt x 347.49477pt.
 
 
 [52
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.30})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.29})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.212 
+l.207 
        <./Bilder/LayoutController.jpeg>])
 
 [53
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2.31})
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.30})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -1905,16 +1875,18 @@ l.137 \include{Kapitel/Schaltplan}
 
 
 
-])
+]
 
-[55]
+[55])
+
+[56]
 \openout2 = `Kapitel/anhang.aux'.
 
  (Kapitel/anhang.tex
 chapter 3.
 (Kapitel/Programme/main.cpp
 
-[56
+[57
 
 
 
@@ -1922,33 +1894,35 @@ chapter 3.
 
 ]
 
-[57]
-
 [58]
-Overfull \hbox (24.14612pt too wide) in paragraph at lines 148--149
+
+[59]
+
+[60]
+Overfull \hbox (24.14612pt too wide) in paragraph at lines 188--189
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
 
-[59]
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 187--188
+[61]
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 227--228
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][] 
  []
 
 
 
-[60]
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 215--216
+[62]
+Overfull \hbox (6.14594pt too wide) in paragraph at lines 255--256
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
 
-[61]
-Overfull \hbox (24.14612pt too wide) in paragraph at lines 240--241
+[63]
+Overfull \hbox (24.14612pt too wide) in paragraph at lines 279--280
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 [][][][][][][][][][] 
@@ -1956,53 +1930,49 @@ Overfull \hbox (24.14612pt too wide) in paragraph at lines 240--241
 
 
 
-[62]
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 291--292
+[64]
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 331--332
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 293--294
+Overfull \hbox (6.14594pt too wide) in paragraph at lines 333--334
 [][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (24.14612pt too wide) in paragraph at lines 297--298
+Overfull \hbox (24.14612pt too wide) in paragraph at lines 337--338
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 302--303
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 342--343
 [][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (12.146pt too wide) in paragraph at lines 308--309
+Overfull \hbox (12.146pt too wide) in paragraph at lines 348--349
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
 
-[63]
-
-[64]
-
 [65]
 
 [66]
-Overfull \hbox (6.14594pt too wide) in paragraph at lines 470--471
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
 
 [67]
 
 [68]
 
 [69]
+Overfull \hbox (6.14594pt too wide) in paragraph at lines 527--528
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
 
 [70]
 
@@ -2011,42 +1981,48 @@ Overfull \hbox (6.14594pt too wide) in paragraph at lines 470--471
 [72]
 
 [73]
-Overfull \hbox (0.14587pt too wide) in paragraph at lines 724--725
+
+[74]
+
+[75]
+Overfull \hbox (0.14587pt too wide) in paragraph at lines 782--783
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][] 
  []
 
 
 
-[74]
+[76]
 
-[75]
-
-[76])
-
-[77] (Kapitel/Programme/header.h
+[77]
 
 [78]
 
-[79]
+[79])
 
-[80])
+[80] (Kapitel/Programme/header.h
 
 [81]
+
+[82]
+
+[83])
+
+[84]
 (C:\Users\info\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
 )
 (Kapitel/Programme/main.py
 
-[82]
-
-[83]
-
-[84]
-
 [85]
 
 [86]
+
+[87]
+
+[88]
+
+[89]
 Overfull \hbox (48.14636pt too wide) in paragraph at lines 227--228
 [][][][][][][][][][][][][][][][][] 
  []
@@ -2058,7 +2034,7 @@ Overfull \hbox (0.14587pt too wide) in paragraph at lines 233--234
 
 
 
-[87]
+[90]
 Overfull \hbox (6.14594pt too wide) in paragraph at lines 240--242
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][] 
@@ -2066,7 +2042,7 @@ Overfull \hbox (6.14594pt too wide) in paragraph at lines 240--242
 
 
 
-[88]
+[91]
 Overfull \hbox (0.14587pt too wide) in paragraph at lines 289--290
 [][][][][][][][][][][][][][][][][] 
  []
@@ -2083,11 +2059,11 @@ Overfull \hbox (0.14587pt too wide) in paragraph at lines 300--301
 
 
 
-[89]
+[92]
 
-[90]
+[93]
 
-[91]
+[94]
 Overfull \hbox (0.14587pt too wide) in paragraph at lines 427--428
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][] 
@@ -2095,21 +2071,21 @@ Overfull \hbox (0.14587pt too wide) in paragraph at lines 427--428
 
 
 
-[92]
-
-[93]
-
-[94]
-
 [95]
 
 [96]
 
 [97]
 
-[98]))
+[98]
 
 [99]
+
+[100]
+
+[101]))
+
+[102]
 ===== Section: literature
 ===== Section: nomenclature
 (sample.aux (Kapitel/einleitung.aux) (Kapitel/vision.aux)
@@ -2122,19 +2098,16 @@ L3 programming layer <2024-12-25>
  ***********
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `sample.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 30856 strings out of 473536
- 637177 string characters out of 5715440
- 1409533 words of memory out of 5000000
- 50943 multiletter control sequences out of 15000+600000
+ 30893 strings out of 473536
+ 638175 string characters out of 5715440
+ 1409885 words of memory out of 5000000
+ 50918 multiletter control sequences out of 15000+600000
  667827 words of font info for 261 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  108i,20n,107p,10938b,2984s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -2153,9 +2126,9 @@ public/amsfonts/cm/cmmi8.pfb><C:/Users/info/AppData/Local/Programs/MiKTeX/fonts
 X/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/info/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/info/AppData/Local/
 Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on sample.pdf (106 pages, 5989773 bytes).
+Output written on sample.pdf (109 pages, 5988181 bytes).
 PDF statistics:
- 3533 PDF objects out of 3580 (max. 8388607)
- 2374 named destinations out of 2487 (max. 500000)
- 66977 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 3611 PDF objects out of 4296 (max. 8388607)
+ 2430 named destinations out of 2487 (max. 500000)
+ 66972 words of extra memory for PDF output out of 74296 (max. 10000000)
 
