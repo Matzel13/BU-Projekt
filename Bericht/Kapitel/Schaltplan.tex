@@ -99,7 +99,7 @@ Beim Layout der Platine wurde darauf geachtet, dass die Kontaktstecker so angeor
 
 
 \subsubsection{Differenzielle Übertragung}
-
+Bei einem Layout für differenzielle Übertragung sollte zusätzlich auf die folgen Punkte geachtet werden:
 
 
 \begin{itemize}
@@ -118,30 +118,54 @@ Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fe
 Durch diese Änderungen wird die Platine vorraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
 Außerdem soll als weitere Möglichkeit eine Kabelverbindung zwischen den Modulen entwickelt werden, um noch höhere Flexibilität zu ermöglichen.
 
-Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in \ref{Imepdanz} zu sehen, einen Einfluss auf die Impedanz hat. Im Datenblatt der SN65LVDXXX wird eine Mikrostrip-Topology, wie in dargestellt Abb. \ref{MikrostripTopology} empfohlen. Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendetetn Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
-In \ref{BSPImpedanzl} ist die Rechung für die Werte, die im Datenblatt der SN65LVDXXX Bauteile angegeben sind, entsprechend des Terminationswiderstandes von 100 Ohm.
+Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in \ref{Imepdanz} zu sehen, einen Einfluss auf die Impedanz hat. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
+
+ 
+Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Siganlen eine Microstrip-Topologie, wie in Abb. \ref{MikrostripTopology} empfohlen. 
 
 
-Die differenzielle Impedanz \( Z_{diff} \) wird durch folgende Gleichung beschrieben:
+
+Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendetetn Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
+In \ref{Leiterbahnbreitel} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend des Terminationswiderstandes von 100 Ohm.
+\newline
+eingesetzte Werte:
+\begin{itemize}
+	\item Dielektrizitätskonstante \( \varepsilon_r = 3.4 \)
+	\item Abstand zwischen den differenziellen Leitungen \( S = 0.15 \, \text{mm} \)
+	\item Dicke des Dielektrikums \( H = 0.18 \, \text{mm} \)
+	\item Dicke der Leiterbahn \( T = 0.035 \, \text{mm} \)
+	\item Zielimpedanz \( Z_0 = 100 \, \Omega \)
+\end{itemize}
+
+
+
 \begin{equation} \label{Impedanz}
-	Z_{diff} = 2 \cdot Z_0 \cdot \left( 1 - \frac{0.441}{\sqrt{\frac{S}{W} + 1.376}} \right)
+	Z_{diff} = \frac{Z_0}{\sqrt{2}} \left( 1 + \frac{0.5}{\sqrt{1 + 4\cdot \frac{S}{W}}} \right)
 \end{equation}
+
 
 Mit den eingesetzten Werten:
-\begin{equation} \label{BSPImpedanz}
-	Z_{diff} = 2 \cdot 57.3 \cdot \left( 1 - \frac{0.441}{\sqrt{\frac{0.15}{0.15} + 1.376}} \right)
+\begin{equation} \label{Leiterbahnbreite}
+W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\right)} - \frac{0.035}{0.8}
+
+\end{equation}
+\begin{equation} \label{Leiterbahnbreite}
+W = 0.087 - 0.044 = 0.043 \, \text{mm}
 \end{equation}
 
 
-
-
-
+\begin{figure}[H]
+	\centering    
+	\fbox{\includegraphics[width=0.85\textwidth]{Bilder/Mikrostrip.png}}
+	\caption{Mikrostrip-Topology}
+	\label{MikrostripTopology}
+\end{figure}
 
 \begin{figure}[H]
     \centering    
     \fbox{\includegraphics[width=0.85\textwidth]{Bilder/MikrostripTopology.png}}
-    \caption{Mikrostrip-Topology}
-    \label{MikrostripTopology}
+    \caption{Stripline-Topology}
+    \label{Stripline}
 \end{figure}
 
 \begin{figure}[H]
@@ -160,7 +184,7 @@ In Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls dargestellt.
 
 \begin{figure}[H]
 	\centering    
-	\fbox{\includegraphics[width=0.85\textwidth]{Bilder/MikrostripTopology.png}}
+	\fbox{\includegraphics[width=0.85\textwidth]{Bilder/LayoutController.png}}
 	\caption{Layout Controller-Modul}
 	\label{LayoutController}
 \end{figure}
