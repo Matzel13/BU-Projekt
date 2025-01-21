@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.1.21)  21 JAN 2025 14:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.1.21)  21 JAN 2025 17:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1018,9 +1018,9 @@ Package tocbasic Info: character protrusion at toc deactivated on input line 11
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sl' in size <10.95> no
 t available
 (Font)              Font shape `T1/LinuxLibertineT-TLF/m/it' tried instead on i
-nput line 55.
+nput line 59.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.95pt on input line 55.
+(Font)              scaled to size 10.95pt on input line 59.
 [3
 
 
@@ -1298,11 +1298,11 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 
 
 [12]
-<Bilder/zeitplanBU.png, id=291, 1357.07pt x 733.74126pt>
+<Bilder/zeitplanBU.png, id=291, 892.83563pt x 486.31688pt>
 File: Bilder/zeitplanBU.png Graphic file (type png)
 <use Bilder/zeitplanBU.png>
 Package pdftex.def Info: Bilder/zeitplanBU.png  used on input line 65.
-(pdftex.def)             Requested size: 413.85834pt x 223.76277pt.
+(pdftex.def)             Requested size: 413.85834pt x 225.42264pt.
 
 Overfull \hbox (6.79999pt too wide) in paragraph at lines 65--66
  [][] 
@@ -1357,8 +1357,13 @@ has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.90 
-      <./Bilder/Finanzen.png>])
-Underfull \hbox (badness 10000) in paragraph at lines 100--132
+      <./Bilder/Finanzen.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 97--99
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
 
  []
 
@@ -1369,8 +1374,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.10})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.132 \include{Kapitel/projektarbeit}
-                                      <./Bilder/streamDeck.png>]
+l.101 
+       <./Bilder/streamDeck.png>])
+Underfull \hbox (badness 10000) in paragraph at lines 102--132
+
+ []
+
+
 
 [16]
 \openout2 = `Kapitel/datenbus.aux'.
@@ -1803,64 +1813,71 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.26})
                                                   \__shipout_drop_firstpage_...
 l.84 \newpage
               <./Bilder/BU_Optokoppler.PNG>]
-Underfull \hbox (badness 10000) in paragraph at lines 114--117
-
- []
-
-
 
 [48]
 
+LaTeX Warning: Reference `Imepdanz' on page 49 undefined on input line 127.
+
+
+
 [49]
+
+LaTeX Warning: Reference `Leiterbahnbreitel' on page 50 undefined on input line
+ 141.
+
 <Bilder/Mikrostrip.png, id=942, 307.1475pt x 139.27031pt>
 File: Bilder/Mikrostrip.png Graphic file (type png)
 <use Bilder/Mikrostrip.png>
-Package pdftex.def Info: Bilder/Mikrostrip.png  used on input line 156.
+Package pdftex.def Info: Bilder/Mikrostrip.png  used on input line 173.
 (pdftex.def)             Requested size: 351.7821pt x 159.51994pt.
-<Bilder/StriplineTopology.PNG, id=943, 364.36125pt x 149.8097pt>
+
+
+[50]
+<Bilder/StriplineTopology.PNG, id=955, 364.36125pt x 149.8097pt>
 File: Bilder/StriplineTopology.PNG Graphic file (type png)
 <use Bilder/StriplineTopology.PNG>
-Package pdftex.def Info: Bilder/StriplineTopology.PNG  used on input line 163.
+Package pdftex.def Info: Bilder/StriplineTopology.PNG  used on input line 180.
 (pdftex.def)             Requested size: 351.7821pt x 144.64314pt.
-<Bilder/AbstandLeiterbahnen.png, id=944, 343.2825pt x 100.12407pt>
+<Bilder/AbstandLeiterbahnen.png, id=956, 343.2825pt x 100.12407pt>
 File: Bilder/AbstandLeiterbahnen.png Graphic file (type png)
 <use Bilder/AbstandLeiterbahnen.png>
-Package pdftex.def Info: Bilder/AbstandLeiterbahnen.png  used on input line 170
+Package pdftex.def Info: Bilder/AbstandLeiterbahnen.png  used on input line 187
 .
 (pdftex.def)             Requested size: 351.7821pt x 102.60184pt.
 
 
-[50
+[51
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.27})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.174 
-      
+l.197 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
+
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.28})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.174 
-       <./Bilder/Mikrostrip.png> <./Bilder/StriplineTopology.PNG>]
-<Bilder/LayoutController.jpeg, id=953, 666.49pt x 657.45625pt>
-File: Bilder/LayoutController.jpeg Graphic file (type jpg)
-<use Bilder/LayoutController.jpeg>
-Package pdftex.def Info: Bilder/LayoutController.jpeg  used on input line 184.
-(pdftex.def)             Requested size: 351.7821pt x 347.01558pt.
+l.197 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
 
-
-[51
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.29})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.188 
-       <./Bilder/AbstandLeiterbahnen.png>]
-<Bilder/LayoutTastatur.png, id=959, 494.59781pt x 488.57532pt>
+l.197 I
+       n Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls darge...
+ <./Bilder/Mikrostrip.png> <./Bilder/StriplineTopology.PNG> <./Bilder/AbstandLe
+iterbahnen.png>]
+<Bilder/LayoutController.jpeg, id=966, 666.49pt x 657.45625pt>
+File: Bilder/LayoutController.jpeg Graphic file (type jpg)
+<use Bilder/LayoutController.jpeg>
+Package pdftex.def Info: Bilder/LayoutController.jpeg  used on input line 201.
+(pdftex.def)             Requested size: 351.7821pt x 347.01558pt.
+<Bilder/LayoutTastatur.png, id=967, 494.59781pt x 488.57532pt>
 File: Bilder/LayoutTastatur.png Graphic file (type png)
 <use Bilder/LayoutTastatur.png>
-Package pdftex.def Info: Bilder/LayoutTastatur.png  used on input line 191.
+Package pdftex.def Info: Bilder/LayoutTastatur.png  used on input line 208.
 (pdftex.def)             Requested size: 351.7821pt x 347.49477pt.
 
 
@@ -1869,7 +1886,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.30})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.195 
+l.212 
        <./Bilder/LayoutController.jpeg>])
 
 [53
@@ -2105,16 +2122,19 @@ L3 programming layer <2024-12-25>
  ***********
 
 
+LaTeX Warning: There were undefined references.
+
+
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `sample.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 30846 strings out of 473536
- 637036 string characters out of 5715440
- 1410499 words of memory out of 5000000
- 50941 multiletter control sequences out of 15000+600000
+ 30856 strings out of 473536
+ 637177 string characters out of 5715440
+ 1409533 words of memory out of 5000000
+ 50943 multiletter control sequences out of 15000+600000
  667827 words of font info for 261 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  108i,20n,107p,10938b,2984s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -2133,9 +2153,9 @@ public/amsfonts/cm/cmmi8.pfb><C:/Users/info/AppData/Local/Programs/MiKTeX/fonts
 X/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/info/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/info/AppData/Local/
 Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on sample.pdf (106 pages, 6032984 bytes).
+Output written on sample.pdf (106 pages, 5989773 bytes).
 PDF statistics:
- 3524 PDF objects out of 3580 (max. 8388607)
- 2366 named destinations out of 2487 (max. 500000)
+ 3533 PDF objects out of 3580 (max. 8388607)
+ 2374 named destinations out of 2487 (max. 500000)
  66977 words of extra memory for PDF output out of 74296 (max. 10000000)
 

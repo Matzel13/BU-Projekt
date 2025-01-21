@@ -45,13 +45,17 @@
 \contentsline {section}{\numberline {2.7}Platine}{48}{section.2.7}%
 \contentsline {subsubsection}{\nonumberline Differenzielle Übertragung}{48}{subsubsection*.43}%
 \contentsline {subsection}{\numberline {2.7.1}Verbesserungen}{48}{subsection.2.7.1}%
-\contentsline {subsection}{\numberline {2.7.2}Layout}{51}{subsection.2.7.2}%
+\contentsline {subsubsection}{\nonumberline Optimierung}{48}{subsubsection*.45}%
+\contentsline {subsubsection}{\nonumberline Kabelverbindung}{49}{subsubsection*.47}%
+\contentsline {subsubsection}{\nonumberline Anpassung der Layer}{49}{subsubsection*.49}%
+\contentsline {subsubsection}{\nonumberline Anpassung der Leiterbahnbreite}{50}{subsubsection*.51}%
+\contentsline {subsection}{\numberline {2.7.2}Layout}{52}{subsection.2.7.2}%
 \contentsline {section}{\numberline {2.8}Fazit}{54}{section.2.8}%
 \contentsline {subsection}{\numberline {2.8.1}Persönliches Fazit}{54}{subsection.2.8.1}%
-\contentsline {subsubsection}{\nonumberline Johanna Boettcher}{54}{subsubsection*.45}%
-\contentsline {subsubsection}{\nonumberline Marcel Eßmann}{55}{subsubsection*.47}%
-\contentsline {subsubsection}{\nonumberline Peter Fischer}{55}{subsubsection*.49}%
-\contentsline {subsubsection}{\nonumberline Jannik Wendt}{55}{subsubsection*.51}%
+\contentsline {subsubsection}{\nonumberline Johanna Boettcher}{54}{subsubsection*.53}%
+\contentsline {subsubsection}{\nonumberline Marcel Eßmann}{55}{subsubsection*.55}%
+\contentsline {subsubsection}{\nonumberline Peter Fischer}{55}{subsubsection*.57}%
+\contentsline {subsubsection}{\nonumberline Jannik Wendt}{55}{subsubsection*.59}%
 \contentsline {chapter}{\numberline {3}Anhang}{56}{chapter.3}%
 \contentsline {subsection}{\numberline {3.0.1}Main Programm}{56}{subsection.3.0.1}%
 \contentsline {subsection}{\numberline {3.0.2}Main Header}{78}{subsection.3.0.2}%
