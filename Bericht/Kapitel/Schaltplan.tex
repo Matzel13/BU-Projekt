@@ -83,16 +83,14 @@ Es wird die folgenden Möglichkeiten geben:
 
 \newpage
 \section{Platine}
-Beim Layout der Platine wurde darauf geachtet, dass die Kontaktstecker so angeordnet werden, dass sie modular über Magneten gut miteinander verbunden werden können. 
+Beim Layout der Platine wurde auf die folgenden Punkte geachtet: 
 
 \begin{itemize}
 	\item Platzierung der Kontaktstecker, entsprechend der Modularen Verbindungsmöglichkeit
 	\item Räumliche Nähe der zusammengehörenden Bauteile
 	\item Optimierung der Masseführung durch Verwendung einer möglichst durchgehenden Massefläche
 	\item Vermeidung von 90°-Ecken der Leiterbahnen, um Reflexionen zu minimieren
-	\item Platzierung von Abblockkondensatoren nahe den Versorgungspins der ICs.
-	\item Geringer Abstand zwischen den differenziellen Leitungen
-	\item Gleiche Länge der differenziellen Leitungen
+	\item Platzierung von Abblock- und Stützkondensator nahe den Versorgungspins der ICs.
 \end{itemize}
 
 
@@ -110,12 +108,12 @@ Bei einem Layout für differenzielle Übertragung sollte zusätzlich auf die fol
 \end{itemize}
 
 
-Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten. 
+Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten. 
 
 \subsection{Verbesserungen}
 Da die erste Platine hauptsächlich zum Testen der differenziellen Übertragungsbauteile dient, sind einige Anpassungen geplant. \newline
-Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
-Durch diese Änderungen wird die Platine vorraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
+Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten, soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
+Durch diese Änderungen wird die Platine voraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
 Außerdem soll als weitere Möglichkeit eine Kabelverbindung zwischen den Modulen entwickelt werden, um noch höhere Flexibilität zu ermöglichen.
 
 Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in \ref{Imepdanz} zu sehen, einen Einfluss auf die Impedanz hat. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
@@ -125,7 +123,7 @@ Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahne
 
 
 
-Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendetetn Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
+Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektrikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendeten Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
 In \ref{Leiterbahnbreitel} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend des Terminationswiderstandes von 100 Ohm.
 \newline
 eingesetzte Werte:
@@ -150,7 +148,7 @@ W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\righ
 
 \end{equation}
 \begin{equation} \label{Leiterbahnbreite}
-W = 0.087 - 0.044 = 0.043 \, \text{mm}
+W = 0.043 \, \text{mm}
 \end{equation}
 
 
