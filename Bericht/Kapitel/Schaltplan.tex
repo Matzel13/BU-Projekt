@@ -111,19 +111,35 @@ Bei einem Layout für differenzielle Übertragung sollte zusätzlich auf die fol
 Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten.
 
 \subsection{Verbesserungen}
+\subsubsection{Optimierung}
+
 Da die erste Platine hauptsächlich zum Testen der differenziellen Übertragungsbauteile dient, sind einige Anpassungen geplant. \newline
 Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten, soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
 Durch diese Änderungen wird die Platine voraussichtlich kleiner und günstiger werden. Ein Ziel ist es das Tastatur-Modul auf die Maße des Controller-Moduls anzupassen, um die Modularität wie geplant möglichst ansprechend zu gestalten. \newline
+<<<<<<< Updated upstream
 
 Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in Formel \ref{Impedanz} zu sehen, einen Einfluss auf die Impedanz hat. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
+=======
+\subsubsection{Kabelverbindung}
+Außerdem soll als weitere Möglichkeit eine Kabelverbindung zwischen den Modulen entwickelt werden, um noch höhere Flexibilität zu ermöglichen.
+
+\subsubsection{Anpassung der Layer}
+Es soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche hat einen Einfluss auf die Impedanz, wie in \ref{Imepdanz} zu sehen. Vom Hersteller wird ein vier Layer Stackup empfohlen, da sie die nötigen Spezifikationen für eine Impedanz von 100 Ohm ermöglichen. Es gibt unterschiedliche Topologien zur Anordnung der Leiterbahnen auf den Layern der Platine.
+>>>>>>> Stashed changes
 
  
 Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Siganlen eine Microstrip-Topologie, wie in Abb. \ref{MikrostripTopology} empfohlen. 
 
 
+<<<<<<< Updated upstream
 
 Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektrikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendeten Dielektrikums die Dicke der einzelnen Layer eingesehen werden.  
 In Formel \ref{Leiterbahnbreite} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend des Terminationswiderstandes von 100 Ohm.
+=======
+\subsubsection{Anpassung der Leiterbahnbreite}
+Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektrikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendeten Dielektrikums die Dicke der einzelnen Layer eingesehen werden.
+In \ref{Leiterbahnbreitel} ist die Berechnung der Leiterbahnbreite mit Werten, die im Datenblatt der SN65LVDXXX Bauteile angegeben werden, entsprechend des Terminationswiderstandes von 100 Ohm.
+>>>>>>> Stashed changes
 \newline
 Eingesetzte Werte:
 \begin{itemize}
@@ -132,6 +148,7 @@ Eingesetzte Werte:
 	\item Dicke des Dielektrikums \( H = 0.18 \, \text{mm} \)
 	\item Dicke der Leiterbahn \( T = 0.035 \, \text{mm} \)
 	\item Zielimpedanz \( Z_0 = 100 \, \Omega \)
+	\item Leiterbahnbreite \( W \) 
 \end{itemize}
 
 
@@ -141,7 +158,7 @@ Eingesetzte Werte:
 \end{equation}
 
 
-Mit den eingesetzten Werten:
+Berechnung der Leiterbahnbreite W mit den eingesetzten Werten:
 \begin{equation} \label{Leiterbahnbreite}
 W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\right)} - \frac{0.035}{0.8}
 \end{equation}
