@@ -1,0 +1,59 @@
+\babel@toc {english}{}\relax 
+\babel@toc {ngerman}{}\relax 
+\contentsline {chapter}{\numberline {1}Einleitung}{1}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Modulares Eingabesystem}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Projektbeschreibung}{2}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Verbindung}{4}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Topologien}{5}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Herangehensweise}{8}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Erfolge}{9}{subsection.2.2.1}%
+\contentsline {subsubsection}{\nonumberline Synchronisation}{9}{subsubsection*.5}%
+\contentsline {subsubsection}{\nonumberline Datenübertragung}{10}{subsubsection*.7}%
+\contentsline {subsubsection}{\nonumberline Adressvergabe und Polling loop}{10}{subsubsection*.9}%
+\contentsline {subsubsection}{\nonumberline Input-Mapper Program}{10}{subsubsection*.11}%
+\contentsline {subsubsection}{\nonumberline Parallele Entwicklung}{10}{subsubsection*.13}%
+\contentsline {subsection}{\numberline {2.2.2}Probleme}{12}{subsection.2.2.2}%
+\contentsline {subsubsection}{\nonumberline ATtiny und ATmega}{12}{subsubsection*.15}%
+\contentsline {subsubsection}{\nonumberline Differenzielle Datenübertragung}{12}{subsubsection*.17}%
+\contentsline {subsubsection}{\nonumberline Ungetestete Bauteile}{12}{subsubsection*.19}%
+\contentsline {subsubsection}{\nonumberline Krankheit und Lieferzeiten}{13}{subsubsection*.21}%
+\contentsline {subsection}{\numberline {2.2.3}Budget}{14}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Weiteres Vorgehen}{15}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Datenbus}{17}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Aufbau des Datenbusses}{17}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Technische Eigenschaften}{18}{subsection.2.3.2}%
+\contentsline {subsubsection}{\nonumberline CRC Fehlererkennung}{20}{subsubsection*.23}%
+\contentsline {subsubsection}{\nonumberline Bitstuffing}{21}{subsubsection*.25}%
+\contentsline {section}{\numberline {2.4}Programme}{23}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Modulübergreifende Funktionen}{23}{subsection.2.4.1}%
+\contentsline {subsubsection}{\nonumberline Senden einer Nachricht}{23}{subsubsection*.27}%
+\contentsline {subsubsection}{\nonumberline Empfangen einer Nachricht}{25}{subsubsection*.29}%
+\contentsline {subsection}{\numberline {2.4.2}Controller Modul - Programmcode}{29}{subsection.2.4.2}%
+\contentsline {subsubsection}{\nonumberline Adressvergabe und Verwaltung}{30}{subsubsection*.31}%
+\contentsline {subsubsection}{\nonumberline Abfrage neuer Daten}{33}{subsubsection*.33}%
+\contentsline {subsubsection}{\nonumberline Übermittlung der Daten an den angeschlossenen Computer}{34}{subsubsection*.35}%
+\contentsline {subsection}{\numberline {2.4.3}Code der Eingabemodule}{35}{subsection.2.4.3}%
+\contentsline {subsubsection}{\nonumberline Anforderung einer Adresse}{36}{subsubsection*.37}%
+\contentsline {subsubsection}{\nonumberline Auswertung der Modulfunktion}{37}{subsubsection*.39}%
+\contentsline {subsubsection}{\nonumberline Übermittlung der Daten an das Controller-Modul}{38}{subsubsection*.41}%
+\contentsline {section}{\numberline {2.5}Input-Mapper Programm}{39}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Hauptfunktionen}{40}{subsection.2.5.1}%
+\contentsline {section}{\numberline {2.6}Schaltpläne}{43}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Controller Modul}{43}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Tastatur-Modul}{45}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Alternativen zum Transceiver}{46}{subsection.2.6.3}%
+\contentsline {section}{\numberline {2.7}Platine}{48}{section.2.7}%
+\contentsline {subsubsection}{\nonumberline Differenzielle Übertragung}{48}{subsubsection*.43}%
+\contentsline {subsection}{\numberline {2.7.1}Verbesserungen}{48}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Layout}{51}{subsection.2.7.2}%
+\contentsline {section}{\numberline {2.8}Fazit}{54}{section.2.8}%
+\contentsline {subsection}{\numberline {2.8.1}Persönliches Fazit}{54}{subsection.2.8.1}%
+\contentsline {subsubsection}{\nonumberline Johanna Boettcher}{54}{subsubsection*.45}%
+\contentsline {subsubsection}{\nonumberline Marcel Eßmann}{55}{subsubsection*.47}%
+\contentsline {subsubsection}{\nonumberline Peter Fischer}{55}{subsubsection*.49}%
+\contentsline {subsubsection}{\nonumberline Jannik Wendt}{55}{subsubsection*.51}%
+\contentsline {chapter}{\numberline {3}Anhang}{56}{chapter.3}%
+\contentsline {subsection}{\numberline {3.0.1}Main Programm}{56}{subsection.3.0.1}%
+\contentsline {subsection}{\numberline {3.0.2}Main Header}{78}{subsection.3.0.2}%
+\contentsline {subsection}{\numberline {3.0.3}Main Header}{82}{subsection.3.0.3}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

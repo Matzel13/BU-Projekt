@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <iostream>
 #include <list>
+#include <cstring>
 struct device
 {
     char adress;
@@ -14,7 +15,7 @@ struct device
     public:
         device(char Adresse,char Funktion,char* Daten,
                 unsigned int Zaehler)
-        : adress(Adresse),funktion(funktion),latest_data(Daten),
+        : adress(Adresse),funktion(Funktion),latest_data(Daten),
             timeout(Zaehler){}
 };
 
@@ -25,7 +26,7 @@ struct device
 synchronisiert die Taktgeschwindigkeit
 @return SOF wurde empfangen
 */
-bool sync();
+bool syncronisation();
 
 /*
 liest die Adresse ein (global gespeichert)
@@ -45,7 +46,7 @@ liest die Daten ein (global gespeichert)
 @dataSize anzahl der einzulesenden datenbytes
 @return 
 */
-void readData(char dataSize);
+void readData(volatile char* data,char dataSize);
 
 /*
 Kombiniert die vorangegangenen Funktionen um eine 
@@ -62,27 +63,24 @@ bool readMessage();
 
 @return Bus ist frei
 */
-bool busFree();
+bool awaitBusFree();
 /*
 
 @return 
 */
-void sendAdress(char adress) ;
+void writeAdress(char adress) ;
 /*
 
 @return 
 */
-void sendCOF(char dataSize);
+void writeCOF(char dataSize);
 /*
 
 @return 
 */
-void sendData(char data) ;
+void writeData(char data) ;
 /*
 
-@return 
-*/
-void sendMessage();
 
 
 /*
@@ -95,7 +93,7 @@ void setup() ;
 
 @return 
 */
-void printAdr(std::list<char>& Function, int stelle);
+void transmitDeviceInfo(int stelle);
 /*
 
 @return 
@@ -124,7 +122,7 @@ void switchFunction(char adresse);
 Vergibt neue Adressen
 @return neue Adresse (0x00, wenn keine Adressen mehr frei sind)
 */
-char newAdress();
+char newAdress(char function);
 
 /*
 wartet auf die Antwort eines Busteilnehmers
