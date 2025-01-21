@@ -6,7 +6,7 @@ unterschiedlichen Funktionen der Module müssen jeweils eigene Platinen entwicke
 
 
 \subsection{Controller Modul}
-Der verwendete ESP32 ist wie in Abb. \ref{ESP} verschaltet. Die UART-Bridge wird an den Pins D34 und D35 angeschlossen, da diese al UART Pins vom ESP32 vorgesehen sind. Der interne Datenbus wird an den Pins D13 und D15 angeschlossen, wobei D13 als Receive-Pin und D15 als Transmit-Pin fungiert. Der ESP32 wird über V\textsubscript{in} mit 5V über die USB Spannung versorgt.
+Der verwendete ESP32 ist wie in \ref{ESP} verschaltet. Die UART-Bridge wird an den Pins D34 und D35 angeschlossen, da diese al UART Pins vom ESP32 vorgesehen sind. Der interne Datenbus wird an den Pins D13 und D15 angeschlossen, wobei D13 als Receive-Pin und D15 als Transmit-Pin fungiert. Der ESP32 wird über V\textsubscript{in} mit 5V über die USB Spannung versorgt.
 
 \begin{figure}[H]
     \centering    
@@ -15,7 +15,7 @@ Der verwendete ESP32 ist wie in Abb. \ref{ESP} verschaltet. Die UART-Bridge wird
     \label{ESP}
 \end{figure}
 
-Für die Kommunikation mit einem PC, werden die Daten über eine UART-Bridge gegeben, bevor sie an die USB Schnittstelle übertragen werden. D+ und D- sind in diesem Fall die USB-Datenleitungen, welche über eine USB-Buchse herausgeführt werden. Die UART-Datenleitungen vom ESP32 zur UART-Bridge sind in Abb. \ref{USB} verdreht, da es sich um die Labels aus Sicht des ESP32 handelt.
+Für die Kommunikation mit einem PC, werden die Daten über eine UART-Bridge gegeben, bevor sie an die USB Schnittstelle übertragen werden. D+ und D- sind in diesem Fall die USB-Datenleitungen, welche über eine USB-Buchse herausgeführt werden. Die UART-Datenleitungen vom ESP32 zur UART-Bridge sind in \ref{USB} verdreht, da es sich um die Labels aus Sicht des ESP32 handelt.
 
 
 \begin{figure}[H]
@@ -35,8 +35,8 @@ Zur Kommunikation auf unserem Datenbus werden die Daten differenziell übertrage
 \end{figure}
 
 \subsection{Tastatur-Modul}
-Das Tastatur-Modul besteht aus 4x4 Tasten, die, wie in Abb. \ref{Tastatur} zu sehen, in einer Matrix verschaltet sind. Über die vier Ausgänge (PD2, PD3, PD4, PD5) des  ATmega werden nacheinander 
-Ausgangssignale gegeben, während über die vier Eingänge (PD6, PD7, PB0, PB1) die Spalten abgefragt werden. Die Verschaltung des ATmega ist in Abb. \ref{AtMega} zu sehen. Um das korrekte Auslesen mehrerer gedrückten Tasten zu gewährleisten, werden in jedem 
+Das Tastatur-Modul besteht aus 4x4 Tasten, die, wie in \ref{Tastatur} zu sehen, in einer Matrix verschaltet sind. Über die vier Ausgänge (PD2, PD3, PD4, PD5) des  ATmega werden nacheinander 
+Ausgangssignale gegeben, während über die vier Eingänge (PD6, PD7, PB0, PB1) die Spalten abgefragt werden. Die Verschaltung des ATmega ist in \ref{AtMega} zu sehen. Um das korrekte Auslesen mehrerer gedrückten Tasten zu gewährleisten, werden in jedem 
 Ausgangspfad Schaltdioden eingesetzt. \\
 Die Datenübertragung findet über die Pins PD0 und PD1 statt.
 
@@ -103,12 +103,12 @@ Bei einem Layout für differenzielle Übertragung sollte zusätzlich auf die fol
 \begin{itemize}
 	\item Geringer Abstand zwischen den differenziellen Leitungen
 	\item Gleiche Länge der differenziellen Leitungen
-	\item Abstand zu anderen Leiterbahnen entsprechend Abb. \ref{AbstandLeiterbahnen}
+	\item Abstand zu anderen Leiterbahnen entsprechend \ref{AbstandLeiterbahnen}
 	\item möglichst kurze Leitungen 
 \end{itemize}
 
 
-Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten.
+Wie in \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten.
 
 \subsection{Verbesserungen}
 \subsubsection{Optimierung}
@@ -128,7 +128,7 @@ Es soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abst
 >>>>>>> Stashed changes
 
  
-Bei einer Stripline-Topologie wie in Abb. \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Siganlen eine Microstrip-Topologie, wie in Abb. \ref{MikrostripTopology} empfohlen. 
+Bei einer Stripline-Topologie wie in \ref{Stripline} liegen die Leiterbahnen zwischen zwei Masseflächen eingebettet, was eine bessere Abschirmung bedeutet, aber auch eine höhere Kapazität. Daher wird vom Hersteller bei hochfrequenten Siganlen eine Microstrip-Topologie, wie in \ref{MikrostripTopology} empfohlen. 
 
 
 <<<<<<< Updated upstream
@@ -192,9 +192,9 @@ W = \frac{5.98 \cdot 0.18}{\exp\left(\frac{100 \cdot \sqrt{3.4 + 1.41}}{87}\righ
 
 \subsection{Layout}
 
-In Abb. \ref{LayoutController} wird das Layout des Controller Moduls dargestellt.
+In  \ref{LayoutController} wird das Layout des Controller Moduls dargestellt.
 
-In Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls dargestellt. 
+In  \ref{LayoutTastatur} wird das Layout des Tastatur Moduls dargestellt. 
 
 \begin{figure}[H]
 	\centering    
