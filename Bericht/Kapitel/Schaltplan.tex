@@ -1,4 +1,4 @@
-\section{Schaltpläne und PCBs}
+\section{Schaltpläne}
 
 Zur Umsetzung des Datenbusses wird für jedes Modul ein Mikrocontroller zur Kommunikation benötigt. 
 Über die Mikrocontroller werden die zu verarbeitenden Eingangssignale vom jeweiligen Modul über den Bus an das Controller Modul übertragen. Für die 
@@ -82,24 +82,69 @@ Es wird die folgenden Möglichkeiten geben:
 
 
 \newpage
-\section{PCB}
-In Abb. \ref{hauptmodulPCB} ist der aktuelle Stand der PCBs für das Haupt- und in Abb. \ref{TastaturmodulPCB} der des Tastaturmodul zu sehen.
+\section{Platine}
+
+
+\subsubsection{Differenzielle Übertragung}
+
+Wie in Abb. \ref{AbstandLeiterbahnen} vom Hersteller Empfohlen müssen die Leiterbahnen, von oben betrachtet zueinander einen möglichst geringen Abstand haben und zu anderen Leiterbahnen mindestens das Doppelte der der Breite einer Leiterbahn. Diese Einstellungen kann beispielsweise in Eagle anhand der Signalnamen als Regel vorgenommen werden und werden dann automatisch eingehalten. 
+
+\subsection{Verbesserungen}
+Da die erste Platine hauptsächlich zum Testen der differenziellen Übertragungsbauteile dient, sind einige Anpassungen geplant. \newline
+Wenn die Inbetriebnahme wie erwartet gelingt und keine weiteren zu behebenden Fehler auftreten soll vor allem Platz gespart werden, indem möglichst alle Bauteile durch SMD ersetzt werden. Die Jumper und Optokoppler sollen entfernt werden und es soll der Fokus auf Impedanzkontrolle gelegt werden, damit die differenzielle Übertragung gut funktioniert. \newline
+
+Dafür soll von einer zwei Layer Platine auf vier Layer umgestiegen werden. Die Abstände der Signale zur Massefläche wie in \ref{Imepdanz} zu sehen, einen Einfluss auf die Impedanz hat. Im Datenblatt der SN65LVDXXX wird eine Mikrostrip-Topology, wie in dargestellt Abb. \ref{MikrostripTopology} empfohlen. Außerdem wird die Breite und der Abstand der Leiterbahnen in der Software entsprechend der vom Hersteller angegebenen Werte für die Höhe und die Konstante des Dielektikums, eingestellt. Bei dem von uns verwendeten Hersteller JLCPCB kann für die verschiedenen Dicken der Leiterplatte und entsprechend des verwendetetn Dielektrikums die Dicke der einzelnen Layer eingesehen werden. 
+In \ref{BSPImpedanzl} ist die Rechung für die Werte, die im Datenblatt der SN65LVDXXX Bauteile angegeben sind, entsprechend des Terminationswiderstandes von 100 Ohm.
+
+
+Die differenzielle Impedanz \( Z_{diff} \) wird durch folgende Gleichung beschrieben:
+\begin{equation} \label{Impedanz}
+	Z_{diff} = 2 \cdot Z_0 \cdot \left( 1 - \frac{0.441}{\sqrt{\frac{S}{W} + 1.376}} \right)
+\end{equation}
+
+Mit den eingesetzten Werten:
+\begin{equation} \label{BSPImpedanz}
+	Z_{diff} = 2 \cdot 57.3 \cdot \left( 1 - \frac{0.441}{\sqrt{\frac{0.15}{0.15} + 1.376}} \right)
+\end{equation}
+
+
+
+
+
 
 \begin{figure}[H]
     \centering    
-    \fbox{\includegraphics[width=0.85\textwidth]{Bilder/Controller.png}}
-    \caption{Hauptmodul PCB}
-    \label{hauptmodulPCB}
+    \fbox{\includegraphics[width=0.85\textwidth]{Bilder/MikrostripTopology.png}}
+    \caption{Mikrostrip-Topology}
+    \label{MikrostripTopology}
 \end{figure}
 
 \begin{figure}[H]
     \centering    
-    \fbox{\includegraphics[width=0.85\textwidth]{Bilder/Tastatur.png}}
-    \caption{Tastaturmodul PCB}
-    \label{TastaturmodulPCB}
+    \fbox{\includegraphics[width=0.85\textwidth]{Bilder/AbstandLeiterbahnen.png}}
+    \caption{Abstand Leiterbahnen}
+    \label{AbstandLeiterbahnen}
 \end{figure}
 
 
+\subsection{Layout}
 
+In Abb. \ref{LayoutController} wird das Layout des Controller Moduls dargestellt.
+
+In Abb. \ref{LayoutTastatur} wird das Layout des Tastatur Moduls dargestellt. 
+
+\begin{figure}[H]
+	\centering    
+	\fbox{\includegraphics[width=0.85\textwidth]{Bilder/MikrostripTopology.png}}
+	\caption{Layout Controller-Modul}
+	\label{LayoutController}
+\end{figure}
+
+\begin{figure}[H]
+	\centering    
+	\fbox{\includegraphics[width=0.85\textwidth]{Bilder/LayoutTastatur.png}}
+	\caption{Layout Tastatur-Modul}
+	\label{LayoutTastatur}
+\end{figure}
 
 
